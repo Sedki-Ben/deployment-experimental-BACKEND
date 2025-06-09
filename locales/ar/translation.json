@@ -1,0 +1,53 @@
+{
+    "common": {
+        "welcome": "مرحباً بك في مجلة كرة القدم",
+        "login": "تسجيل الدخول",
+        "register": "التسجيل",
+        "logout": "تسجيل الخروج",
+        "profile": "الملف الشخصي",
+        "settings": "الإعدادات",
+        "home": "الرئيسية",
+        "stories": "قصص",
+        "notableWork": "أعمال مميزة",
+        "archive": "الأرشيف",
+        "about": "عن المجلة",
+        "search": "بحث",
+        "language": "اللغة"
+    },
+    "articles": {
+        "latest": "أحدث المقالات",
+        "popular": "المقالات الشائعة",
+        "readMore": "اقرأ المزيد",
+        "publishedOn": "نُشر في {{date}}",
+        "by": "بواسطة {{author}}",
+        "categories": {
+            "analysis": "تحليل",
+            "news": "أخبار",
+            "opinion": "رأي",
+            "interview": "مقابلة"
+        }
+    },
+    "auth": {
+        "emailRequired": "البريد الإلكتروني مطلوب",
+        "passwordRequired": "كلمة المرور مطلوبة",
+        "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+        "registrationSuccess": "تم التسجيل بنجاح",
+        "loginSuccess": "تم تسجيل الدخول بنجاح",
+        "logoutSuccess": "تم تسجيل الخروج بنجاح"
+    },
+    "newsletter": {
+        "subscribe": "اشترك في النشرة الإخبارية",
+        "subscribeSuccess": "تم الاشتراك في النشرة الإخبارية بنجاح",
+        "unsubscribe": "إلغاء الاشتراك",
+        "unsubscribeSuccess": "تم إلغاء الاشتراك بنجاح",
+        "emailPlaceholder": "أدخل بريدك الإلكتروني"
+    },
+    "errors": {
+        "general": "حدث خطأ ما",
+        "notFound": "الصفحة غير موجودة",
+        "unauthorized": "غير مصرح بالوصول",
+        "forbidden": "الوصول ممنوع",
+        "validation": "خطأ في التحقق"
+    }
+} 
+ 

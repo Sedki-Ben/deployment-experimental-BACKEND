@@ -1,0 +1,58 @@
+{
+    "common": {
+        "welcome": "Welcome to Football Journal",
+        "login": "Log In",
+        "register": "Register",
+        "logout": "Log Out",
+        "profile": "Profile",
+        "settings": "Settings",
+        "home": "Home",
+        "stories": "Stories",
+        "notableWork": "Notable Work",
+        "archive": "Archive",
+        "about": "About",
+        "search": "Search",
+        "language": "Language"
+    },
+    "articles": {
+        "latest": "Latest Stories",
+        "popular": "Trending Now",
+        "readMore": "Read Full Story",
+        "publishedOn": "Published {{date}}",
+        "by": "Written by {{author}}",
+        "categories": {
+            "analysis": "Tactical Analysis",
+            "news": "Breaking News",
+            "opinion": "Expert Opinion",
+            "interview": "Exclusive Interviews"
+        }
+    },
+    "auth": {
+        "emailRequired": "Email is required",
+        "passwordRequired": "Password is required",
+        "invalidCredentials": "Invalid email or password",
+        "registrationSuccess": "Welcome to Football Journal!",
+        "loginSuccess": "Welcome back!",
+        "logoutSuccess": "See you soon!",
+        "login": "Sign In",
+        "register": "Create Account",
+        "logout": "Sign Out",
+        "profile": "My Profile",
+        "settings": "Settings",
+        "about": "About Us"
+    },
+    "newsletter": {
+        "subscribe": "Get Weekly Updates",
+        "subscribeSuccess": "Welcome to our community!",
+        "unsubscribe": "Unsubscribe",
+        "unsubscribeSuccess": "You've been unsubscribed",
+        "emailPlaceholder": "Your email address"
+    },
+    "errors": {
+        "general": "Oops! Something went wrong",
+        "notFound": "Page not found",
+        "unauthorized": "Please sign in to continue",
+        "forbidden": "You don't have access to this",
+        "validation": "Please check your input"
+    }
+} 

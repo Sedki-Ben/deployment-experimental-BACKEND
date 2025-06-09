@@ -38,6 +38,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Database connection
+console.log('MONGODB_URI:', process.env.MONGODB_URI);
+console.log('MONGODB_URI type:', typeof process.env.MONGODB_URI);
+console.log('MONGODB_URI length:', process.env.MONGODB_URI ? process.env.MONGODB_URI.length : 'undefined');
+
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/football_journal', {
     useNewUrlParser: true,
     useUnifiedTopology: true

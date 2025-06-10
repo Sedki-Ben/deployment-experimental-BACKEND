@@ -4,6 +4,32 @@ const { Subscription } = require('../models/Newsletter');
 const EmailService = require('../utils/emailService');
 const User = require('../models/User');
 const mongoose = require('mongoose');
+const path = require('path');
+const fs = require('fs');
+
+// Helper function to save uploaded file from memory to disk
+const saveUploadedFile = async (file) => {
+    try {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const filename = uniqueSuffix + '-' + file.originalname;
+        
+        // Create uploads directory if it doesn't exist
+        const uploadDir = path.join(__dirname, '..', 'uploads');
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        
+        const filepath = path.join(uploadDir, filename);
+        
+        // Write buffer to file
+        await fs.promises.writeFile(filepath, file.buffer);
+        
+        return filename;
+    } catch (error) {
+        console.error('Error saving file:', error);
+        throw new Error('Failed to save uploaded file');
+    }
+};
 
 // Create article
 exports.createArticle = async (req, res) => {
@@ -47,12 +73,15 @@ exports.createArticle = async (req, res) => {
             });
         }
 
-        // Create a mapping of temporary blob URLs to actual uploaded files
-        const imageMapping = {};
-        contentImages.forEach((file, index) => {
-            // We'll map based on the order they were uploaded
-            imageMapping[`contentImage_${index}`] = `/uploads/${file.filename}`;
-        });
+        // Save main image to disk and get filename
+        const mainImageFilename = await saveUploadedFile(mainImage);
+
+        // Save content images to disk and create mapping
+        const savedContentImages = [];
+        for (const file of contentImages) {
+            const filename = await saveUploadedFile(file);
+            savedContentImages.push({ filename, originalname: file.originalname });
+        }
 
         // Process content blocks to replace blob URLs with server URLs for ALL languages
         let globalImageIndex = 0;
@@ -64,10 +93,10 @@ exports.createArticle = async (req, res) => {
                     if (block.type === 'image-group' && block.metadata?.images) {
                         block.metadata.images = block.metadata.images.map(img => {
                             // Replace blob URL with server URL
-                            if (img.url && img.url.startsWith('blob:') && globalImageIndex < contentImages.length) {
+                            if (img.url && img.url.startsWith('blob:') && globalImageIndex < savedContentImages.length) {
                                 return {
                                     ...img,
-                                    url: `/uploads/${contentImages[globalImageIndex++].filename}`
+                                    url: `/uploads/${savedContentImages[globalImageIndex++].filename}`
                                 };
                             }
                             return img;
@@ -87,7 +116,7 @@ exports.createArticle = async (req, res) => {
             author: req.user.id,
             // Use user's profile image if available, otherwise use default
             authorImage: user.profileImage || '/uploads/profile/bild3.jpg',
-            image: `/uploads/${mainImage.filename}`,
+            image: `/uploads/${mainImageFilename}`,
             // Initialize counters to 0 for dynamic functionality
             likes: { count: 0, users: [] },
             views: 0,
@@ -219,6 +248,12 @@ exports.getArticle = async (req, res) => {
 // Update article
 exports.updateArticle = async (req, res) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            console.log('Validation errors:', errors.array());
+            return res.status(400).json({ errors: errors.array() });
+        }
+
         const article = await Article.findById(req.params.id);
 
         if (!article) {
@@ -230,31 +265,94 @@ exports.updateArticle = async (req, res) => {
             return res.status(403).json({ message: 'Not authorized' });
         }
 
-        const updateData = { ...req.body };
-        
-        // Handle translations if provided as JSON string
-        if (typeof updateData.translations === 'string') {
-            updateData.translations = JSON.parse(updateData.translations);
+        console.log('Update request body:', req.body);
+        console.log('Update request files:', req.files);
+
+        const updateData = {};
+
+        // Handle translations if provided
+        if (req.body.translations) {
+            updateData.translations = typeof req.body.translations === 'string' 
+                ? JSON.parse(req.body.translations) 
+                : req.body.translations;
+            
+            // Process content images for translations if new content images were uploaded
+            const contentImages = req.files?.contentImages || [];
+            if (contentImages.length > 0 && updateData.translations) {
+                // Save content images to disk
+                const savedContentImages = [];
+                for (const file of contentImages) {
+                    const filename = await saveUploadedFile(file);
+                    savedContentImages.push({ filename, originalname: file.originalname });
+                }
+
+                let globalImageIndex = 0;
+                const languages = ['en', 'fr', 'ar'];
+                
+                languages.forEach(lang => {
+                    if (updateData.translations[lang] && updateData.translations[lang].content) {
+                        updateData.translations[lang].content = updateData.translations[lang].content.map(block => {
+                            if (block.type === 'image-group' && block.metadata?.images) {
+                                block.metadata.images = block.metadata.images.map(img => {
+                                    // Replace blob URL with server URL for new uploads
+                                    if (img.url && img.url.startsWith('blob:') && globalImageIndex < savedContentImages.length) {
+                                        return {
+                                            ...img,
+                                            url: `/uploads/${savedContentImages[globalImageIndex++].filename}`
+                                        };
+                                    }
+                                    return img;
+                                });
+                            }
+                            return block;
+                        });
+                    }
+                });
+            }
         }
 
-        // Handle tags if provided as JSON string
-        if (typeof updateData.tags === 'string') {
-            updateData.tags = JSON.parse(updateData.tags);
+        // Handle tags if provided
+        if (req.body.tags) {
+            updateData.tags = typeof req.body.tags === 'string' 
+                ? JSON.parse(req.body.tags) 
+                : req.body.tags;
         }
 
-        // Handle image upload
-        if (req.file) {
-            updateData.image = `/uploads/${req.file.filename}`;
+        // Handle category if provided
+        if (req.body.category) {
+            updateData.category = req.body.category;
+        }
+
+        // Handle status if provided
+        if (req.body.status) {
+            updateData.status = req.body.status;
+            // Set publishedAt if status is being changed to published
+            if (req.body.status === 'published' && article.status !== 'published') {
+                updateData.publishedAt = new Date();
+            }
+        }
+
+        // Handle main image upload
+        const mainImage = req.files?.image?.[0];
+        if (mainImage) {
+            const mainImageFilename = await saveUploadedFile(mainImage);
+            updateData.image = `/uploads/${mainImageFilename}`;
         } else if (req.body.existingImage) {
             // Keep existing image if no new file uploaded
             updateData.image = req.body.existingImage;
         }
+
+        console.log('Update data:', updateData);
 
         const updatedArticle = await Article.findByIdAndUpdate(
             req.params.id,
             updateData,
             { new: true, runValidators: true }
         ).populate('author', 'name email');
+
+        if (!updatedArticle) {
+            return res.status(404).json({ message: 'Article not found after update' });
+        }
 
         res.json(updatedArticle);
     } catch (error) {

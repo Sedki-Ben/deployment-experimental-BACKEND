@@ -10,26 +10,12 @@ const fs = require('fs');
 
 const router = express.Router();
 
-// Create uploads directory if it doesn't exist
-const uploadDir = path.join(__dirname, '..', 'uploads');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-// Multer setup for image uploads
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, uploadDir);
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + '-' + file.originalname);
-    }
-});
+// Configure multer for memory storage (Render-compatible)
+const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
     // Accept images only
-    if (!file.originalname.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
         return cb(new Error('Only image files are allowed!'), false);
     }
     cb(null, true);
@@ -43,6 +29,14 @@ const upload = multer({
         files: 10 // Maximum 10 files per request
     }
 });
+
+// Create uploads directory if it doesn't exist (only for local development)
+const uploadDir = path.join(__dirname, '..', 'uploads');
+if (process.env.NODE_ENV !== 'production') {
+    if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+    }
+}
 
 // @route   GET /api/articles
 // @desc    Get all articles with filters
@@ -102,15 +96,28 @@ router.post('/',
 router.put('/:id',
     auth,
     isWriter,
-    upload.array('images', 10),
+    upload.fields([
+        { name: 'image', maxCount: 1 }, // Main article image
+        { name: 'contentImages', maxCount: 10 } // Images for content blocks
+    ]),
     [
-        check('title').optional().not().isEmpty(),
-        check('content').optional().not().isEmpty(),
-        check('type').optional().isIn(['etoile-du-sahel', 'the-beautiful-game', 'all-sports-hub']),
-        check('tags').optional().isArray(),
-        check('status').optional().isIn(['draft', 'published', 'archived']),
-        check('imagePositions.*').optional().isNumeric(),
-        check('imageCaptions.*').optional().isString()
+        check('translations')
+            .optional()
+            .custom((value, { req }) => {
+                if (value) {
+                    try {
+                        const translations = typeof value === 'string' ? JSON.parse(value) : value;
+                        // Allow partial updates - don't require all languages
+                        return true;
+                    } catch (error) {
+                        throw new Error('Invalid translations format');
+                    }
+                }
+                return true;
+            }),
+        check('category').optional().isIn(['etoile-du-sahel', 'the-beautiful-game', 'all-sports-hub']),
+        check('tags').optional().isString(),
+        check('status').optional().isIn(['draft', 'published', 'archived'])
     ],
     articlesController.updateArticle
 );

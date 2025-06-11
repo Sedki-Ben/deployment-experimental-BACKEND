@@ -43,6 +43,13 @@ if (process.env.NODE_ENV !== 'production') {
 // @access  Public
 router.get('/', articlesController.getArticles);
 
+// @route   GET /api/articles/search
+// @desc    Search articles
+// @access  Public
+router.get('/search', [
+    check('q').notEmpty().withMessage('Search query is required').trim().isLength({ min: 1, max: 100 })
+], articlesController.searchArticles);
+
 // @route   GET /api/articles/:type
 // @desc    Get articles by type (etoile-du-sahel, the-beautiful-game, all-sports-hub)
 // @access  Public

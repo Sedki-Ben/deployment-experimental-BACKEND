@@ -1,0 +1,53 @@
+{
+    "common": {
+        "welcome": "Bienvenue sur Football Journal",
+        "login": "Se Connecter",
+        "register": "S'inscrire",
+        "logout": "Se Déconnecter",
+        "profile": "Profil",
+        "settings": "Paramètres",
+        "home": "Accueil",
+        "stories": "Histoires",
+        "notableWork": "Travaux Notables",
+        "archive": "Archives",
+        "about": "À Propos",
+        "search": "Rechercher",
+        "language": "Langue"
+    },
+    "articles": {
+        "latest": "Derniers Articles",
+        "popular": "Articles Populaires",
+        "readMore": "Lire la Suite",
+        "publishedOn": "Publié le {{date}}",
+        "by": "par {{author}}",
+        "categories": {
+            "analysis": "Analyse",
+            "news": "Actualités",
+            "opinion": "Opinion",
+            "interview": "Interview"
+        }
+    },
+    "auth": {
+        "emailRequired": "L'email est requis",
+        "passwordRequired": "Le mot de passe est requis",
+        "invalidCredentials": "Email ou mot de passe invalide",
+        "registrationSuccess": "Inscription réussie",
+        "loginSuccess": "Connexion réussie",
+        "logoutSuccess": "Déconnexion réussie"
+    },
+    "newsletter": {
+        "subscribe": "S'abonner à la Newsletter",
+        "subscribeSuccess": "Abonnement à la newsletter réussi",
+        "unsubscribe": "Se désabonner",
+        "unsubscribeSuccess": "Désabonnement réussi",
+        "emailPlaceholder": "Entrez votre email"
+    },
+    "errors": {
+        "general": "Une erreur est survenue",
+        "notFound": "Page non trouvée",
+        "unauthorized": "Accès non autorisé",
+        "forbidden": "Accès interdit",
+        "validation": "Erreur de validation"
+    }
+} 
+ 

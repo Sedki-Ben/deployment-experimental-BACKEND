@@ -434,7 +434,7 @@ exports.toggleLike = async (req, res) => {
     }
 };
 
-// Search articles - Reliable two-step search approach
+// Search articles
 exports.searchArticles = async (req, res) => {
     try {
         const { q, page = 1, limit = 10, category } = req.query;
@@ -443,179 +443,34 @@ exports.searchArticles = async (req, res) => {
             return res.status(400).json({ message: 'Search query is required' });
         }
 
-        const searchTerm = q.trim();
-        console.log('Search request:', { searchTerm, category, page, limit });
+        const query = {
+            $text: { $search: q },
+            status: 'published' // Only search published articles
+        };
 
-        // Build base query
-        const baseQuery = { status: 'published' };
-        if (category && category !== 'all') {
-            baseQuery.category = category;
+        if (category) {
+            query.category = category;
         }
 
-        let articles = [];
-        let searchMethod = '';
+        const articles = await Article.find(query, { score: { $meta: 'textScore' } })
+            .sort({ score: { $meta: 'textScore' } })
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .populate('author', 'name email')
+            .exec();
 
-        // Step 1: Try MongoDB text search first (most accurate)
-        try {
-            const textSearchQuery = {
-                ...baseQuery,
-                $text: { $search: searchTerm }
-            };
-
-            articles = await Article.find(textSearchQuery, { score: { $meta: 'textScore' } })
-                .populate('author', 'name email')
-                .sort({ score: { $meta: 'textScore' } })
-                .limit(limit * 1)
-                .skip((page - 1) * limit)
-                .exec();
-
-            searchMethod = 'text_search';
-            console.log(`Text search found ${articles.length} results`);
-        } catch (textError) {
-            console.log('Text search failed:', textError.message);
-        }
-
-        // Step 2: If no text search results, try regex search (fallback)
-        if (articles.length === 0) {
-            console.log('Falling back to regex search...');
-            
-            const searchRegex = new RegExp(searchTerm.split(' ').join('|'), 'i');
-            
-            const regexSearchQuery = {
-                ...baseQuery,
-                $or: [
-                    // Titles in all languages
-                    { 'translations.en.title': searchRegex },
-                    { 'translations.fr.title': searchRegex },
-                    { 'translations.ar.title': searchRegex },
-                    
-                    // Excerpts in all languages
-                    { 'translations.en.excerpt': searchRegex },
-                    { 'translations.fr.excerpt': searchRegex },
-                    { 'translations.ar.excerpt': searchRegex },
-                    
-                    // Content blocks
-                    { 'translations.en.content.content': searchRegex },
-                    { 'translations.fr.content.content': searchRegex },
-                    { 'translations.ar.content.content': searchRegex },
-                    
-                    // Tags
-                    { 'tags': searchRegex }
-                ]
-            };
-
-            articles = await Article.find(regexSearchQuery)
-                .populate('author', 'name email')
-                .sort({ publishedAt: -1 })
-                .limit(limit * 1)
-                .skip((page - 1) * limit)
-                .exec();
-
-            searchMethod = 'regex_search';
-            console.log(`Regex search found ${articles.length} results`);
-        }
-
-        // Step 3: If still no results, try flexible word-based search
-        if (articles.length === 0) {
-            console.log('Trying flexible word-based search...');
-            
-            const words = searchTerm.split(' ').filter(word => word.length > 1);
-            if (words.length > 0) {
-                const flexibleRegex = new RegExp(words.join('|'), 'i');
-                
-                const flexibleQuery = {
-                    ...baseQuery,
-                    $or: [
-                        { 'translations.en.title': flexibleRegex },
-                        { 'translations.fr.title': flexibleRegex },
-                        { 'translations.ar.title': flexibleRegex },
-                        { 'translations.en.excerpt': flexibleRegex },
-                        { 'translations.fr.excerpt': flexibleRegex },
-                        { 'translations.ar.excerpt': flexibleRegex },
-                        { 'tags': flexibleRegex }
-                    ]
-                };
-                
-                articles = await Article.find(flexibleQuery)
-                    .populate('author', 'name email')
-                    .sort({ publishedAt: -1 })
-                    .limit(limit * 1)
-                    .skip((page - 1) * limit)
-                    .exec();
-
-                searchMethod = 'flexible_search';
-                console.log(`Flexible search found ${articles.length} results`);
-            }
-        }
-
-        // Get total count for pagination (use simpler query for counting)
-        let count = 0;
-        try {
-            if (searchMethod === 'text_search') {
-                count = await Article.countDocuments({
-                    ...baseQuery,
-                    $text: { $search: searchTerm }
-                });
-            } else {
-                const searchRegex = new RegExp(searchTerm.split(' ').join('|'), 'i');
-                count = await Article.countDocuments({
-                    ...baseQuery,
-                    $or: [
-                        { 'translations.en.title': searchRegex },
-                        { 'translations.fr.title': searchRegex },
-                        { 'translations.ar.title': searchRegex }
-                    ]
-                });
-            }
-        } catch (countError) {
-            console.log('Count query failed, using articles length');
-            count = articles.length;
-        }
-
-        // Transform articles to match frontend expectations
-        const backendUrl = process.env.REACT_APP_API_URL?.replace('/api', '') || 
-                          process.env.FRONTEND_URL?.replace('://localhost:3000', '://localhost:5000') || 
-                          'https://deployment-experimental-backend.onrender.com';
-
-        const transformedArticles = articles.map(article => {
-            const articleObj = article.toObject();
-            
-            return {
-                ...articleObj,
-                image: articleObj.image ? `${backendUrl}${articleObj.image}` : null,
-                date: new Date(articleObj.publishedAt || articleObj.createdAt).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                }),
-                rawDate: articleObj.publishedAt || articleObj.createdAt,
-                authorImage: articleObj.authorImage ? `${backendUrl}${articleObj.authorImage}` : null,
-                likes: {
-                    count: articleObj.likes?.count || 0,
-                    users: articleObj.likes?.users || []
-                },
-                comments: articleObj.commentCount || 0,
-                views: articleObj.views || 0,
-                tags: articleObj.tags || []
-            };
-        });
-
-        console.log(`Search completed: found ${transformedArticles.length} articles for "${searchTerm}" using ${searchMethod}`);
+        const count = await Article.countDocuments(query);
 
         res.json({
-            articles: transformedArticles,
+            articles,
             totalPages: Math.ceil(count / limit),
             currentPage: parseInt(page),
             total: count,
-            query: searchTerm,
-            searchMethod // Debug info
+            query: q
         });
     } catch (error) {
         console.error('Search articles error:', error);
-        res.status(500).json({ 
-            message: 'Search failed',
-            error: process.env.NODE_ENV === 'development' ? error.message : 'Server error'
-        });
+        res.status(500).json({ message: 'Server error' });
     }
 };
 

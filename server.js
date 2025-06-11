@@ -1,59 +1,71 @@
+const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const dotenv = require('dotenv');
-const app = require('./app');
+const session = require('express-session');
+const path = require('path');
+
+// Import routes
+const authRoutes = require('./routes/auth');
+const articleRoutes = require('./routes/articles');
+const commentRoutes = require('./routes/comments');
+const newsletterRoutes = require('./routes/newsletter');
+const analyticsRoutes = require('./routes/analytics');
 
 // Load environment variables
 dotenv.config();
+
+// Create Express app
+const app = express();
+
+// Session configuration
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'your-secret-key',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+}));
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Serve static files for uploaded images
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Database connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/football_journal', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
-.then(() => {
-    console.log('Connected to MongoDB');
-    console.log('Database:', process.env.MONGODB_URI ? 'Production' : 'Local');
-})
-.catch(err => {
-    console.error('MongoDB connection error:', err);
-    process.exit(1);
+.then(() => console.log('Connected to MongoDB'))
+.catch(err => console.error('MongoDB connection error:', err));
+
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/articles', articleRoutes);
+app.use('/api/comments', commentRoutes);
+app.use('/api/newsletter', newsletterRoutes);
+app.use('/api/analytics', analyticsRoutes);
+
+// Basic route
+app.get('/', (req, res) => {
+    res.json({ message: 'Welcome to Football Journal API' });
 });
 
-// Handle MongoDB connection events
-mongoose.connection.on('error', (err) => {
-    console.error('MongoDB connection error:', err);
-});
-
-mongoose.connection.on('disconnected', () => {
-    console.log('MongoDB disconnected');
-});
-
-// Graceful shutdown
-process.on('SIGINT', async () => {
-    console.log('SIGINT received, shutting down gracefully');
-    await mongoose.connection.close();
-    process.exit(0);
-});
-
-process.on('SIGTERM', async () => {
-    console.log('SIGTERM received, shutting down gracefully');
-    await mongoose.connection.close();
-    process.exit(0);
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: 'Something went wrong!' });
 });
 
 // Start server
 const PORT = process.env.PORT || 5000;
-const server = app.listen(PORT, () => {
+app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:3000'}`);
-});
-
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (err, promise) => {
-    console.error('Unhandled Promise Rejection:', err.message);
-    // Close server & exit process
-    server.close(() => {
-        process.exit(1);
-    });
 }); 
+ 

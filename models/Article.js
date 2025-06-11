@@ -148,44 +148,17 @@ const articleSchema = new mongoose.Schema({
     toObject: { virtuals: true }
 });
 
-// Add comprehensive text index for search functionality
+// Add text index for search functionality
 articleSchema.index({ 
-    // Article titles in all languages
     'translations.en.title': 'text',
     'translations.fr.title': 'text',
     'translations.ar.title': 'text',
-    
-    // Article excerpts in all languages
     'translations.en.excerpt': 'text',
     'translations.fr.excerpt': 'text',
     'translations.ar.excerpt': 'text',
-    
-    // Main content field (for backward compatibility)
     'translations.en.content.content': 'text',
     'translations.fr.content.content': 'text',
     'translations.ar.content.content': 'text',
-    
-    // Legacy content field
-    'translations.en.legacyContent': 'text',
-    'translations.fr.legacyContent': 'text',
-    'translations.ar.legacyContent': 'text',
-    
-    // Image captions in metadata
-    'translations.en.content.metadata.caption': 'text',
-    'translations.fr.content.metadata.caption': 'text',
-    'translations.ar.content.metadata.caption': 'text',
-    
-    // Image group captions
-    'translations.en.content.metadata.images.caption': 'text',
-    'translations.fr.content.metadata.images.caption': 'text',
-    'translations.ar.content.metadata.images.caption': 'text',
-    
-    // Quote sources
-    'translations.en.content.metadata.source': 'text',
-    'translations.fr.content.metadata.source': 'text',
-    'translations.ar.content.metadata.source': 'text',
-    
-    // Tags
     'tags': 'text'
 });
 

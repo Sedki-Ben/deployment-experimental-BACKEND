@@ -67,6 +67,10 @@ const articleSchema = new mongoose.Schema({
             type: translationSchema,
             required: true
         },
+        fr: {
+            type: translationSchema,
+            required: false  // Make French optional
+        },
         ar: {
             type: translationSchema,
             required: true
@@ -147,10 +151,13 @@ const articleSchema = new mongoose.Schema({
 // Add text index for search functionality
 articleSchema.index({ 
     'translations.en.title': 'text',
+    'translations.fr.title': 'text',
     'translations.ar.title': 'text',
     'translations.en.excerpt': 'text',
+    'translations.fr.excerpt': 'text',
     'translations.ar.excerpt': 'text',
     'translations.en.content.content': 'text',
+    'translations.fr.content.content': 'text',
     'translations.ar.content.content': 'text',
     'tags': 'text'
 });
@@ -171,18 +178,36 @@ articleSchema.virtual('commentCount', {
 
 // Check for duplicate title before saving
 articleSchema.pre('save', async function(next) {
-    if (this.isModified('translations.en.title')) {
-        const existingArticle = await this.constructor.findOne({
-            'translations.en.title': this.translations.en.title,
-            _id: { $ne: this._id } // Exclude current article when updating
-        });
+    if (this.isModified('translations.en.title') || this.isModified('translations.fr.title')) {
+        // Check English title
+        if (this.isModified('translations.en.title')) {
+            const existingArticle = await this.constructor.findOne({
+                'translations.en.title': this.translations.en.title,
+                _id: { $ne: this._id } // Exclude current article when updating
+            });
 
-        if (existingArticle) {
-            const error = new Error('An article with this title already exists. Please choose a different title.');
-            error.name = 'ValidationError';
-            return next(error);
+            if (existingArticle) {
+                const error = new Error('An article with this English title already exists. Please choose a different title.');
+                error.name = 'ValidationError';
+                return next(error);
+            }
         }
 
+        // Check French title
+        if (this.isModified('translations.fr.title') && this.translations.fr.title) {
+            const existingFrenchArticle = await this.constructor.findOne({
+                'translations.fr.title': this.translations.fr.title,
+                _id: { $ne: this._id } // Exclude current article when updating
+            });
+
+            if (existingFrenchArticle) {
+                const error = new Error('An article with this French title already exists. Please choose a different title.');
+                error.name = 'ValidationError';
+                return next(error);
+            }
+        }
+
+        // Generate slug from English title (primary language)
         this.slug = slugify(this.translations.en.title, {
             lower: true,
             strict: true

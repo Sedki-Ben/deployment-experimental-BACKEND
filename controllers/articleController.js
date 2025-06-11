@@ -24,10 +24,34 @@ const saveUploadedFile = async (file) => {
         // Write buffer to file
         await fs.promises.writeFile(filepath, file.buffer);
         
+        // Log file creation
+        console.log(`File saved to: ${filepath}`);
+        console.log(`File size: ${file.buffer.length} bytes`);
+        
+        // Immediate verification that file was saved
+        if (fs.existsSync(filepath)) {
+            console.log(`File verification successful: ${filename}`);
+        } else {
+            console.error(`File verification failed: ${filename}`);
+        }
+        
         return filename;
     } catch (error) {
         console.error('Error saving file:', error);
         throw new Error('Failed to save uploaded file');
+    }
+};
+
+// Check if uploaded files still exist (for Render compatibility)
+const checkFileExists = async (filename) => {
+    try {
+        const filepath = path.join(__dirname, '..', 'uploads', filename);
+        const exists = fs.existsSync(filepath);
+        console.log(`File existence check for ${filename}: ${exists}`);
+        return exists;
+    } catch (error) {
+        console.error(`Error checking file existence for ${filename}:`, error);
+        return false;
     }
 };
 

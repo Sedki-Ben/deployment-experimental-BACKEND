@@ -3,6 +3,7 @@ const cors = require('cors');
 const { i18nextMiddleware } = require('./utils/i18n');
 const { limiter, authLimiter, newsletterLimiter } = require('./middleware/rateLimiter');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 
@@ -29,8 +30,39 @@ app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
 app.use('/api/newsletter/subscribe', newsletterLimiter);
 
-// Serve static files for uploaded images
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Enhanced static file serving with error handling and logging
+app.use('/uploads', (req, res, next) => {
+  const filePath = path.join(__dirname, 'uploads', req.path);
+  
+  // Log the request
+  console.log(`Static file request: ${req.path}`);
+  console.log(`Full path: ${filePath}`);
+  
+  // Check if file exists
+  if (fs.existsSync(filePath)) {
+    console.log(`File exists, serving: ${req.path}`);
+    next(); // Continue to express.static
+  } else {
+    console.error(`File not found: ${req.path}`);
+    console.error(`Attempted path: ${filePath}`);
+    
+    // List directory contents for debugging
+    const uploadDir = path.join(__dirname, 'uploads');
+    if (fs.existsSync(uploadDir)) {
+      const files = fs.readdirSync(uploadDir);
+      console.log(`Available files in uploads directory: ${files.join(', ')}`);
+    } else {
+      console.error('Uploads directory does not exist!');
+    }
+    
+    // Return 404 with helpful information
+    res.status(404).json({
+      error: 'File not found',
+      requestedFile: req.path,
+      message: 'This file may have been deleted due to server restart on Render\'s ephemeral file system'
+    });
+  }
+}, express.static(path.join(__dirname, 'uploads')));
 
 // Import routes
 const authRoutes = require('./routes/auth');

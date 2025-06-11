@@ -7,6 +7,7 @@ const isWriter = require('../middleware/isWriter');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const Article = require('../models/Article');
 
 const router = express.Router();
 
@@ -179,6 +180,73 @@ router.post('/:id/archive', [auth, isWriter], articlesController.archiveArticle)
 // @desc    Unpublish an article (change from published to draft)
 // @access  Private/Admin
 router.post('/:id/unpublish', auth, articlesController.unpublishArticle);
+
+// Test search functionality (temporary debug route)
+router.get('/debug-search', async (req, res) => {
+    try {
+        const { q } = req.query;
+        
+        // Get a sample of articles to see their structure
+        const sampleArticles = await Article.find({ status: 'published' })
+            .limit(3)
+            .lean()
+            .exec();
+            
+        // Test search if query provided
+        let searchResults = null;
+        if (q) {
+            const searchRegex = new RegExp(q, 'i');
+            searchResults = await Article.find({
+                status: 'published',
+                $or: [
+                    { 'translations.en.title': searchRegex },
+                    { 'translations.fr.title': searchRegex },
+                    { 'translations.ar.title': searchRegex }
+                ]
+            }).limit(5).lean().exec();
+        }
+        
+        res.json({
+            message: 'Debug search results',
+            sampleStructure: sampleArticles.map(article => ({
+                id: article._id,
+                title: article.translations?.en?.title || 'No title',
+                contentStructure: {
+                    en: {
+                        hasContent: !!article.translations?.en?.content,
+                        contentLength: Array.isArray(article.translations?.en?.content) ? 
+                            article.translations.en.content.length : 0,
+                        contentTypes: Array.isArray(article.translations?.en?.content) ? 
+                            article.translations.en.content.map(block => block.type) : []
+                    },
+                    fr: {
+                        hasContent: !!article.translations?.fr?.content,
+                        contentLength: Array.isArray(article.translations?.fr?.content) ? 
+                            article.translations.fr.content.length : 0
+                    },
+                    ar: {
+                        hasContent: !!article.translations?.ar?.content,
+                        contentLength: Array.isArray(article.translations?.ar?.content) ? 
+                            article.translations.ar.content.length : 0
+                    }
+                },
+                tags: article.tags || []
+            })),
+            searchResults: searchResults ? {
+                count: searchResults.length,
+                results: searchResults.map(article => ({
+                    id: article._id,
+                    title: article.translations?.en?.title,
+                    excerpt: article.translations?.en?.excerpt
+                }))
+            } : null,
+            query: q || 'No query provided'
+        });
+    } catch (error) {
+        console.error('Debug search error:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
 
 module.exports = router; 
  

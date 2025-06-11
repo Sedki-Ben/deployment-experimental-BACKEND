@@ -434,7 +434,7 @@ exports.toggleLike = async (req, res) => {
     }
 };
 
-// Search articles
+// Search articles - Enhanced comprehensive search
 exports.searchArticles = async (req, res) => {
     try {
         const { q, page = 1, limit = 10, category } = req.query;
@@ -443,34 +443,160 @@ exports.searchArticles = async (req, res) => {
             return res.status(400).json({ message: 'Search query is required' });
         }
 
-        const query = {
-            $text: { $search: q },
-            status: 'published' // Only search published articles
-        };
+        const searchTerm = q.trim();
+        console.log('Search request:', { searchTerm, category, page, limit });
 
-        if (category) {
-            query.category = category;
+        // Build comprehensive search query
+        const baseQuery = { status: 'published' };
+        if (category && category !== 'all') {
+            baseQuery.category = category;
         }
 
-        const articles = await Article.find(query, { score: { $meta: 'textScore' } })
-            .sort({ score: { $meta: 'textScore' } })
+        // Create search patterns for case-insensitive regex search
+        const searchRegex = new RegExp(searchTerm.split(' ').join('|'), 'i');
+        
+        // Comprehensive search across all possible fields
+        const searchQuery = {
+            ...baseQuery,
+            $or: [
+                // MongoDB text search (primary)
+                { $text: { $search: searchTerm } },
+                
+                // Titles in all languages
+                { 'translations.en.title': searchRegex },
+                { 'translations.fr.title': searchRegex },
+                { 'translations.ar.title': searchRegex },
+                
+                // Excerpts in all languages
+                { 'translations.en.excerpt': searchRegex },
+                { 'translations.fr.excerpt': searchRegex },
+                { 'translations.ar.excerpt': searchRegex },
+                
+                // Content blocks - main content field
+                { 'translations.en.content.content': searchRegex },
+                { 'translations.fr.content.content': searchRegex },
+                { 'translations.ar.content.content': searchRegex },
+                
+                // Legacy content
+                { 'translations.en.legacyContent': searchRegex },
+                { 'translations.fr.legacyContent': searchRegex },
+                { 'translations.ar.legacyContent': searchRegex },
+                
+                // Image captions
+                { 'translations.en.content.metadata.caption': searchRegex },
+                { 'translations.fr.content.metadata.caption': searchRegex },
+                { 'translations.ar.content.metadata.caption': searchRegex },
+                
+                // Image group captions
+                { 'translations.en.content.metadata.images.caption': searchRegex },
+                { 'translations.fr.content.metadata.images.caption': searchRegex },
+                { 'translations.ar.content.metadata.images.caption': searchRegex },
+                
+                // Quote sources
+                { 'translations.en.content.metadata.source': searchRegex },
+                { 'translations.fr.content.metadata.source': searchRegex },
+                { 'translations.ar.content.metadata.source': searchRegex },
+                
+                // Tags
+                { 'tags': searchRegex }
+            ]
+        };
+
+        console.log('Search query structure:', JSON.stringify(searchQuery, null, 2));
+
+        // Execute search with sorting
+        let articles = await Article.find(searchQuery)
+            .populate('author', 'name email')
+            .populate('commentCount')
+            .sort({ 
+                // Prioritize text search score if available, then by published date
+                score: { $meta: 'textScore' },
+                publishedAt: -1 
+            })
             .limit(limit * 1)
             .skip((page - 1) * limit)
-            .populate('author', 'name email')
             .exec();
 
-        const count = await Article.countDocuments(query);
+        // If no results with strict search, try a more flexible approach
+        if (articles.length === 0) {
+            console.log('No results found with strict search, trying flexible search...');
+            
+            // Split search term into individual words for broader matching
+            const words = searchTerm.split(' ').filter(word => word.length > 2);
+            if (words.length > 0) {
+                const flexibleRegex = new RegExp(words.join('|'), 'i');
+                
+                const flexibleQuery = {
+                    ...baseQuery,
+                    $or: [
+                        { 'translations.en.title': flexibleRegex },
+                        { 'translations.fr.title': flexibleRegex },
+                        { 'translations.ar.title': flexibleRegex },
+                        { 'translations.en.excerpt': flexibleRegex },
+                        { 'translations.fr.excerpt': flexibleRegex },
+                        { 'translations.ar.excerpt': flexibleRegex },
+                        { 'translations.en.content.content': flexibleRegex },
+                        { 'translations.fr.content.content': flexibleRegex },
+                        { 'translations.ar.content.content': flexibleRegex },
+                        { 'tags': flexibleRegex }
+                    ]
+                };
+                
+                articles = await Article.find(flexibleQuery)
+                    .populate('author', 'name email')
+                    .populate('commentCount')
+                    .sort({ publishedAt: -1 })
+                    .limit(limit * 1)
+                    .skip((page - 1) * limit)
+                    .exec();
+            }
+        }
+
+        // Get total count for pagination
+        const count = await Article.countDocuments(searchQuery);
+
+        // Transform articles to match frontend expectations
+        const transformedArticles = articles.map(article => {
+            const articleObj = article.toObject();
+            
+            // Get backend URL for image URL construction
+            const backendUrl = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000';
+            
+            return {
+                ...articleObj,
+                image: articleObj.image ? `${backendUrl}${articleObj.image}` : null,
+                date: new Date(articleObj.publishedAt || articleObj.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                }),
+                rawDate: articleObj.publishedAt || articleObj.createdAt,
+                authorImage: articleObj.authorImage ? `${backendUrl}${articleObj.authorImage}` : null,
+                likes: {
+                    count: articleObj.likes?.count || 0,
+                    users: articleObj.likes?.users || []
+                },
+                comments: articleObj.commentCount || 0,
+                views: articleObj.views || 0,
+                tags: articleObj.tags || []
+            };
+        });
+
+        console.log(`Search completed: found ${transformedArticles.length} articles for "${searchTerm}"`);
 
         res.json({
-            articles,
+            articles: transformedArticles,
             totalPages: Math.ceil(count / limit),
             currentPage: parseInt(page),
             total: count,
-            query: q
+            query: searchTerm
         });
     } catch (error) {
         console.error('Search articles error:', error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ 
+            message: 'Search failed',
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Server error'
+        });
     }
 };
 

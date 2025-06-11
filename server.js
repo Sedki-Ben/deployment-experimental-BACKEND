@@ -11,6 +11,7 @@ const articleRoutes = require('./routes/articles');
 const commentRoutes = require('./routes/comments');
 const newsletterRoutes = require('./routes/newsletter');
 const analyticsRoutes = require('./routes/analytics');
+const testRoutes = require('./routes/test');
 
 // Load environment variables
 dotenv.config();
@@ -51,6 +52,7 @@ app.use('/api/articles', articleRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/newsletter', newsletterRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/test', testRoutes);
 
 // Basic route
 app.get('/', (req, res) => {

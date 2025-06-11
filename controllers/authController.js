@@ -4,6 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const User = require('../models/User');
+const { uploadToCloudinary, deleteFromCloudinary, isCloudinaryConfigured } = require('../utils/cloudinaryStorage');
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -213,15 +214,27 @@ exports.updateProfile = async (req, res) => {
             // Delete old profile image if it exists and is not a default avatar
             if (currentUser.profileImage && 
                 !currentUser.profileImage.includes('mann.png') && 
-                !currentUser.profileImage.includes('frau.png')) {
-                const oldImagePath = path.join(__dirname, '..', currentUser.profileImage);
-                if (fs.existsSync(oldImagePath)) {
-                    fs.unlinkSync(oldImagePath);
-                }
+                !currentUser.profileImage.includes('frau.png') &&
+                currentUser.profileImage.startsWith('https://res.cloudinary.com/')) {
+                // Only delete from Cloudinary if it's a cloud URL
+                await deleteFromCloudinary(currentUser.profileImage);
             }
 
-            // Set new profile image path
-            updateData.profileImage = `/uploads/profile/${req.file.filename}`;
+            // Check if we should use cloud storage
+            const useCloudStorage = isCloudinaryConfigured() && (process.env.NODE_ENV === 'production' || process.env.USE_CLOUDINARY === 'true');
+            
+            if (useCloudStorage) {
+                // Upload to Cloudinary
+                const profileImageUrl = await uploadToCloudinary(
+                    req.file.buffer, 
+                    req.file.originalname, 
+                    'profiles'
+                );
+                updateData.profileImage = profileImageUrl;
+            } else {
+                // Fallback to local storage
+                updateData.profileImage = `/uploads/profile/${req.file.filename}`;
+            }
         }
 
         // Update user in database

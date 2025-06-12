@@ -8,8 +8,33 @@ const fs = require('fs');
 const app = express();
 
 // CORS Configuration
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://deployment-experimental.vercel.app',
+  'https://pure-tactics-cartel.vercel.app',
+  'https://pure-tactics-cartel-sedkibenhaouala-6473s-projects.vercel.app',
+  'https://pure-tactics-cartel-git-main-sedkibenhaouala-6473s-projects.vercel.app',
+  'https://pure-tactics-cartel-cyue1spy2-sedkibenhaouala-6473s-projects.vercel.app'
+];
+
+// Add FRONTEND_URL from environment if it exists and isn't already in the list
+if (process.env.FRONTEND_URL && !allowedOrigins.includes(process.env.FRONTEND_URL)) {
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      console.error('CORS Error: Origin not allowed:', origin);
+      console.log('Allowed origins:', allowedOrigins);
+      return callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept-Language']

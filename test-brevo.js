@@ -1,4 +1,29 @@
-require('dotenv').config();
+const path = require('path');
+const fs = require('fs');
+
+console.log('Current working directory:', process.cwd());
+console.log('Looking for .env file in:', path.join(process.cwd(), '.env'));
+
+// Try to load .env file
+try {
+    const envPath = path.join(process.cwd(), '.env');
+    if (fs.existsSync(envPath)) {
+        console.log('Found .env file at:', envPath);
+        require('dotenv').config({ path: envPath });
+    } else {
+        console.log('No .env file found at:', envPath);
+        // Try parent directory
+        const parentEnvPath = path.join(process.cwd(), '..', '.env');
+        if (fs.existsSync(parentEnvPath)) {
+            console.log('Found .env file in parent directory:', parentEnvPath);
+            require('dotenv').config({ path: parentEnvPath });
+        } else {
+            console.log('No .env file found in parent directory either');
+        }
+    }
+} catch (error) {
+    console.error('Error loading .env file:', error);
+}
 
 const testBrevoIntegration = async () => {
     console.log('🧪 Testing Brevo Integration...\n');
@@ -76,4 +101,69 @@ const testBrevoIntegration = async () => {
 };
 
 // Run the test
-testBrevoIntegration(); 
+testBrevoIntegration();
+
+const brevo = require('@getbrevo/brevo');
+
+// Test configuration
+const config = {
+    apiKey: process.env.BREVO_API_KEY,
+    senderEmail: process.env.EMAIL_FROM,
+    testRecipient: 'bonhommelibre25@gmail.com'
+};
+
+// Print all environment variables (for debugging)
+console.log('\nEnvironment variables:');
+console.log('BREVO_API_KEY:', process.env.BREVO_API_KEY ? 'Set' : 'Not Set');
+console.log('EMAIL_FROM:', process.env.EMAIL_FROM);
+console.log('NODE_ENV:', process.env.NODE_ENV);
+
+async function testBrevoAPI() {
+    console.log('\n🔍 Testing Brevo API Configuration...');
+    console.log('API Key present:', config.apiKey ? 'Yes' : 'No');
+    console.log('Sender Email:', config.senderEmail);
+    console.log('Test Recipient:', config.testRecipient);
+
+    try {
+        // Initialize API client
+        const defaultClient = brevo.ApiClient.instance;
+        const apiKey = defaultClient.authentications['api-key'];
+        apiKey.apiKey = config.apiKey;
+
+        // Create API instance
+        const apiInstance = new brevo.TransactionalEmailsApi(defaultClient);
+
+        // Create test email
+        const sendSmtpEmail = new brevo.SendSmtpEmail();
+        sendSmtpEmail.subject = "Brevo API Test";
+        sendSmtpEmail.htmlContent = "<h1>Brevo API Test</h1><p>If you're receiving this email, your Brevo API configuration is working correctly!</p>";
+        sendSmtpEmail.sender = {
+            name: "Brevo Test",
+            email: config.senderEmail
+        };
+        sendSmtpEmail.to = [{
+            email: config.testRecipient,
+            name: "Test Recipient"
+        }];
+
+        console.log('📧 Attempting to send test email...');
+        
+        // Send the email
+        const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
+        
+        console.log('✅ Test successful!');
+        console.log('Response:', response);
+        console.log('Message ID:', response.messageId);
+        
+    } catch (error) {
+        console.error('❌ Test failed!');
+        console.error('Error:', error.message);
+        if (error.response) {
+            console.error('Response body:', error.response.body);
+            console.error('Response text:', error.response.text);
+        }
+    }
+}
+
+// Run the test
+testBrevoAPI(); 

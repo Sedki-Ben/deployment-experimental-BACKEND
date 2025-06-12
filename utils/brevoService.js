@@ -19,19 +19,13 @@ class BrevoService {
         }
 
         try {
-            // Initialize Brevo API client using the correct pattern for v2.x
-            this.apiInstance = new brevo.TransactionalEmailsApi();
+            // Initialize Brevo API client with the correct configuration
+            const defaultClient = brevo.ApiClient.instance;
+            const apiKey = defaultClient.authentications['api-key'];
+            apiKey.apiKey = process.env.BREVO_API_KEY;
             
-            // Set API key using the correct method for the current SDK version
-            // This follows the pattern from the official Brevo documentation
-            let apiKey = this.apiInstance.authentications?.['api-key'];
-            if (apiKey) {
-                apiKey.apiKey = process.env.BREVO_API_KEY;
-            } else {
-                // Initialize authentications object if it doesn't exist
-                this.apiInstance.authentications = this.apiInstance.authentications || {};
-                this.apiInstance.authentications['api-key'] = { apiKey: process.env.BREVO_API_KEY };
-            }
+            // Create API instance with the configured client
+            this.apiInstance = new brevo.TransactionalEmailsApi(defaultClient);
             
             this.isConfigured = true;
             console.log('✅ Brevo service initialized successfully');

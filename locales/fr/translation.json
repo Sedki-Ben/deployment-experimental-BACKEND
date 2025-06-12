@@ -38,9 +38,15 @@
     "newsletter": {
         "subscribe": "S'abonner à la Newsletter",
         "subscribeSuccess": "Abonnement à la newsletter réussi",
+        "subscribeSuccessWithEmail": "Veuillez vérifier votre email pour confirmer votre abonnement",
+        "subscribeSuccessNoEmail": "Abonnement créé avec succès. L'email de vérification n'a pas pu être envoyé pour le moment.",
+        "subscribeWarning": "Veuillez contacter le support si vous devez vérifier votre abonnement.",
         "unsubscribe": "Se désabonner",
         "unsubscribeSuccess": "Désabonnement réussi",
-        "emailPlaceholder": "Entrez votre email"
+        "emailPlaceholder": "Entrez votre email",
+        "verificationSuccess": "Abonnement vérifié avec succès",
+        "invalidToken": "Token de vérification invalide ou expiré",
+        "alreadySubscribed": "Email déjà abonné"
     },
     "errors": {
         "general": "Une erreur est survenue",

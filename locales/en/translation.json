@@ -44,9 +44,15 @@
     "newsletter": {
         "subscribe": "Get Weekly Updates",
         "subscribeSuccess": "Welcome to our community!",
+        "subscribeSuccessWithEmail": "Please check your email to verify your subscription",
+        "subscribeSuccessNoEmail": "Subscription created successfully. Verification email could not be sent at this time.",
+        "subscribeWarning": "Please contact support if you need to verify your subscription.",
         "unsubscribe": "Unsubscribe",
         "unsubscribeSuccess": "You've been unsubscribed",
-        "emailPlaceholder": "Your email address"
+        "emailPlaceholder": "Your email address",
+        "verificationSuccess": "Subscription verified successfully",
+        "invalidToken": "Invalid or expired verification token",
+        "alreadySubscribed": "Email already subscribed"
     },
     "errors": {
         "general": "Oops! Something went wrong",

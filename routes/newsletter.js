@@ -62,5 +62,14 @@ router.get('/stats', [auth, isAdmin], newsletterController.getNewsletterStats);
 // @access  Private/Admin
 router.delete('/subscribers/:email', [auth, isAdmin], newsletterController.deleteSubscriber);
 
+// @route   POST /api/newsletter/test-email
+// @desc    Test email service (admin only)
+// @access  Private/Admin
+router.post('/test-email', [
+    auth,
+    isAdmin,
+    check('email', 'Please include a valid email').isEmail()
+], newsletterController.testEmailService);
+
 module.exports = router; 
  

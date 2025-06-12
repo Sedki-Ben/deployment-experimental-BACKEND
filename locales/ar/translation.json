@@ -38,9 +38,15 @@
     "newsletter": {
         "subscribe": "اشترك في النشرة الإخبارية",
         "subscribeSuccess": "تم الاشتراك في النشرة الإخبارية بنجاح",
+        "subscribeSuccessWithEmail": "يرجى التحقق من بريدك الإلكتروني لتأكيد اشتراكك",
+        "subscribeSuccessNoEmail": "تم إنشاء الاشتراك بنجاح. لم يتم إرسال بريد التحقق في الوقت الحالي.",
+        "subscribeWarning": "يرجى الاتصال بالدعم إذا كنت بحاجة لتأكيد اشتراكك.",
         "unsubscribe": "إلغاء الاشتراك",
         "unsubscribeSuccess": "تم إلغاء الاشتراك بنجاح",
-        "emailPlaceholder": "أدخل بريدك الإلكتروني"
+        "emailPlaceholder": "أدخل بريدك الإلكتروني",
+        "verificationSuccess": "تم تأكيد الاشتراك بنجاح",
+        "invalidToken": "رمز التحقق غير صالح أو منتهي الصلاحية",
+        "alreadySubscribed": "البريد الإلكتروني مشترك بالفعل"
     },
     "errors": {
         "general": "حدث خطأ ما",

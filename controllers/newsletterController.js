@@ -16,7 +16,7 @@ exports.subscribe = async (req, res) => {
         // Check if already subscribed
         let subscription = await Subscription.findOne({ email });
         if (subscription) {
-            return res.status(400).json({ message: 'Email already subscribed' });
+            return res.status(400).json({ message: req.t('newsletter.alreadySubscribed') });
         }
 
         // Generate tokens
@@ -68,13 +68,13 @@ exports.subscribe = async (req, res) => {
         // Send verification email (don't fail if email service is down)
         try {
             await EmailService.sendVerificationEmail(subscription, verificationToken);
-            res.status(201).json({ message: 'Please check your email to verify your subscription' });
+            res.status(201).json({ message: req.t('newsletter.subscribeSuccessWithEmail') });
         } catch (emailError) {
             console.error('Failed to send verification email:', emailError);
             // Still return success but with different message
             res.status(201).json({ 
-                message: 'Subscription created successfully. Verification email could not be sent at this time.',
-                warning: 'Please contact support if you need to verify your subscription.'
+                message: req.t('newsletter.subscribeSuccessNoEmail'),
+                warning: req.t('newsletter.subscribeWarning')
             });
         }
     } catch (error) {
@@ -94,7 +94,7 @@ exports.verifySubscription = async (req, res) => {
         });
 
         if (!subscription) {
-            return res.status(400).json({ message: 'Invalid or expired verification token' });
+            return res.status(400).json({ message: req.t('newsletter.invalidToken') });
         }
 
         subscription.isVerified = true;
@@ -102,10 +102,10 @@ exports.verifySubscription = async (req, res) => {
         subscription.verificationExpires = undefined;
         await subscription.save();
 
-        res.json({ message: 'Subscription verified successfully' });
+        res.json({ message: req.t('newsletter.verificationSuccess') });
     } catch (error) {
         console.error('Verify subscription error:', error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: req.t('errors.general') });
     }
 };
 
@@ -335,6 +335,53 @@ exports.deleteSubscriber = async (req, res) => {
     } catch (error) {
         console.error('Delete subscriber error:', error);
         res.status(500).json({ message: 'Server error' });
+    }
+};
+
+// Test email service (admin only) - for debugging
+exports.testEmailService = async (req, res) => {
+    try {
+        const { email } = req.body;
+        
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required for testing' });
+        }
+
+        console.log('🧪 Testing email service...');
+        console.log('Environment check:');
+        console.log('- BREVO_API_KEY:', process.env.BREVO_API_KEY ? '✅ Set' : '❌ Not set');
+        console.log('- EMAIL_FROM:', process.env.EMAIL_FROM ? '✅ Set' : '❌ Not set');
+        console.log('- FRONTEND_URL:', process.env.FRONTEND_URL ? '✅ Set' : '❌ Not set');
+
+        // Test verification email
+        const testSubscription = {
+            email: email,
+            verificationToken: 'test-token-123'
+        };
+
+        await EmailService.sendVerificationEmail(testSubscription, 'test-token-123');
+        
+        console.log('✅ Test email sent successfully');
+        res.json({ 
+            message: 'Test email sent successfully',
+            recipient: email,
+            environment: {
+                brevoApiKey: process.env.BREVO_API_KEY ? 'Set' : 'Not set',
+                emailFrom: process.env.EMAIL_FROM || 'Not set',
+                frontendUrl: process.env.FRONTEND_URL || 'Not set'
+            }
+        });
+    } catch (error) {
+        console.error('❌ Test email failed:', error);
+        res.status(500).json({ 
+            message: 'Test email failed',
+            error: error.message,
+            environment: {
+                brevoApiKey: process.env.BREVO_API_KEY ? 'Set' : 'Not set',
+                emailFrom: process.env.EMAIL_FROM || 'Not set',
+                frontendUrl: process.env.FRONTEND_URL || 'Not set'
+            }
+        });
     }
 }; 
  

@@ -14,7 +14,8 @@ const allowedOrigins = [
   'https://pure-tactics-cartel.vercel.app',
   'https://pure-tactics-cartel-sedkibenhaouala-6473s-projects.vercel.app',
   'https://pure-tactics-cartel-git-main-sedkibenhaouala-6473s-projects.vercel.app',
-  'https://pure-tactics-cartel-cyue1spy2-sedkibenhaouala-6473s-projects.vercel.app'
+  'https://pure-tactics-cartel-cyue1spy2-sedkibenhaouala-6473s-projects.vercel.app',
+  'https://pure-tactics-cartel-4ndlfxt5p-sedkibenhaouala-6473s-projects.vercel.app'
 ];
 
 // Add FRONTEND_URL from environment if it exists and isn't already in the list
@@ -27,13 +28,26 @@ const corsOptions = {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
+    // Check for exact match first
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);
-    } else {
-      console.error('CORS Error: Origin not allowed:', origin);
-      console.log('Allowed origins:', allowedOrigins);
-      return callback(new Error('Not allowed by CORS'));
     }
+    
+    // For Vercel deployments, allow any subdomain of vercel.app that contains 'pure-tactics-cartel'
+    if (origin && origin.includes('pure-tactics-cartel') && origin.includes('vercel.app')) {
+      console.log('CORS: Allowing Vercel deployment:', origin);
+      return callback(null, true);
+    }
+    
+    // For development, allow localhost on any port
+    if (origin && origin.startsWith('http://localhost:')) {
+      console.log('CORS: Allowing localhost development:', origin);
+      return callback(null, true);
+    }
+    
+    console.error('CORS Error: Origin not allowed:', origin);
+    console.log('Allowed origins:', allowedOrigins);
+    return callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],

@@ -575,7 +575,7 @@ exports.searchArticles = async (req, res) => {
         // Transform articles to match frontend expectations
         const backendUrl = process.env.REACT_APP_API_URL?.replace('/api', '') || 
                           process.env.FRONTEND_URL?.replace('://localhost:3000', '://localhost:5000') || 
-                          'https://backend-deployment-ptc.onrender.com';
+                          'https://deployment-experimental-backend.onrender.com';
 
         const transformedArticles = articles.map(article => {
             const articleObj = article.toObject();

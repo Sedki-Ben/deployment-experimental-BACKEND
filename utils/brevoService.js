@@ -2,14 +2,7 @@ const brevo = require('@getbrevo/brevo');
 
 class BrevoService {
     constructor() {
-        // Initialize Brevo API client
-        this.apiInstance = new brevo.TransactionalEmailsApi();
-        
-        // Set API key
-        let apiKey = this.apiInstance.authentications['api-key'];
-        apiKey.apiKey = process.env.BREVO_API_KEY;
-        
-        // Validate configuration
+        // Validate configuration first
         if (!process.env.BREVO_API_KEY) {
             console.error('❌ BREVO_API_KEY is not set in environment variables');
             throw new Error('Brevo API key is required');
@@ -19,8 +12,27 @@ class BrevoService {
             console.error('❌ EMAIL_FROM is not set in environment variables');
             throw new Error('Sender email is required');
         }
-        
-        console.log('✅ Brevo service initialized successfully');
+
+        try {
+            // Initialize Brevo API client using the correct pattern for v2.x
+            this.apiInstance = new brevo.TransactionalEmailsApi();
+            
+            // Set API key using the correct method for the current SDK version
+            // This follows the pattern from the official Brevo documentation
+            let apiKey = this.apiInstance.authentications['api-key'];
+            if (apiKey) {
+                apiKey.apiKey = process.env.BREVO_API_KEY;
+            } else {
+                // Initialize authentications object if it doesn't exist
+                this.apiInstance.authentications = this.apiInstance.authentications || {};
+                this.apiInstance.authentications['api-key'] = { apiKey: process.env.BREVO_API_KEY };
+            }
+            
+            console.log('✅ Brevo service initialized successfully');
+        } catch (error) {
+            console.error('❌ Failed to initialize Brevo service:', error.message);
+            throw error;
+        }
     }
 
     /**
@@ -381,6 +393,13 @@ class BrevoService {
 }
 
 // Create and export singleton instance
-const brevoService = new BrevoService();
+let brevoServiceInstance = null;
 
-module.exports = brevoService; 
+const getBrevoService = () => {
+    if (!brevoServiceInstance) {
+        brevoServiceInstance = new BrevoService();
+    }
+    return brevoServiceInstance;
+};
+
+module.exports = getBrevoService(); 

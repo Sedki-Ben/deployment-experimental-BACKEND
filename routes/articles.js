@@ -7,6 +7,7 @@ const isWriter = require('../middleware/isWriter');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const Article = require('../models/Article');
 
 const router = express.Router();
 
@@ -50,7 +51,74 @@ router.get('/search', [
     check('q').notEmpty().withMessage('Search query is required').trim().isLength({ min: 1, max: 100 })
 ], articlesController.searchArticles);
 
-// @route   GET /api/articles/:type
+// Test search functionality (temporary debug route) - must come before parameterized routes
+router.get('/debug-search', async (req, res) => {
+    try {
+        const { q } = req.query;
+        
+        // Get a sample of articles to see their structure
+        const sampleArticles = await Article.find({ status: 'published' })
+            .limit(3)
+            .lean()
+            .exec();
+            
+        // Test search if query provided
+        let searchResults = null;
+        if (q) {
+            const searchRegex = new RegExp(q, 'i');
+            searchResults = await Article.find({
+                status: 'published',
+                $or: [
+                    { 'translations.en.title': searchRegex },
+                    { 'translations.fr.title': searchRegex },
+                    { 'translations.ar.title': searchRegex }
+                ]
+            }).limit(5).lean().exec();
+        }
+        
+        res.json({
+            message: 'Debug search results',
+            sampleStructure: sampleArticles.map(article => ({
+                id: article._id,
+                title: article.translations?.en?.title || 'No title',
+                contentStructure: {
+                    en: {
+                        hasContent: !!article.translations?.en?.content,
+                        contentLength: Array.isArray(article.translations?.en?.content) ? 
+                            article.translations.en.content.length : 0,
+                        contentTypes: Array.isArray(article.translations?.en?.content) ? 
+                            article.translations.en.content.map(block => block.type) : []
+                    },
+                    fr: {
+                        hasContent: !!article.translations?.fr?.content,
+                        contentLength: Array.isArray(article.translations?.fr?.content) ? 
+                            article.translations.fr.content.length : 0
+                    },
+                    ar: {
+                        hasContent: !!article.translations?.ar?.content,
+                        contentLength: Array.isArray(article.translations?.ar?.content) ? 
+                            article.translations.ar.content.length : 0
+                    }
+                },
+                tags: article.tags || []
+            })),
+            searchResults: searchResults ? {
+                count: searchResults.length,
+                results: searchResults.map(article => ({
+                    id: article._id,
+                    title: article.translations?.en?.title,
+                    excerpt: article.translations?.en?.excerpt
+                }))
+            } : null,
+            query: q || 'No query provided'
+        });
+    } catch (error) {
+        console.error('Debug search error:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// @route   GET /api/articles/type/:type
 // @desc    Get articles by type (etoile-du-sahel, the-beautiful-game, all-sports-hub)
 // @access  Public
 router.get('/type/:type', [
@@ -61,6 +129,16 @@ router.get('/type/:type', [
 // @desc    Get article by slug
 // @access  Public (with optional auth)
 router.get('/slug/:slug', optionalAuth, articlesController.getArticleBySlug);
+
+// @route   GET /api/articles/stats/me
+// @desc    Get stats for writer's articles
+// @access  Private/Writer
+router.get('/stats/me', [auth, isWriter], articlesController.getWriterStats);
+
+// @route   GET /api/articles/drafts/me
+// @desc    Get writer's draft articles
+// @access  Private/Writer
+router.get('/drafts/me', [auth, isWriter], articlesController.getWriterDrafts);
 
 // @route   GET /api/articles/:id
 // @desc    Get article by ID
@@ -154,16 +232,6 @@ router.post('/:id/share', [
 router.get('/:id/likes', articlesController.getArticleLikes);
 
 // Writer/Admin Routes
-
-// @route   GET /api/articles/stats/me
-// @desc    Get stats for writer's articles
-// @access  Private/Writer
-router.get('/stats/me', [auth, isWriter], articlesController.getWriterStats);
-
-// @route   GET /api/articles/drafts/me
-// @desc    Get writer's draft articles
-// @access  Private/Writer
-router.get('/drafts/me', [auth, isWriter], articlesController.getWriterDrafts);
 
 // @route   POST /api/articles/:id/publish
 // @desc    Publish a draft article

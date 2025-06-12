@@ -1,43 +1,41 @@
 const Article = require('../models/Article');
 const { validationResult } = require('express-validator');
-const { Subscription } = require('../models/Newsletter');
+const { Newsletter, Subscription } = require('../models/Newsletter');
 const EmailService = require('../utils/emailService');
 const User = require('../models/User');
 const mongoose = require('mongoose');
 const path = require('path');
 const fs = require('fs');
-const { uploadToCloudinary, deleteFromCloudinary, isCloudinaryConfigured } = require('../utils/cloudinaryStorage');
 
-// Helper function to save uploaded file - with Cloudinary integration
-const saveUploadedFile = async (file, folder = 'articles') => {
+// Helper function to save uploaded file from memory to disk
+const saveUploadedFile = async (file) => {
     try {
-        // Check if Cloudinary is configured and we're in production
-        const useCloudStorage = isCloudinaryConfigured() && (process.env.NODE_ENV === 'production' || process.env.USE_CLOUDINARY === 'true');
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const filename = uniqueSuffix + '-' + file.originalname;
         
-        if (useCloudStorage) {
-            // Upload to Cloudinary and return public URL
-            const publicUrl = await uploadToCloudinary(file.buffer, file.originalname, folder);
-            console.log(`File uploaded to Cloudinary: ${publicUrl}`);
-            return publicUrl;
-        } else {
-            // Fallback to local storage for development
-            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-            const filename = uniqueSuffix + '-' + file.originalname;
-            
-            // Create uploads directory if it doesn't exist
-            const uploadDir = path.join(__dirname, '..', 'uploads');
-            if (!fs.existsSync(uploadDir)) {
-                fs.mkdirSync(uploadDir, { recursive: true });
-            }
-            
-            const filepath = path.join(uploadDir, filename);
-            
-            // Write buffer to file
-            await fs.promises.writeFile(filepath, file.buffer);
-            
-            console.log(`File saved locally: ${filepath}`);
-            return `/uploads/${filename}`;
+        // Create uploads directory if it doesn't exist
+        const uploadDir = path.join(__dirname, '..', 'uploads');
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
         }
+        
+        const filepath = path.join(uploadDir, filename);
+        
+        // Write buffer to file
+        await fs.promises.writeFile(filepath, file.buffer);
+        
+        // Log file creation
+        console.log(`File saved to: ${filepath}`);
+        console.log(`File size: ${file.buffer.length} bytes`);
+        
+        // Immediate verification that file was saved
+        if (fs.existsSync(filepath)) {
+            console.log(`File verification successful: ${filename}`);
+        } else {
+            console.error(`File verification failed: ${filename}`);
+        }
+        
+        return filename;
     } catch (error) {
         console.error('Error saving file:', error);
         throw new Error('Failed to save uploaded file');
@@ -99,17 +97,17 @@ exports.createArticle = async (req, res) => {
             });
         }
 
-        // Save main image to cloud storage and get URL
-        const mainImageUrl = await saveUploadedFile(mainImage, 'articles');
+        // Save main image to disk and get filename
+        const mainImageFilename = await saveUploadedFile(mainImage);
 
-        // Save content images to cloud storage and create mapping
+        // Save content images to disk and create mapping
         const savedContentImages = [];
         for (const file of contentImages) {
-            const imageUrl = await saveUploadedFile(file, 'articles');
-            savedContentImages.push({ imageUrl, originalname: file.originalname });
+            const filename = await saveUploadedFile(file);
+            savedContentImages.push({ filename, originalname: file.originalname });
         }
 
-        // Process content blocks to replace blob URLs with cloud storage URLs for ALL languages
+        // Process content blocks to replace blob URLs with server URLs for ALL languages
         let globalImageIndex = 0;
         const languages = ['en', 'fr', 'ar'];
         
@@ -118,11 +116,11 @@ exports.createArticle = async (req, res) => {
                 translations[lang].content = translations[lang].content.map(block => {
                     if (block.type === 'image-group' && block.metadata?.images) {
                         block.metadata.images = block.metadata.images.map(img => {
-                            // Replace blob URL with cloud storage URL
+                            // Replace blob URL with server URL
                             if (img.url && img.url.startsWith('blob:') && globalImageIndex < savedContentImages.length) {
                                 return {
                                     ...img,
-                                    url: savedContentImages[globalImageIndex++].imageUrl
+                                    url: `/uploads/${savedContentImages[globalImageIndex++].filename}`
                                 };
                             }
                             return img;
@@ -142,7 +140,7 @@ exports.createArticle = async (req, res) => {
             author: req.user.id,
             // Use user's profile image if available, otherwise use default
             authorImage: user.profileImage || '/uploads/profile/bild3.jpg',
-            image: mainImageUrl,
+            image: `/uploads/${mainImageFilename}`,
             // Initialize counters to 0 for dynamic functionality
             likes: { count: 0, users: [] },
             views: 0,
@@ -178,13 +176,59 @@ exports.createArticle = async (req, res) => {
         // Notify newsletter subscribers if article is published
         if (article.status === 'published') {
             try {
-                const subscribers = await Subscription.find({ isVerified: true });
+                // Get subscribers based on article category and preferences
+                const categoryPreferenceMap = {
+                    'etoile-du-sahel': 'etoileDuSahel',
+                    'the-beautiful-game': 'theBeautifulGame',
+                    'all-sports-hub': 'allSportsHub'
+                };
+                
+                const preferenceField = categoryPreferenceMap[article.category];
+                const query = { 
+                    isVerified: true,
+                    'preferences.immediateNotification': true
+                };
+                
+                // Add category-specific filter if preference field exists
+                if (preferenceField) {
+                    query[`preferences.${preferenceField}`] = true;
+                }
+                
+                const subscribers = await Subscription.find(query);
+                
                 if (subscribers.length > 0) {
+                    // Create newsletter record for tracking
+                    const newsletter = new Newsletter({
+                        subject: `New Article: ${article.translations.en.title}`,
+                        content: `Article notification for: ${article.translations.en.title}`,
+                        recipientCount: subscribers.length,
+                        status: 'sent',
+                        category: 'article-notification'
+                    });
+                    
                     await EmailService.sendArticleNotification(subscribers, {
                         title: article.translations.en.title,
                         summary: article.translations.en.excerpt || '',
-                        _id: article._id
+                        excerpt: article.translations.en.excerpt || '',
+                        _id: article._id,
+                        slug: article.slug,
+                        category: article.category,
+                        image: article.image
                     });
+                    
+                    // Save newsletter record and update subscriber stats
+                    await newsletter.save();
+                    
+                    // Update last email sent for subscribers
+                    await Subscription.updateMany(
+                        { _id: { $in: subscribers.map(s => s._id) } },
+                        { 
+                            $set: { lastEmailSent: new Date() },
+                            $inc: { emailsSent: 1 }
+                        }
+                    );
+                    
+                    console.log(`Article notification sent to ${subscribers.length} subscribers for article: ${article.translations.en.title}`);
                 }
             } catch (notifyErr) {
                 console.error('Error sending article notification:', notifyErr);
@@ -305,11 +349,11 @@ exports.updateArticle = async (req, res) => {
             // Process content images for translations if new content images were uploaded
             const contentImages = req.files?.contentImages || [];
             if (contentImages.length > 0 && updateData.translations) {
-                // Save content images to cloud storage
+                // Save content images to disk
                 const savedContentImages = [];
                 for (const file of contentImages) {
-                    const imageUrl = await saveUploadedFile(file, 'articles');
-                    savedContentImages.push({ imageUrl, originalname: file.originalname });
+                    const filename = await saveUploadedFile(file);
+                    savedContentImages.push({ filename, originalname: file.originalname });
                 }
 
                 let globalImageIndex = 0;
@@ -320,11 +364,11 @@ exports.updateArticle = async (req, res) => {
                         updateData.translations[lang].content = updateData.translations[lang].content.map(block => {
                             if (block.type === 'image-group' && block.metadata?.images) {
                                 block.metadata.images = block.metadata.images.map(img => {
-                                    // Replace blob URL with cloud storage URL for new uploads
+                                    // Replace blob URL with server URL for new uploads
                                     if (img.url && img.url.startsWith('blob:') && globalImageIndex < savedContentImages.length) {
                                         return {
                                             ...img,
-                                            url: savedContentImages[globalImageIndex++].imageUrl
+                                            url: `/uploads/${savedContentImages[globalImageIndex++].filename}`
                                         };
                                     }
                                     return img;
@@ -361,8 +405,8 @@ exports.updateArticle = async (req, res) => {
         // Handle main image upload
         const mainImage = req.files?.image?.[0];
         if (mainImage) {
-            const mainImageUrl = await saveUploadedFile(mainImage, 'articles');
-            updateData.image = mainImageUrl;
+            const mainImageFilename = await saveUploadedFile(mainImage);
+            updateData.image = `/uploads/${mainImageFilename}`;
         } else if (req.body.existingImage) {
             // Keep existing image if no new file uploaded
             updateData.image = req.body.existingImage;
@@ -436,7 +480,7 @@ exports.toggleLike = async (req, res) => {
     }
 };
 
-// Search articles
+// Search articles - Reliable two-step search approach
 exports.searchArticles = async (req, res) => {
     try {
         const { q, page = 1, limit = 10, category } = req.query;
@@ -445,34 +489,179 @@ exports.searchArticles = async (req, res) => {
             return res.status(400).json({ message: 'Search query is required' });
         }
 
-        const query = {
-            $text: { $search: q },
-            status: 'published' // Only search published articles
-        };
+        const searchTerm = q.trim();
+        console.log('Search request:', { searchTerm, category, page, limit });
 
-        if (category) {
-            query.category = category;
+        // Build base query
+        const baseQuery = { status: 'published' };
+        if (category && category !== 'all') {
+            baseQuery.category = category;
         }
 
-        const articles = await Article.find(query, { score: { $meta: 'textScore' } })
+        let articles = [];
+        let searchMethod = '';
+
+        // Step 1: Try MongoDB text search first (most accurate)
+        try {
+            const textSearchQuery = {
+                ...baseQuery,
+                $text: { $search: searchTerm }
+            };
+
+            articles = await Article.find(textSearchQuery, { score: { $meta: 'textScore' } })
+                .populate('author', 'name email')
             .sort({ score: { $meta: 'textScore' } })
             .limit(limit * 1)
             .skip((page - 1) * limit)
+                .exec();
+
+            searchMethod = 'text_search';
+            console.log(`Text search found ${articles.length} results`);
+        } catch (textError) {
+            console.log('Text search failed:', textError.message);
+        }
+
+        // Step 2: If no text search results, try regex search (fallback)
+        if (articles.length === 0) {
+            console.log('Falling back to regex search...');
+            
+            const searchRegex = new RegExp(searchTerm.split(' ').join('|'), 'i');
+            
+            const regexSearchQuery = {
+                ...baseQuery,
+                $or: [
+                    // Titles in all languages
+                    { 'translations.en.title': searchRegex },
+                    { 'translations.fr.title': searchRegex },
+                    { 'translations.ar.title': searchRegex },
+                    
+                    // Excerpts in all languages
+                    { 'translations.en.excerpt': searchRegex },
+                    { 'translations.fr.excerpt': searchRegex },
+                    { 'translations.ar.excerpt': searchRegex },
+                    
+                    // Content blocks
+                    { 'translations.en.content.content': searchRegex },
+                    { 'translations.fr.content.content': searchRegex },
+                    { 'translations.ar.content.content': searchRegex },
+                    
+                    // Tags
+                    { 'tags': searchRegex }
+                ]
+            };
+
+            articles = await Article.find(regexSearchQuery)
+                .populate('author', 'name email')
+                .sort({ publishedAt: -1 })
+                .limit(limit * 1)
+                .skip((page - 1) * limit)
+                .exec();
+
+            searchMethod = 'regex_search';
+            console.log(`Regex search found ${articles.length} results`);
+        }
+
+        // Step 3: If still no results, try flexible word-based search
+        if (articles.length === 0) {
+            console.log('Trying flexible word-based search...');
+            
+            const words = searchTerm.split(' ').filter(word => word.length > 1);
+            if (words.length > 0) {
+                const flexibleRegex = new RegExp(words.join('|'), 'i');
+                
+                const flexibleQuery = {
+                    ...baseQuery,
+                    $or: [
+                        { 'translations.en.title': flexibleRegex },
+                        { 'translations.fr.title': flexibleRegex },
+                        { 'translations.ar.title': flexibleRegex },
+                        { 'translations.en.excerpt': flexibleRegex },
+                        { 'translations.fr.excerpt': flexibleRegex },
+                        { 'translations.ar.excerpt': flexibleRegex },
+                        { 'tags': flexibleRegex }
+                    ]
+                };
+                
+                articles = await Article.find(flexibleQuery)
             .populate('author', 'name email')
+                    .sort({ publishedAt: -1 })
+                    .limit(limit * 1)
+                    .skip((page - 1) * limit)
             .exec();
 
-        const count = await Article.countDocuments(query);
+                searchMethod = 'flexible_search';
+                console.log(`Flexible search found ${articles.length} results`);
+            }
+        }
+
+        // Get total count for pagination (use simpler query for counting)
+        let count = 0;
+        try {
+            if (searchMethod === 'text_search') {
+                count = await Article.countDocuments({
+                    ...baseQuery,
+                    $text: { $search: searchTerm }
+                });
+            } else {
+                const searchRegex = new RegExp(searchTerm.split(' ').join('|'), 'i');
+                count = await Article.countDocuments({
+                    ...baseQuery,
+                    $or: [
+                        { 'translations.en.title': searchRegex },
+                        { 'translations.fr.title': searchRegex },
+                        { 'translations.ar.title': searchRegex }
+                    ]
+                });
+            }
+        } catch (countError) {
+            console.log('Count query failed, using articles length');
+            count = articles.length;
+        }
+
+        // Transform articles to match frontend expectations
+        const backendUrl = process.env.REACT_APP_API_URL?.replace('/api', '') || 
+                          process.env.FRONTEND_URL?.replace('://localhost:3000', '://localhost:5000') || 
+                          'https://deployment-experimental-backend.onrender.com';
+
+        const transformedArticles = articles.map(article => {
+            const articleObj = article.toObject();
+            
+            return {
+                ...articleObj,
+                image: articleObj.image ? `${backendUrl}${articleObj.image}` : null,
+                date: new Date(articleObj.publishedAt || articleObj.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                }),
+                rawDate: articleObj.publishedAt || articleObj.createdAt,
+                authorImage: articleObj.authorImage ? `${backendUrl}${articleObj.authorImage}` : null,
+                likes: {
+                    count: articleObj.likes?.count || 0,
+                    users: articleObj.likes?.users || []
+                },
+                comments: articleObj.commentCount || 0,
+                views: articleObj.views || 0,
+                tags: articleObj.tags || []
+            };
+        });
+
+        console.log(`Search completed: found ${transformedArticles.length} articles for "${searchTerm}" using ${searchMethod}`);
 
         res.json({
-            articles,
+            articles: transformedArticles,
             totalPages: Math.ceil(count / limit),
             currentPage: parseInt(page),
             total: count,
-            query: q
+            query: searchTerm,
+            searchMethod // Debug info
         });
     } catch (error) {
         console.error('Search articles error:', error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ 
+            message: 'Search failed',
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Server error'
+        });
     }
 };
 
@@ -637,13 +826,59 @@ exports.publishArticle = async (req, res) => {
 
         // Notify newsletter subscribers
         try {
-            const subscribers = await Subscription.find({ isVerified: true });
+            // Get subscribers based on article category and preferences
+            const categoryPreferenceMap = {
+                'etoile-du-sahel': 'etoileDuSahel',
+                'the-beautiful-game': 'theBeautifulGame',
+                'all-sports-hub': 'allSportsHub'
+            };
+            
+            const preferenceField = categoryPreferenceMap[article.category];
+            const query = { 
+                isVerified: true,
+                'preferences.immediateNotification': true
+            };
+            
+            // Add category-specific filter if preference field exists
+            if (preferenceField) {
+                query[`preferences.${preferenceField}`] = true;
+            }
+            
+            const subscribers = await Subscription.find(query);
+            
             if (subscribers.length > 0) {
+                // Create newsletter record for tracking
+                const newsletter = new Newsletter({
+                    subject: `New Article: ${article.translations.en.title}`,
+                    content: `Article notification for: ${article.translations.en.title}`,
+                    recipientCount: subscribers.length,
+                    status: 'sent',
+                    category: 'article-notification'
+                });
+                
                 await EmailService.sendArticleNotification(subscribers, {
                     title: article.translations.en.title,
                     summary: article.translations.en.excerpt || '',
-                    _id: article._id
+                    excerpt: article.translations.en.excerpt || '',
+                    _id: article._id,
+                    slug: article.slug,
+                    category: article.category,
+                    image: article.image
                 });
+                
+                // Save newsletter record and update subscriber stats
+                await newsletter.save();
+                
+                // Update last email sent for subscribers
+                await Subscription.updateMany(
+                    { _id: { $in: subscribers.map(s => s._id) } },
+                    { 
+                        $set: { lastEmailSent: new Date() },
+                        $inc: { emailsSent: 1 }
+                    }
+                );
+                
+                console.log(`Article notification sent to ${subscribers.length} subscribers for published article: ${article.translations.en.title}`);
             }
         } catch (notifyErr) {
             console.error('Error sending article notification:', notifyErr);

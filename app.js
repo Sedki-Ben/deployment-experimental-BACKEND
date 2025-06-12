@@ -69,15 +69,39 @@ const authRoutes = require('./routes/auth');
 const articleRoutes = require('./routes/articles');
 const commentRoutes = require('./routes/comments');
 const newsletterRoutes = require('./routes/newsletter');
-const userRoutes = require('./routes/users');
 const analyticsRoutes = require('./routes/analytics');
+
+// Basic root route
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Football Journal API Server', 
+    version: '1.0.0',
+    status: 'online',
+    endpoints: {
+      articles: '/api/articles',
+      search: '/api/articles/search',
+      auth: '/api/auth',
+      comments: '/api/comments',
+      newsletter: '/api/newsletter',
+      analytics: '/api/analytics'
+    }
+  });
+});
+
+// Health check route
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'healthy', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
 
 // Use routes
 app.use('/api/auth', authRoutes);
 app.use('/api/articles', articleRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/newsletter', newsletterRoutes);
-app.use('/api/users', userRoutes);
 app.use('/api/analytics', analyticsRoutes);
 
 // Error handling middleware

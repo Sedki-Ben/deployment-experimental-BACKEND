@@ -353,6 +353,25 @@ exports.testEmailService = async (req, res) => {
         console.log('- EMAIL_FROM:', process.env.EMAIL_FROM ? '✅ Set' : '❌ Not set');
         console.log('- FRONTEND_URL:', process.env.FRONTEND_URL ? '✅ Set' : '❌ Not set');
 
+        // Check Brevo service configuration
+        const brevoService = require('../utils/brevoService');
+        if (!brevoService.isConfigured) {
+            return res.status(500).json({
+                message: 'Brevo service is not properly configured',
+                error: brevoService.configError,
+                environment: {
+                    brevoApiKey: process.env.BREVO_API_KEY ? 'Set' : 'Not set',
+                    emailFrom: process.env.EMAIL_FROM || 'Not set',
+                    frontendUrl: process.env.FRONTEND_URL || 'Not set'
+                },
+                troubleshooting: [
+                    'Check if BREVO_API_KEY is set in Render environment variables',
+                    'Verify EMAIL_FROM is set to a verified sender email in Brevo',
+                    'Ensure FRONTEND_URL is set for email links'
+                ]
+            });
+        }
+
         // Test verification email
         const testSubscription = {
             email: email,
@@ -380,7 +399,13 @@ exports.testEmailService = async (req, res) => {
                 brevoApiKey: process.env.BREVO_API_KEY ? 'Set' : 'Not set',
                 emailFrom: process.env.EMAIL_FROM || 'Not set',
                 frontendUrl: process.env.FRONTEND_URL || 'Not set'
-            }
+            },
+            troubleshooting: [
+                'Check if BREVO_API_KEY is set in Render environment variables',
+                'Verify EMAIL_FROM is set to a verified sender email in Brevo',
+                'Ensure your Brevo account has sufficient credits',
+                'Check if the sender email is verified in your Brevo account'
+            ]
         });
     }
 }; 

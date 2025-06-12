@@ -2,15 +2,20 @@ const brevo = require('@getbrevo/brevo');
 
 class BrevoService {
     constructor() {
+        this.isConfigured = false;
+        this.configError = null;
+        
         // Validate configuration first
         if (!process.env.BREVO_API_KEY) {
-            console.error('❌ BREVO_API_KEY is not set in environment variables');
-            throw new Error('Brevo API key is required');
+            this.configError = 'BREVO_API_KEY is not set in environment variables';
+            console.error('❌', this.configError);
+            return; // Don't throw, just mark as not configured
         }
         
         if (!process.env.EMAIL_FROM) {
-            console.error('❌ EMAIL_FROM is not set in environment variables');
-            throw new Error('Sender email is required');
+            this.configError = 'EMAIL_FROM is not set in environment variables';
+            console.error('❌', this.configError);
+            return; // Don't throw, just mark as not configured
         }
 
         try {
@@ -19,7 +24,7 @@ class BrevoService {
             
             // Set API key using the correct method for the current SDK version
             // This follows the pattern from the official Brevo documentation
-            let apiKey = this.apiInstance.authentications['api-key'];
+            let apiKey = this.apiInstance.authentications?.['api-key'];
             if (apiKey) {
                 apiKey.apiKey = process.env.BREVO_API_KEY;
             } else {
@@ -28,10 +33,19 @@ class BrevoService {
                 this.apiInstance.authentications['api-key'] = { apiKey: process.env.BREVO_API_KEY };
             }
             
+            this.isConfigured = true;
             console.log('✅ Brevo service initialized successfully');
         } catch (error) {
-            console.error('❌ Failed to initialize Brevo service:', error.message);
-            throw error;
+            this.configError = `Failed to initialize Brevo service: ${error.message}`;
+            console.error('❌', this.configError);
+            // Don't throw, just mark as not configured
+        }
+    }
+
+    // Check if service is properly configured
+    checkConfiguration() {
+        if (!this.isConfigured) {
+            throw new Error(this.configError || 'Brevo service is not properly configured');
         }
     }
 
@@ -48,6 +62,8 @@ class BrevoService {
      */
     async sendEmail(emailData) {
         try {
+            this.checkConfiguration();
+            
             const sendSmtpEmail = new brevo.SendSmtpEmail();
             
             // Set basic email properties

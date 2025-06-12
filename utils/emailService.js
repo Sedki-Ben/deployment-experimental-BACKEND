@@ -1,13 +1,13 @@
-const brevo = require('@getbrevo/brevo');
+const SibApiV3Sdk = require('sib-api-v3-sdk');
 
-// Initialize Brevo API client
-let defaultClient = brevo.ApiClient.instance;
+// Initialize Brevo/Sendinblue client
+let defaultClient = SibApiV3Sdk.ApiClient.instance;
 let apiKey = defaultClient.authentications['api-key'];
 apiKey.apiKey = process.env.BREVO_API_KEY;
 
 // Initialize API instances
-const transactionalEmailsApi = new brevo.TransactionalEmailsApi();
-const contactsApi = new brevo.ContactsApi();
+const transactionalEmailsApi = new SibApiV3Sdk.TransactionalEmailsApi();
+const contactsApi = new SibApiV3Sdk.ContactsApi();
 
 console.log('BREVO_API_KEY configured:', !!process.env.BREVO_API_KEY);
 
@@ -169,7 +169,7 @@ class EmailService {
                 </p>
             `;
 
-            const sendSmtpEmail = new brevo.SendSmtpEmail();
+            const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
             sendSmtpEmail.to = [{ email: user.email, name: user.name }];
             sendSmtpEmail.sender = { email: process.env.EMAIL_FROM, name: 'Pure Tactics Cartel' };
             sendSmtpEmail.subject = 'Welcome to Pure Tactics Cartel ⚽';
@@ -217,7 +217,7 @@ class EmailService {
                 </p>
             `;
 
-            const sendSmtpEmail = new brevo.SendSmtpEmail();
+            const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
             sendSmtpEmail.to = [{ email: user.email, name: user.name }];
             sendSmtpEmail.sender = { email: process.env.EMAIL_FROM, name: 'Pure Tactics Cartel' };
             sendSmtpEmail.subject = 'Reset Your Password - Pure Tactics Cartel';
@@ -265,7 +265,7 @@ class EmailService {
                 </p>
             `;
 
-            const sendSmtpEmail = new brevo.SendSmtpEmail();
+            const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
             sendSmtpEmail.to = [{ email: subscription.email }];
             sendSmtpEmail.sender = { email: process.env.EMAIL_FROM, name: 'Pure Tactics Cartel' };
             sendSmtpEmail.subject = 'Confirm Your Newsletter Subscription - Pure Tactics Cartel';
@@ -288,7 +288,7 @@ class EmailService {
                 </div>
             `;
 
-            const sendSmtpEmail = new brevo.SendSmtpEmail();
+            const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
             sendSmtpEmail.to = subscribers.map(sub => ({ email: sub.email }));
             sendSmtpEmail.sender = { email: process.env.EMAIL_FROM, name: 'Pure Tactics Cartel' };
             sendSmtpEmail.subject = newsletter.subject;
@@ -392,7 +392,7 @@ class EmailService {
                 </p>
             `;
 
-            const sendSmtpEmail = new brevo.SendSmtpEmail();
+            const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
             sendSmtpEmail.to = subscribers.map(sub => ({ 
                 email: sub.email,
                 name: sub.name || undefined
@@ -417,7 +417,7 @@ class EmailService {
     // Add subscriber to Brevo contact list (optional feature)
     static async addToContactList(email, name = null, preferences = {}) {
         try {
-            const createContact = new brevo.CreateContact();
+            const createContact = new SibApiV3Sdk.CreateContact();
             createContact.email = email;
             if (name) createContact.attributes = { FIRSTNAME: name };
             
@@ -452,5 +452,5 @@ class EmailService {
     }
 }
 
-module.exports = EmailService;
+module.exports = EmailService; 
  

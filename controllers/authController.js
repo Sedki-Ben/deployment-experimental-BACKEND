@@ -233,7 +233,7 @@ exports.updateProfile = async (req, res) => {
                 updateData.profileImage = profileImageUrl;
             } else {
                 // Fallback to local storage
-                updateData.profileImage = `/uploads/profile/${req.file.filename}`;
+            updateData.profileImage = `/uploads/profile/${req.file.filename}`;
             }
         }
 

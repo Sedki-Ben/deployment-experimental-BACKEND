@@ -551,11 +551,11 @@ exports.searchArticles = async (req, res) => {
             };
 
             articles = await Article.find(regexSearchQuery)
-                .populate('author', 'name email')
+            .populate('author', 'name email')
                 .sort({ publishedAt: -1 })
                 .limit(limit * 1)
                 .skip((page - 1) * limit)
-                .exec();
+            .exec();
 
             searchMethod = 'regex_search';
             console.log(`Regex search found ${articles.length} results`);

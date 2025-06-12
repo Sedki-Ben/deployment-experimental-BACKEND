@@ -1,6 +1,6 @@
 const Article = require('../models/Article');
 const { validationResult } = require('express-validator');
-const { Newsletter, Subscription } = require('../models/Newsletter');
+const { Subscription } = require('../models/Newsletter');
 const EmailService = require('../utils/emailService');
 const User = require('../models/User');
 const mongoose = require('mongoose');
@@ -176,59 +176,13 @@ exports.createArticle = async (req, res) => {
         // Notify newsletter subscribers if article is published
         if (article.status === 'published') {
             try {
-                // Get subscribers based on article category and preferences
-                const categoryPreferenceMap = {
-                    'etoile-du-sahel': 'etoileDuSahel',
-                    'the-beautiful-game': 'theBeautifulGame',
-                    'all-sports-hub': 'allSportsHub'
-                };
-                
-                const preferenceField = categoryPreferenceMap[article.category];
-                const query = { 
-                    isVerified: true,
-                    'preferences.immediateNotification': true
-                };
-                
-                // Add category-specific filter if preference field exists
-                if (preferenceField) {
-                    query[`preferences.${preferenceField}`] = true;
-                }
-                
-                const subscribers = await Subscription.find(query);
-                
+                const subscribers = await Subscription.find({ isVerified: true });
                 if (subscribers.length > 0) {
-                    // Create newsletter record for tracking
-                    const newsletter = new Newsletter({
-                        subject: `New Article: ${article.translations.en.title}`,
-                        content: `Article notification for: ${article.translations.en.title}`,
-                        recipientCount: subscribers.length,
-                        status: 'sent',
-                        category: 'article-notification'
-                    });
-                    
                     await EmailService.sendArticleNotification(subscribers, {
                         title: article.translations.en.title,
                         summary: article.translations.en.excerpt || '',
-                        excerpt: article.translations.en.excerpt || '',
-                        _id: article._id,
-                        slug: article.slug,
-                        category: article.category,
-                        image: article.image
+                        _id: article._id
                     });
-                    
-                    // Save newsletter record and update subscriber stats
-                    await newsletter.save();
-                    
-                    // Update last email sent for subscribers
-                    await Subscription.updateMany(
-                        { _id: { $in: subscribers.map(s => s._id) } },
-                        { 
-                            $set: { lastEmailSent: new Date() },
-                            $inc: { emailsSent: 1 }
-                        }
-                    );
-                    
-                    console.log(`Article notification sent to ${subscribers.length} subscribers for article: ${article.translations.en.title}`);
                 }
             } catch (notifyErr) {
                 console.error('Error sending article notification:', notifyErr);
@@ -551,11 +505,11 @@ exports.searchArticles = async (req, res) => {
             };
 
             articles = await Article.find(regexSearchQuery)
-            .populate('author', 'name email')
+                .populate('author', 'name email')
                 .sort({ publishedAt: -1 })
                 .limit(limit * 1)
                 .skip((page - 1) * limit)
-            .exec();
+                .exec();
 
             searchMethod = 'regex_search';
             console.log(`Regex search found ${articles.length} results`);
@@ -826,59 +780,13 @@ exports.publishArticle = async (req, res) => {
 
         // Notify newsletter subscribers
         try {
-            // Get subscribers based on article category and preferences
-            const categoryPreferenceMap = {
-                'etoile-du-sahel': 'etoileDuSahel',
-                'the-beautiful-game': 'theBeautifulGame',
-                'all-sports-hub': 'allSportsHub'
-            };
-            
-            const preferenceField = categoryPreferenceMap[article.category];
-            const query = { 
-                isVerified: true,
-                'preferences.immediateNotification': true
-            };
-            
-            // Add category-specific filter if preference field exists
-            if (preferenceField) {
-                query[`preferences.${preferenceField}`] = true;
-            }
-            
-            const subscribers = await Subscription.find(query);
-            
+            const subscribers = await Subscription.find({ isVerified: true });
             if (subscribers.length > 0) {
-                // Create newsletter record for tracking
-                const newsletter = new Newsletter({
-                    subject: `New Article: ${article.translations.en.title}`,
-                    content: `Article notification for: ${article.translations.en.title}`,
-                    recipientCount: subscribers.length,
-                    status: 'sent',
-                    category: 'article-notification'
-                });
-                
                 await EmailService.sendArticleNotification(subscribers, {
                     title: article.translations.en.title,
                     summary: article.translations.en.excerpt || '',
-                    excerpt: article.translations.en.excerpt || '',
-                    _id: article._id,
-                    slug: article.slug,
-                    category: article.category,
-                    image: article.image
+                    _id: article._id
                 });
-                
-                // Save newsletter record and update subscriber stats
-                await newsletter.save();
-                
-                // Update last email sent for subscribers
-                await Subscription.updateMany(
-                    { _id: { $in: subscribers.map(s => s._id) } },
-                    { 
-                        $set: { lastEmailSent: new Date() },
-                        $inc: { emailsSent: 1 }
-                    }
-                );
-                
-                console.log(`Article notification sent to ${subscribers.length} subscribers for published article: ${article.translations.en.title}`);
             }
         } catch (notifyErr) {
             console.error('Error sending article notification:', notifyErr);

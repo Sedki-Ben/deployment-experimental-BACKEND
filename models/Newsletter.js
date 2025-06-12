@@ -25,7 +25,7 @@ const newsletterSchema = new mongoose.Schema({
     },
     category: {
         type: String,
-        enum: ['weekly-digest', 'breaking-news', 'feature-article', 'manual', 'article-notification'],
+        enum: ['weekly-digest', 'breaking-news', 'feature-article'],
         required: true
     }
 }, {
@@ -45,7 +45,6 @@ const subscriptionSchema = new mongoose.Schema({
         default: false
     },
     preferences: {
-        // Email frequency preferences
         weeklyDigest: {
             type: Boolean,
             default: true
@@ -57,32 +56,6 @@ const subscriptionSchema = new mongoose.Schema({
         featureArticles: {
             type: Boolean,
             default: true
-        },
-        // Category-specific preferences
-        etoileDuSahel: {
-            type: Boolean,
-            default: true
-        },
-        theBeautifulGame: {
-            type: Boolean,
-            default: true
-        },
-        allSportsHub: {
-            type: Boolean,
-            default: true
-        },
-        // Notification preferences
-        immediateNotification: {
-            type: Boolean,
-            default: true // Send email immediately when article is published
-        },
-        dailyDigest: {
-            type: Boolean,
-            default: false // Send daily summary (future feature)
-        },
-        weeklyDigestEnabled: {
-            type: Boolean,
-            default: false // Send weekly summary (future feature)
         }
     },
     verificationToken: String,
@@ -90,19 +63,6 @@ const subscriptionSchema = new mongoose.Schema({
     unsubscribeToken: {
         type: String,
         required: true
-    },
-    // Additional metadata
-    subscriptionSource: {
-        type: String,
-        enum: ['website', 'article-page', 'homepage', 'category-page'],
-        default: 'website'
-    },
-    lastEmailSent: {
-        type: Date
-    },
-    emailsSent: {
-        type: Number,
-        default: 0
     }
 }, {
     timestamps: true
@@ -110,15 +70,8 @@ const subscriptionSchema = new mongoose.Schema({
 
 // Create indexes
 subscriptionSchema.index({ email: 1 });
-subscriptionSchema.index({ isVerified: 1 });
 subscriptionSchema.index({ verificationToken: 1 });
 subscriptionSchema.index({ unsubscribeToken: 1 });
-subscriptionSchema.index({ createdAt: -1 });
-
-// Create compound indexes for efficient queries
-subscriptionSchema.index({ isVerified: 1, 'preferences.etoileDuSahel': 1 });
-subscriptionSchema.index({ isVerified: 1, 'preferences.theBeautifulGame': 1 });
-subscriptionSchema.index({ isVerified: 1, 'preferences.allSportsHub': 1 });
 
 const Newsletter = mongoose.model('Newsletter', newsletterSchema);
 const Subscription = mongoose.model('Subscription', subscriptionSchema);

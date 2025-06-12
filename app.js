@@ -7,9 +7,6 @@ const fs = require('fs');
 
 const app = express();
 
-// Trust proxy for rate limiting behind reverse proxy
-app.set('trust proxy', 1);
-
 // CORS Configuration
 const allowedOrigins = [
   'http://localhost:3000',
@@ -137,51 +134,6 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString(),
     uptime: process.uptime()
   });
-});
-
-// Test Brevo API endpoint
-app.get('/test-brevo', async (req, res) => {
-    try {
-        const brevo = require('@getbrevo/brevo');
-        
-        // Initialize API client
-        const defaultClient = brevo.ApiClient.instance;
-        const apiKey = defaultClient.authentications['api-key'];
-        apiKey.apiKey = process.env.BREVO_API_KEY;
-        
-        // Create API instance
-        const apiInstance = new brevo.TransactionalEmailsApi(defaultClient);
-        
-        // Create test email
-        const sendSmtpEmail = new brevo.SendSmtpEmail();
-        sendSmtpEmail.subject = "Brevo API Test";
-        sendSmtpEmail.htmlContent = "<h1>Brevo API Test</h1><p>If you're receiving this email, your Brevo API configuration is working correctly!</p>";
-        sendSmtpEmail.sender = {
-            name: "Brevo Test",
-            email: process.env.EMAIL_FROM
-        };
-        sendSmtpEmail.to = [{
-            email: req.query.email || process.env.TEST_EMAIL,
-            name: "Test Recipient"
-        }];
-        
-        // Send the email
-        const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
-        
-        res.json({
-            success: true,
-            message: 'Test email sent successfully',
-            messageId: response.messageId
-        });
-        
-    } catch (error) {
-        console.error('Brevo test failed:', error);
-        res.status(500).json({
-            success: false,
-            error: error.message,
-            response: error.response?.body || error.response?.text
-        });
-    }
 });
 
 // Use routes

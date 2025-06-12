@@ -5,6 +5,13 @@ class BrevoService {
         this.isConfigured = false;
         this.configError = null;
         
+        // Debug log to verify environment variables
+        console.log('Environment check:', {
+            hasApiKey: !!process.env.BREVO_API_KEY,
+            hasEmailFrom: !!process.env.EMAIL_FROM,
+            hasSenderName: !!process.env.BREVO_SENDER_NAME
+        });
+        
         // Validate configuration first
         if (!process.env.BREVO_API_KEY) {
             this.configError = 'BREVO_API_KEY is not set in environment variables';
@@ -22,14 +29,11 @@ class BrevoService {
             // Initialize Brevo API client
             this.apiInstance = new brevo.TransactionalEmailsApi();
             
-            // Set API key directly on the instance
-            this.apiInstance.authentications = {
-                'api-key': {
-                    type: 'apiKey',
-                    in: 'header',
-                    key: 'api-key',
-                    value: process.env.BREVO_API_KEY
-                }
+            // Set API key directly in the headers
+            this.apiInstance.defaultHeaders = {
+                'api-key': process.env.BREVO_API_KEY,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             };
             
             this.isConfigured = true;

@@ -9,30 +9,34 @@ class BrevoService {
         if (!process.env.BREVO_API_KEY) {
             this.configError = 'BREVO_API_KEY is not set in environment variables';
             console.error('❌', this.configError);
-            return; // Don't throw, just mark as not configured
+            return;
         }
         
         if (!process.env.EMAIL_FROM) {
             this.configError = 'EMAIL_FROM is not set in environment variables';
             console.error('❌', this.configError);
-            return; // Don't throw, just mark as not configured
+            return;
         }
 
         try {
-            // Initialize Brevo API client with the correct configuration
-            const defaultClient = brevo.ApiClient.instance;
-            const apiKey = defaultClient.authentications['api-key'];
-            apiKey.apiKey = process.env.BREVO_API_KEY;
+            // Initialize Brevo API client
+            this.apiInstance = new brevo.TransactionalEmailsApi();
             
-            // Create API instance with the configured client
-            this.apiInstance = new brevo.TransactionalEmailsApi(defaultClient);
+            // Set API key directly on the instance
+            this.apiInstance.authentications = {
+                'api-key': {
+                    type: 'apiKey',
+                    in: 'header',
+                    key: 'api-key',
+                    value: process.env.BREVO_API_KEY
+                }
+            };
             
             this.isConfigured = true;
             console.log('✅ Brevo service initialized successfully');
         } catch (error) {
             this.configError = `Failed to initialize Brevo service: ${error.message}`;
             console.error('❌', this.configError);
-            // Don't throw, just mark as not configured
         }
     }
 

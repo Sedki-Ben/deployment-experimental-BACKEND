@@ -23,10 +23,41 @@ exports.subscribe = async (req, res) => {
         const verificationToken = crypto.randomBytes(32).toString('hex');
         const unsubscribeToken = crypto.randomBytes(32).toString('hex');
 
+        // Map frontend preferences to database schema
+        let mappedPreferences = {
+            weeklyDigest: true,
+            breakingNews: true,
+            featureArticles: true
+        };
+
+        if (preferences && preferences.type) {
+            switch (preferences.type) {
+                case 'etoile-du-sahel':
+                case 'the-beautiful-game':
+                case 'all-sports-hub':
+                    mappedPreferences = {
+                        weeklyDigest: true,
+                        breakingNews: true,
+                        featureArticles: true
+                    };
+                    break;
+                case 'archive':
+                    mappedPreferences = {
+                        weeklyDigest: false,
+                        breakingNews: false,
+                        featureArticles: true
+                    };
+                    break;
+                default:
+                    // Keep default values
+                    break;
+            }
+        }
+
         // Create subscription
         subscription = new Subscription({
             email,
-            preferences: preferences || undefined,
+            preferences: mappedPreferences,
             verificationToken,
             verificationExpires: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
             unsubscribeToken
@@ -34,10 +65,18 @@ exports.subscribe = async (req, res) => {
 
         await subscription.save();
 
-        // Send verification email
-        await EmailService.sendVerificationEmail(subscription, verificationToken);
-
-        res.status(201).json({ message: 'Please check your email to verify your subscription' });
+        // Send verification email (don't fail if email service is down)
+        try {
+            await EmailService.sendVerificationEmail(subscription, verificationToken);
+            res.status(201).json({ message: 'Please check your email to verify your subscription' });
+        } catch (emailError) {
+            console.error('Failed to send verification email:', emailError);
+            // Still return success but with different message
+            res.status(201).json({ 
+                message: 'Subscription created successfully. Verification email could not be sent at this time.',
+                warning: 'Please contact support if you need to verify your subscription.'
+            });
+        }
     } catch (error) {
         console.error('Newsletter subscription error:', error);
         res.status(500).json({ message: 'Server error' });

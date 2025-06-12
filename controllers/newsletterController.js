@@ -131,22 +131,171 @@ exports.createNewsletter = async (req, res) => {
 };
 
 // Get all subscribers (admin only)
-exports.getSubscribers = (req, res) => {
-    res.json({ subscribers: [] });
+exports.getSubscribers = async (req, res) => {
+    try {
+        const { page = 1, limit = 50, verified } = req.query;
+        
+        const query = {};
+        if (verified !== undefined) {
+            query.isVerified = verified === 'true';
+        }
+
+        const subscribers = await Subscription.find(query)
+            .select('email isVerified preferences createdAt')
+            .sort({ createdAt: -1 })
+            .limit(limit * 1)
+            .skip((page - 1) * limit);
+
+        const total = await Subscription.countDocuments(query);
+
+        res.json({
+            subscribers,
+            pagination: {
+                total,
+                page: parseInt(page),
+                pages: Math.ceil(total / limit),
+                limit: parseInt(limit)
+            }
+        });
+    } catch (error) {
+        console.error('Get subscribers error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
 };
 
 // Send newsletter (admin only)
-exports.sendNewsletter = (req, res) => {
-    res.json({ message: 'Newsletter sent (stub)' });
+exports.sendNewsletter = async (req, res) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        const { subject, content, category, recipients } = req.body;
+
+        // Get subscribers
+        let subscribers;
+        if (recipients && recipients.length > 0) {
+            // Send to specific recipients
+            subscribers = await Subscription.find({
+                email: { $in: recipients },
+                isVerified: true
+            });
+        } else {
+            // Send to all verified subscribers
+            subscribers = await Subscription.find({ isVerified: true });
+        }
+
+        if (subscribers.length === 0) {
+            return res.status(400).json({ message: 'No verified subscribers found' });
+        }
+
+        // Create newsletter record
+        const newsletter = new Newsletter({
+            subject,
+            content,
+            category: category || 'weekly-digest',
+            recipientCount: subscribers.length,
+            status: 'sent'
+        });
+
+        // Send newsletter
+        const result = await EmailService.sendNewsletterEmail(subscribers, newsletter);
+        
+        // Update newsletter record with results
+        newsletter.recipientCount = result.sent || subscribers.length;
+        if (result.failed > 0) {
+            newsletter.status = 'failed';
+        }
+        
+        await newsletter.save();
+
+        console.log(`Newsletter sent to ${result.sent} subscribers`);
+
+        res.json({
+            message: 'Newsletter sent successfully',
+            newsletter,
+            stats: {
+                sent: result.sent,
+                failed: result.failed || 0,
+                total: subscribers.length
+            }
+        });
+    } catch (error) {
+        console.error('Send newsletter error:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
 };
 
 // Get newsletter stats (admin only)
-exports.getNewsletterStats = (req, res) => {
-    res.json({ stats: {} });
+exports.getNewsletterStats = async (req, res) => {
+    try {
+        const totalSubscribers = await Subscription.countDocuments();
+        const verifiedSubscribers = await Subscription.countDocuments({ isVerified: true });
+        const unverifiedSubscribers = totalSubscribers - verifiedSubscribers;
+        
+        const totalNewsletters = await Newsletter.countDocuments();
+        const sentNewsletters = await Newsletter.countDocuments({ status: 'sent' });
+        const failedNewsletters = await Newsletter.countDocuments({ status: 'failed' });
+        
+        // Get recent subscription growth (last 30 days)
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        
+        const recentSubscriptions = await Subscription.countDocuments({
+            createdAt: { $gte: thirtyDaysAgo }
+        });
+        
+        // Get newsletter performance
+        const newsletterStats = await Newsletter.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalRecipients: { $sum: '$recipientCount' },
+                    avgRecipients: { $avg: '$recipientCount' }
+                }
+            }
+        ]);
+
+        res.json({
+            subscribers: {
+                total: totalSubscribers,
+                verified: verifiedSubscribers,
+                unverified: unverifiedSubscribers,
+                recentGrowth: recentSubscriptions
+            },
+            newsletters: {
+                total: totalNewsletters,
+                sent: sentNewsletters,
+                failed: failedNewsletters,
+                totalRecipients: newsletterStats[0]?.totalRecipients || 0,
+                avgRecipients: Math.round(newsletterStats[0]?.avgRecipients || 0)
+            }
+        });
+    } catch (error) {
+        console.error('Get newsletter stats error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
 };
 
 // Delete subscriber (admin only)
-exports.deleteSubscriber = (req, res) => {
-    res.json({ message: 'Subscriber deleted (stub)' });
+exports.deleteSubscriber = async (req, res) => {
+    try {
+        const { email } = req.params;
+        
+        const subscription = await Subscription.findOneAndDelete({ email });
+        
+        if (!subscription) {
+            return res.status(404).json({ message: 'Subscriber not found' });
+        }
+        
+        res.json({ 
+            message: 'Subscriber deleted successfully',
+            email: subscription.email
+        });
+    } catch (error) {
+        console.error('Delete subscriber error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
 }; 
  

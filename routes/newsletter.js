@@ -34,6 +34,11 @@ router.put('/preferences', [
 // @access  Public
 router.get('/verify/:token', newsletterController.verifySubscription);
 
+// @route   POST /api/newsletter/test-subscription
+// @desc    Test subscription email in a specified language
+// @access  Public
+router.post('/test-subscription', newsletterController.testSubscriptionEmail);
+
 // Admin Routes
 
 // @route   GET /api/newsletter/subscribers

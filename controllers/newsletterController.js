@@ -6,6 +6,10 @@ const { validationResult } = require('express-validator');
 // Subscribe to newsletter
 exports.subscribe = async (req, res) => {
     try {
+        // Set language for this request
+        const lang = req.query.lang || req.headers['accept-language']?.split(',')[0]?.split('-')[0];
+        if (lang && req.i18n) req.i18n.changeLanguage(lang);
+
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
@@ -407,6 +411,27 @@ exports.testEmailService = async (req, res) => {
                 'Check if the sender email is verified in your Brevo account'
             ]
         });
+    }
+};
+
+// Test subscription email endpoint
+exports.testSubscriptionEmail = async (req, res) => {
+    try {
+        const { email, lang } = req.body;
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required' });
+        }
+        // Set language for this request
+        if (lang && req.i18n) req.i18n.changeLanguage(lang);
+
+        // Simulate a subscription (does not save to DB)
+        const verificationToken = 'test-token-123';
+        const subscription = { email, verificationToken };
+        await require('../utils/emailService').sendVerificationEmail(subscription, verificationToken);
+        res.json({ message: req.t('newsletter.subscribeSuccessWithEmail'), lang: req.language || lang || 'en' });
+    } catch (error) {
+        console.error('Test subscription email error:', error);
+        res.status(500).json({ message: 'Failed to send test subscription email', error: error.message });
     }
 }; 
  

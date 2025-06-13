@@ -346,7 +346,7 @@ class BrevoService {
                             .email-container {
                                 max-width: 640px;
                                 margin: 0 auto;
-                                background:rgb(66, 39, 39);
+                                background:linear-gradient(135deg, rgba(224, 224, 224, 0.93) 50%, #fff8f3 100%);
                                 border-radius: 16px;
                                 overflow: hidden;
                                 box-shadow: 0 8px 32px rgba(0,0,0,0.08);

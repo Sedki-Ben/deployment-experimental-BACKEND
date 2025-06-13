@@ -327,6 +327,7 @@ class BrevoService {
                                 -webkit-text-size-adjust: 100%;
                                 -ms-text-size-adjust: 100%;
                                 min-height: 100vh;
+                                font-size: 18px;
                             }
                             
                             /* Dark mode support */
@@ -371,7 +372,7 @@ class BrevoService {
                             .header-content { position: relative; z-index: 1; }
                             
                             .logo {
-                                font-size: 36px;
+                                font-size: 42px;
                                 font-weight: 800;
                                 color: #ffffff;
                                 margin-bottom: 12px;
@@ -380,7 +381,7 @@ class BrevoService {
                             }
                             
                             .tagline {
-                                font-size: 18px;
+                                font-size: 22px;
                                 color: rgba(255,255,255,0.9);
                                 font-weight: 500;
                                 text-shadow: 0 1px 2px rgba(0,0,0,0.1);
@@ -398,7 +399,7 @@ class BrevoService {
                             }
                             
                             .greeting-title {
-                                font-size: 32px;
+                                font-size: 36px;
                                 color: #475569;
                                 font-weight: 700;
                                 margin-bottom: 16px;
@@ -406,7 +407,7 @@ class BrevoService {
                             }
                             
                             .greeting-subtitle {
-                                font-size: 20px;
+                                font-size: 24px;
                                 color: #64748b;
                                 font-weight: 400;
                             }
@@ -424,43 +425,10 @@ class BrevoService {
                             }
                             
                             .welcome-text {
-                                font-size: 18px;
+                                font-size: 20px;
                                 line-height: 1.9;
                                 color: #334155;
                                 margin-bottom: 0;
-                            }
-                            
-                            .stats-row {
-                                display: table;
-                                width: 100%;
-                                margin: 36px 0;
-                                background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-                                border-radius: 16px;
-                                padding: 24px;
-                                box-shadow: 
-                                    0 8px 16px rgba(51, 65, 85, 0.06),
-                                    inset 0 1px 0 rgba(255,255,255,0.8);
-                            }
-                            
-                            .stat-item {
-                                display: table-cell;
-                                text-align: center;
-                                padding: 20px;
-                                vertical-align: top;
-                            }
-                            
-                            .stat-number {
-                                font-size: 20px;
-                                font-weight: 700;
-                                color: #6b7280;
-                                display: block;
-                                text-shadow: 0 2px 4px rgba(107, 114, 128, 0.3);
-                            }
-                            
-                            .stat-label {
-                                font-size: 16px;
-                                color: #9ca3af;
-                                margin-top: 8px;
                             }
                             
                             /* Features Grid */
@@ -469,7 +437,7 @@ class BrevoService {
                             }
                             
                             .features-title {
-                                font-size: 22px;
+                                font-size: 26px;
                                 font-weight: 700;
                                 color: #475569;
                                 text-align: right;
@@ -500,14 +468,14 @@ class BrevoService {
                             }
                             
                             .feature-icon {
-                                font-size: 20px;
+                                font-size: 24px;
                                 margin-left: 16px;
                                 vertical-align: middle;
                                 opacity: 0.8;
                             }
                             
                             .feature-text {
-                                font-size: 18px;
+                                font-size: 20px;
                                 color: #334155;
                                 font-weight: 500;
                                 vertical-align: middle;
@@ -526,7 +494,7 @@ class BrevoService {
                             }
                             
                             .cta-title {
-                                font-size: 22px;
+                                font-size: 26px;
                                 color: #475569;
                                 font-weight: 700;
                                 margin-bottom: 20px;
@@ -535,13 +503,13 @@ class BrevoService {
                             
                             .cta-button {
                                 display: inline-block;
-                                padding: 18px 36px;
+                                padding: 20px 40px;
                                 background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
                                 color: #ffffff !important;
                                 text-decoration: none;
                                 border-radius: 50px;
                                 font-weight: 600;
-                                font-size: 18px;
+                                font-size: 22px;
                                 box-shadow: 
                                     0 6px 12px rgba(55, 65, 81, 0.2),
                                     0 2px 4px rgba(0,0,0,0.1),
@@ -572,7 +540,7 @@ class BrevoService {
                             }
                             
                             .social-title {
-                                font-size: 20px;
+                                font-size: 24px;
                                 color: #475569;
                                 font-weight: 600;
                                 margin-bottom: 24px;
@@ -585,16 +553,16 @@ class BrevoService {
                             
                             .social-link {
                                 display: inline-block;
-                                width: 48px;
-                                height: 48px;
+                                width: 52px;
+                                height: 52px;
                                 background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
                                 border: 1px solid rgba(203, 213, 225, 0.6);
                                 border-radius: 50%;
                                 margin: 0 8px;
                                 text-decoration: none;
                                 vertical-align: middle;
-                                line-height: 46px;
-                                font-size: 18px;
+                                line-height: 50px;
+                                font-size: 20px;
                                 transition: all 0.3s ease;
                                 box-shadow: 
                                     0 3px 6px rgba(51, 65, 85, 0.08),
@@ -623,7 +591,7 @@ class BrevoService {
                             }
                             
                             .footer-text {
-                                font-size: 16px;
+                                font-size: 18px;
                                 color: #64748b;
                                 line-height: 1.7;
                                 margin-bottom: 16px;
@@ -640,12 +608,10 @@ class BrevoService {
                                 .email-wrapper { padding: 15px 0; }
                                 .email-container { margin: 0 15px; border-radius: 16px; }
                                 .header { padding: 36px 24px; }
-                                .logo { font-size: 32px; }
+                                .logo { font-size: 36px; }
                                 .content { padding: 28px 24px; }
-                                .greeting-title { font-size: 28px; }
+                                .greeting-title { font-size: 32px; }
                                 .welcome-message { padding: 24px; }
-                                .stats-row { display: block; }
-                                .stat-item { display: block; padding: 16px 0; }
                                 .cta-section { padding: 28px 20px; }
                                 .cta-button { display: block; margin: 0 auto; }
                                 .social-link { margin: 0 6px; }
@@ -676,9 +642,8 @@ class BrevoService {
                                             <div class="content">
                                                 <!-- Greeting -->
                                                 <div class="greeting">
-                                                    <div class="greeting-subtitle"> Pure Tactics Cartel في عائلة</div>
                                                     <div class="greeting-title">أهلاً وسهلاً بك</div>
-                                                     
+                                                    <div class="greeting-subtitle"> Pure Tactics Cartel في عائلة </div>
                                                 </div>
                                                 
                                                 <!-- Welcome Message -->
@@ -715,7 +680,7 @@ class BrevoService {
                                                 
                                                 <!-- CTA Section -->
                                                 <div class="cta-section">
-                                                    <a href="#" class="cta-button">انضم إلى الكارتال</a>
+                                                    <a href="${homeUrl}" class="cta-button">انضم إلى الكارتال</a>
                                                 </div>
                                                 
                                                 <!-- Social Section -->
@@ -749,7 +714,7 @@ class BrevoService {
                         </div>
                     </body>
                     </html>
-                `,
+                    `,
                 tags: ['welcome', 'subscription', 'modern', 'responsive']
             });
             

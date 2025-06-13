@@ -346,7 +346,7 @@ class BrevoService {
                             .email-container {
                                 max-width: 640px;
                                 margin: 0 auto;
-                                background: rgb(235, 235, 235);
+                                background: rgb(248, 241, 241);
                                 border-radius: 16px;
                                 overflow: hidden;
                                 box-shadow: 0 8px 32px rgba(0,0,0,0.08);
@@ -498,7 +498,7 @@ class BrevoService {
                                 text-align: center;
                                 margin: 40px 0;
                                 padding: 32px 24px;
-                                background: rgb(235, 235, 235);
+                                background: rgb(248, 241, 241);
                                 border-radius: 16px;
                             }
                             
@@ -528,7 +528,7 @@ class BrevoService {
                                 text-align: center;
                                 margin: 40px 0;
                                 padding: 24px;
-                                background: rgb(235, 235, 235);
+                                background: rgb(248, 241, 241);
                                 border-radius: 12px;
                             }
                             
@@ -547,7 +547,7 @@ class BrevoService {
                                 display: inline-block;
                                 width: 48px;
                                 height: 48px;
-                                background:rgb(235, 235, 235);
+                                background:rgb(248, 241, 241);
                                 border: 2px solid #e0e0e0;
                                 border-radius: 50%;
                                 margin: 0 8px;
@@ -565,7 +565,7 @@ class BrevoService {
                             
                             /* Footer */
                             .footer {
-                                background: rgb(235, 235, 235);
+                                background: rgb(248, 241, 241);
                                 padding: 32px 24px;
                                 text-align: center;
                                 border-top: 1px solid #e0e0e0;
@@ -632,10 +632,9 @@ class BrevoService {
                                                 <!-- Welcome Message -->
                                                 <div class="welcome-message">
                                                     <div class="welcome-text">
-                                                        مرحبا بكم في مجتمع الPTC أين نحاول مشاركتكم نظرتنا لكرة القدم
-                                                    </div>
+                                                     مرحبا بكم في مجتمعنا، أين نحاول مشاركتكم نظرتنا لكرة القدم                                                    </div>
                                                     <div class="welcome-text">   
-                                                        سواء تعلق الأمر بالبطولات العالمية، العربية او بشكل أخص فريقي النجم الرياضي الساحلي.
+                                                        سواء تعلق الأمر بالبطولات العالمية، العربية أو بشكل أخص فريقي النجم الرياضي الساحلي
                                                     </div>
                                                 </div>
                                                 

@@ -227,133 +227,26 @@ class BrevoService {
     async sendArticleNotification(subscribers, article) {
         try {
             this.checkConfiguration();
-            
-            // Get the first 200 characters of the Arabic content for preview
-            const previewContent = article.content.ar ? 
-                article.content.ar.substring(0, 200) + '...' : 
-                'اقرأ المزيد عن هذا المقال المميز';
-            
-            const articleUrl = `${process.env.FRONTEND_URL}/article/${article.slug}`;
-            
+            const articleUrl = `${process.env.FRONTEND_URL}/article/${article._id}`;
             const htmlContent = `
-                <!DOCTYPE html>
-                <html dir="rtl" lang="ar">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>${article.title.ar} - Pure Tactics Cartel</title>
-                    <style>
-                        body {
-                            font-family: 'Arial', sans-serif;
-                            line-height: 1.6;
-                            color: #333;
-                            margin: 0;
-                            padding: 20px;
-                            background-color: #f4f4f4;
-                        }
-                        .container {
-                            max-width: 600px;
-                            margin: 0 auto;
-                            background: white;
-                            padding: 20px;
-                            border-radius: 10px;
-                            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-                        }
-                        .header {
-                            text-align: center;
-                            padding: 20px 0;
-                            border-bottom: 2px solid #eee;
-                        }
-                        .content {
-                            padding: 20px 0;
-                        }
-                        .article-preview {
-                            background: #f9f9f9;
-                            padding: 20px;
-                            border-radius: 5px;
-                            margin: 20px 0;
-                        }
-                        .button {
-                            display: inline-block;
-                            padding: 12px 24px;
-                            background-color: #007bff;
-                            color: white;
-                            text-decoration: none;
-                            border-radius: 5px;
-                            margin: 20px 0;
-                        }
-                        .social-icons {
-                            text-align: center;
-                            margin: 20px 0;
-                        }
-                        .social-icons a {
-                            display: inline-block;
-                            margin: 0 10px;
-                            color: #333;
-                            font-size: 24px;
-                            text-decoration: none;
-                        }
-                        .footer {
-                            text-align: center;
-                            padding: 20px 0;
-                            border-top: 2px solid #eee;
-                            font-size: 12px;
-                            color: #666;
-                        }
-                        .article-image {
-                            width: 100%;
-                            max-height: 300px;
-                            object-fit: cover;
-                            border-radius: 5px;
-                            margin: 20px 0;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="container">
-                        <div class="header">
-                            <h1>Pure Tactics Cartel</h1>
-                        </div>
-                        <div class="content">
-                            <h2>مقال جديد: ${article.title.ar}</h2>
-                            ${article.image ? `<img src="${article.image}" alt="${article.title.ar}" class="article-image">` : ''}
-                            <div class="article-preview">
-                                <p>${previewContent}</p>
-                            </div>
-                            <p>اقرأ المقال كاملاً على موقعنا:</p>
-                            <a href="${articleUrl}" class="button">اقرأ المزيد</a>
-                        </div>
-                        <div class="social-icons">
-                            <a href="https://www.facebook.com/profile.php?id=61557120280089" target="_blank">📘</a>
-                            <a href="https://twitter.com/PureTacticsC" target="_blank">📘</a>
-                            <a href="#" target="_blank">📸</a>
-                            <a href="#" target="_blank">📱</a>
-                        </div>
-                        <div class="footer">
-                            <p>© 2024 Pure Tactics Cartel. جميع الحقوق محفوظة.</p>
-                        </div>
-                    </div>
-                </body>
-                </html>
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f9f9f9;">
+                    <h1 style="color: #333;">Pure Tactics Cartel</h1>
+                    <h2 style="color: #444;">${article.title}</h2>
+                    <p style="color: #555;">${article.summary}</p>
+                    <a href="${articleUrl}" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background: #007bff; color: #fff; text-decoration: none; border-radius: 4px;">Read the full article</a>
+                    <div style="margin-top: 30px; color: #aaa; font-size: 12px;">&copy; ${new Date().getFullYear()} Pure Tactics Cartel. All rights reserved.</div>
+                </div>
             `;
-
-            const emailPromises = subscribers.map(subscriber => 
+            const emailPromises = subscribers.map(subscriber =>
                 this.sendEmail({
                     to: subscriber.email,
-                    subject: `مقال جديد: ${article.title.ar}`,
+                    subject: `New Article: ${article.title}`,
                     html: htmlContent
                 })
             );
-
-            const results = await Promise.allSettled(emailPromises);
-            
-            const sent = results.filter(r => r.status === 'fulfilled').length;
-            const failed = results.filter(r => r.status === 'rejected').length;
-            
-            return { sent, failed };
+            await Promise.all(emailPromises);
         } catch (error) {
             console.error('Send article notification error:', error);
-            throw new Error(`Failed to send article notification: ${error.message}`);
         }
     }
 

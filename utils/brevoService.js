@@ -323,28 +323,99 @@ class BrevoService {
      */
     async sendVerificationEmail(subscription, verificationToken) {
         try {
-            const verificationUrl = `${process.env.FRONTEND_URL}/newsletter/verify/${verificationToken}`;
-            
-            const { getWelcomeEmailTemplate } = require('../templates/emailTemplates');
-            
-            const template = getWelcomeEmailTemplate(
-                subscription.email.split('@')[0],
-                'en', // Can be determined from subscription preferences
-                verificationUrl
-            );
-            
+            this.checkConfiguration();
+            const homeUrl = `${process.env.FRONTEND_URL}`;
+            const htmlContent = `
+                <!DOCTYPE html>
+                <html dir="rtl" lang="ar">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Welcome to Pure Tactics Cartel</title>
+                    <style>
+                        body {
+                            font-family: 'Arial', sans-serif;
+                            line-height: 1.6;
+                            color: #333;
+                            margin: 0;
+                            padding: 0;
+                            background-color: #f4f4f4;
+                        }
+                        .container {
+                            max-width: 600px;
+                            margin: 0 auto;
+                            background: white;
+                            padding: 20px;
+                            border-radius: 10px;
+                            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                        }
+                        .header {
+                            text-align: center;
+                            padding: 20px 0;
+                            border-bottom: 2px solid #eee;
+                        }
+                        .content {
+                            padding: 20px 0;
+                        }
+                        .button {
+                            display: inline-block;
+                            padding: 12px 24px;
+                            background-color: #007bff;
+                            color: white;
+                            text-decoration: none;
+                            border-radius: 5px;
+                            margin: 20px 0;
+                        }
+                        .social-icons {
+                            text-align: center;
+                            margin: 20px 0;
+                        }
+                        .social-icons a {
+                            display: inline-block;
+                            margin: 0 10px;
+                            color: #333;
+                            font-size: 24px;
+                            text-decoration: none;
+                        }
+                        .footer {
+                            text-align: center;
+                            padding: 20px 0;
+                            border-top: 2px solid #eee;
+                            font-size: 12px;
+                            color: #666;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <h1>Pure Tactics Cartel</h1>
+                        </div>
+                        <div class="content">
+                            <h2>مرحباً بك، عزيز المشترك!</h2>
+                            <p>شكراً لانضمامك إلى مجتمع Pure Tactics Cartel. نحن سعداء بوجودك معنا!</p>
+                            <a href="${homeUrl}" class="button">Welcome to the Cartel</a>
+                        </div>
+                        <div class="social-icons">
+                            <a href="https://www.facebook.com/profile.php?id=61557120280089" target="_blank">📘</a>
+                            <a href="https://twitter.com/PureTacticsC" target="_blank">📘</a>
+                            <a href="#" target="_blank">📸</a>
+                            <a href="#" target="_blank">📱</a>
+                        </div>
+                        <div class="footer">
+                            <p>© 2024 Pure Tactics Cartel. جميع الحقوق محفوظة.</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
             await this.sendEmail({
                 to: subscription.email,
-                subject: 'Please verify your newsletter subscription',
-                html: template.html,
-                tags: ['newsletter-verification']
+                subject: 'Welcome to Pure Tactics Cartel',
+                html: htmlContent
             });
-            
-            console.log(`✅ Newsletter verification email sent to ${subscription.email}`);
-            
         } catch (error) {
-            console.error('❌ Newsletter verification email sending failed:', error.message);
-            throw new Error(`Failed to send verification email: ${error.message}`);
+            console.error('Send verification email error:', error);
         }
     }
 }

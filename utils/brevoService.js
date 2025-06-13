@@ -339,14 +339,14 @@ class BrevoService {
                             /* Email Container - Table Based for Compatibility */
                             .email-wrapper {
                                 width: 100%;
-                                background-color: rgb(139, 139, 139);
+                                background-color: rgb(255, 255, 255);
                                 padding: 20px 0;
                             }
                             
                             .email-container {
                                 max-width: 640px;
                                 margin: 0 auto;
-                                background: rgb(139, 139, 139);
+                                background: rgb(235, 235, 235);
                                 border-radius: 16px;
                                 overflow: hidden;
                                 box-shadow: 0 8px 32px rgba(0,0,0,0.08);
@@ -498,7 +498,7 @@ class BrevoService {
                                 text-align: center;
                                 margin: 40px 0;
                                 padding: 32px 24px;
-                                background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+                                background: rgb(235, 235, 235);
                                 border-radius: 16px;
                             }
                             
@@ -528,7 +528,7 @@ class BrevoService {
                                 text-align: center;
                                 margin: 40px 0;
                                 padding: 24px;
-                                background: #fff;
+                                background: rgb(235, 235, 235);
                                 border-radius: 12px;
                             }
                             
@@ -547,7 +547,7 @@ class BrevoService {
                                 display: inline-block;
                                 width: 48px;
                                 height: 48px;
-                                background: #f8f9fa;
+                                background:rgb(235, 235, 235);
                                 border: 2px solid #e0e0e0;
                                 border-radius: 50%;
                                 margin: 0 8px;
@@ -558,14 +558,14 @@ class BrevoService {
                                 text-align: center;
                             }
                             
-                            .social-link.facebook { color: #1877f2; border-color: #e3f2fd; background: #f3f9ff; }
-                            .social-link.twitter { color: #1da1f2; border-color: #e1f5fe; background: #f0faff; }
-                            .social-link.instagram { color: #e4405f; border-color: #fce4ec; background: #fff0f3; }
-                            .social-link.telegram { color: rgb(156, 0, 204); border-color: #e0f2f1; background: #f0fffe; }
+                            .social-link.facebook { color: #1877f2; border-color: #e3f2fd; background:rgb(139, 173, 207); }
+                            .social-link.twitter { color: #1da1f2; border-color: #e1f5fe; background:rgb(144, 203, 233); }
+                            .social-link.instagram { color: #e4405f; border-color: #fce4ec; background:rgb(230, 194, 201); }
+                            .social-link.telegram { color: rgb(156, 0, 204); border-color: #e0f2f1; background:rgb(210, 148, 235); }
                             
                             /* Footer */
                             .footer {
-                                background: #f8f9fa;
+                                background: rgb(235, 235, 235);
                                 padding: 32px 24px;
                                 text-align: center;
                                 border-top: 1px solid #e0e0e0;

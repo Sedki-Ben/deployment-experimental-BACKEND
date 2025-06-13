@@ -346,7 +346,7 @@ class BrevoService {
                             .email-container {
                                 max-width: 640px;
                                 margin: 0 auto;
-                                background:linear-gradient(135deg, rgba(224, 224, 224, 0.93) 50%, #fff8f3 100%);
+                                background:linear-gradient(135deg, rgba(189, 184, 184, 0.8) 30%, #fff8f3 100%);
                                 border-radius: 16px;
                                 overflow: hidden;
                                 box-shadow: 0 8px 32px rgba(0,0,0,0.08);
@@ -354,7 +354,7 @@ class BrevoService {
                             
                             /* Header Section */
                             .header {
-                                background: linear-gradient(135deg, #c62828 0%, #e53935 50%, #d32f2f 100%);
+                                background: linear-gradient(135deg,rgb(255, 255, 255) 30%, rgb(255, 0, 0) 70%);
                                 padding: 48px 24px;
                                 text-align: center;
                                 position: relative;
@@ -382,21 +382,12 @@ class BrevoService {
                             }
                             
                             .tagline {
-                                font-size: 16px;
+                                font-size: 28px;
                                 color: rgba(255,255,255,0.95);
-                                font-weight: 500;
+                                font-weight: 700;
                                 margin-bottom: 24px;
                             }
                             
-                            .hero-badge {
-                                display: inline-block;
-                                background: rgba(255,255,255,0.2);
-                                padding: 8px 16px;
-                                border-radius: 20px;
-                                font-size: 14px;
-                                color: #ffffff;
-                                border: 1px solid rgba(255,255,255,0.3);
-                            }
                             
                             /* Content Sections */
                             .content {
@@ -416,14 +407,14 @@ class BrevoService {
                             }
                             
                             .greeting-subtitle {
-                                font-size: 18px;
-                                color: #546e7a;
-                                font-weight: 400;
+                                font-size: 20px;
+                                color: #c62828;
+                                font-weight: 600;
                             }
                             
                             .welcome-message {
-                                background: linear-gradient(135deg, #fff3e0 0%, #fff8f3 100%);
-                                border-right: 4px solid #ff6b35;
+                                background: linear-gradient(135deg,rgb(255, 0, 0) 50%,rgb(255, 255, 255) 50%);
+                                border-right: 4px solidrgb(255, 0, 0);
                                 padding: 24px;
                                 margin: 32px 0;
                                 border-radius: 12px;
@@ -431,9 +422,9 @@ class BrevoService {
                             }
                             
                             .welcome-text {
-                                font-size: 16px;
+                                font-size: 20px;
                                 line-height: 1.8;
-                                color: #37474f;
+                                color:rgb(0, 0, 0);
                                 margin-bottom: 16px;
                             }
                             

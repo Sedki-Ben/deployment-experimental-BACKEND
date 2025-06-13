@@ -346,7 +346,7 @@ class BrevoService {
                             .email-container {
                                 max-width: 640px;
                                 margin: 0 auto;
-                                background:linear-gradient(135deg, rgba(189, 184, 184, 0.8) 30%, #fff8f3 100%);
+                                background:linear-gradient(135deg, rgba(202, 200, 200, 0.8) 20%, #fff8f3 100%);
                                 border-radius: 16px;
                                 overflow: hidden;
                                 box-shadow: 0 8px 32px rgba(0,0,0,0.08);
@@ -354,7 +354,7 @@ class BrevoService {
                             
                             /* Header Section */
                             .header {
-                                background: linear-gradient(135deg,rgb(255, 255, 255) 30%, rgb(255, 0, 0) 70%);
+                                background: linear-gradient(135deg,rgb(240, 170, 170) 30%, rgb(255, 0, 0) 70%);
                                 padding: 48px 24px;
                                 text-align: center;
                                 position: relative;
@@ -403,18 +403,18 @@ class BrevoService {
                                 font-size: 28px;
                                 color: #c62828;
                                 font-weight: 700;
-                                margin-bottom: 12px;
+                                margin-bottom: 8px;
                             }
                             
                             .greeting-subtitle {
                                 font-size: 20px;
-                                color: #c62828;
+                                color:rgb(196, 68, 68);
                                 font-weight: 600;
                             }
                             
                             .welcome-message {
-                                background: linear-gradient(135deg,rgb(255, 0, 0) 50%,rgb(255, 255, 255) 50%);
-                                border-right: 4px solidrgb(255, 0, 0);
+                                background: linear-gradient(135deg, rgba(238, 231, 231, 0.8) 50%, #fff8f3 100%);
+                                border-right: 4px solid rgb(0, 0, 0);
                                 padding: 24px;
                                 margin: 32px 0;
                                 border-radius: 12px;
@@ -424,8 +424,8 @@ class BrevoService {
                             .welcome-text {
                                 font-size: 20px;
                                 line-height: 1.8;
-                                color:rgb(0, 0, 0);
-                                margin-bottom: 16px;
+                                color:rgb(51, 51, 51);
+                                margin-bottom: 12px;
                             }
                             
                             .stats-row {
@@ -444,13 +444,14 @@ class BrevoService {
                             .stat-number {
                                 font-size: 24px;
                                 font-weight: 700;
-                                color: #c62828;
+                                color:rgb(255, 0, 0);
                                 display: block;
                             }
                             
                             .stat-label {
-                                font-size: 14px;
-                                color: #78909c;
+                                font-size: 12px;
+                                font-weight:500px
+                                color: rgb(201, 39, 39);
                                 margin-top: 4px;
                             }
                             
@@ -462,14 +463,14 @@ class BrevoService {
                             .features-title {
                                 font-size: 20px;
                                 font-weight: 700;
-                                color: #c62828;
+                                color:rgb(255, 0, 0);
                                 text-align: right;
                                 margin-bottom: 24px;
                             }
                             
                             .feature-card {
-                                background: #ffffff;
-                                border: 2px solid #ffecec;
+                                background:linear-gradient(135deg, rgba(238, 231, 231, 0.8) 50%, #fff8f3 100%);
+                                border: 2px solid rgb(0, 0, 0);
                                 border-radius: 12px;
                                 padding: 20px;
                                 margin-bottom: 16px;

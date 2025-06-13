@@ -320,7 +320,7 @@ class BrevoService {
                             body {
                                 margin: 0 !important;
                                 padding: 0 !important;
-                                background-color:rgb(194, 194, 201);
+                                background-color: rgb(194, 194, 201);
                                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans Arabic', sans-serif;
                                 line-height: 1.6;
                                 color: #2c3e50;
@@ -333,20 +333,20 @@ class BrevoService {
                                 body { background-color: #1a1a1a !important; }
                                 .email-container { background-color: #2d2d2d !important; }
                                 .content-text { color: #e0e0e0 !important; }
-                                .features-card { background-color: #3a3a3a !important; border-color: #555 !important; }
+                                .feature-card { background-color: #3a3a3a !important; border-color: #555 !important; }
                             }
                             
                             /* Email Container - Table Based for Compatibility */
                             .email-wrapper {
                                 width: 100%;
-                                background-color:rgb(111, 163, 219);
+                                background-color: rgb(111, 163, 219);
                                 padding: 20px 0;
                             }
                             
                             .email-container {
                                 max-width: 640px;
                                 margin: 0 auto;
-                                background:linear-gradient(135deg, rgba(202, 200, 200, 0.8) 20%, #fff8f3 100%);
+                                background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 40%, #ffffff 100%);
                                 border-radius: 16px;
                                 overflow: hidden;
                                 box-shadow: 0 8px 32px rgba(0,0,0,0.08);
@@ -354,7 +354,7 @@ class BrevoService {
                             
                             /* Header Section */
                             .header {
-                                background: linear-gradient(135deg,rgb(240, 170, 170) 30%, rgb(255, 0, 0) 70%);
+                                background: linear-gradient(135deg, rgb(240, 170, 170) 30%, rgb(255, 0, 0) 70%);
                                 padding: 48px 24px;
                                 text-align: center;
                                 position: relative;
@@ -367,7 +367,7 @@ class BrevoService {
                                 left: 0;
                                 right: 0;
                                 bottom: 0;
-                                background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23pattern)"/></svg>');
+                                background: url('data:image/svg+xml;charset=utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23pattern)"/></svg>');
                                 opacity: 0.3;
                             }
                             
@@ -385,9 +385,8 @@ class BrevoService {
                                 font-size: 28px;
                                 color: rgba(255,255,255,0.95);
                                 font-weight: 700;
-                                margin-bottom: 24px;
+                                margin-bottom: 0;
                             }
-                            
                             
                             /* Content Sections */
                             .content {
@@ -408,13 +407,13 @@ class BrevoService {
                             
                             .greeting-subtitle {
                                 font-size: 20px;
-                                color:rgb(196, 68, 68);
+                                color: rgb(196, 68, 68);
                                 font-weight: 600;
                             }
                             
                             .welcome-message {
                                 background: linear-gradient(135deg, rgba(238, 231, 231, 0.8) 50%, #fff8f3 100%);
-                                border-right: 4px solid rgb(0, 0, 0);
+                                border: 2px solid rgb(0, 0, 0);
                                 padding: 24px;
                                 margin: 32px 0;
                                 border-radius: 12px;
@@ -424,7 +423,7 @@ class BrevoService {
                             .welcome-text {
                                 font-size: 20px;
                                 line-height: 1.8;
-                                color:rgb(51, 51, 51);
+                                color: rgb(51, 51, 51);
                                 margin-bottom: 12px;
                             }
                             
@@ -444,13 +443,13 @@ class BrevoService {
                             .stat-number {
                                 font-size: 24px;
                                 font-weight: 700;
-                                color:rgb(255, 0, 0);
+                                color: rgb(255, 0, 0);
                                 display: block;
                             }
                             
                             .stat-label {
                                 font-size: 12px;
-                                font-weight:500px
+                                font-weight: 500;
                                 color: rgb(201, 39, 39);
                                 margin-top: 4px;
                             }
@@ -463,24 +462,19 @@ class BrevoService {
                             .features-title {
                                 font-size: 20px;
                                 font-weight: 700;
-                                color:rgb(255, 0, 0);
+                                color: rgb(255, 0, 0);
                                 text-align: right;
                                 margin-bottom: 24px;
                             }
                             
                             .feature-card {
-                                background:linear-gradient(135deg, rgba(238, 231, 231, 0.8) 50%, #fff8f3 100%);
+                                background: linear-gradient(135deg, rgba(238, 231, 231, 0.8) 50%, #fff8f3 100%);
                                 border: 2px solid rgb(0, 0, 0);
                                 border-radius: 12px;
                                 padding: 20px;
                                 margin-bottom: 16px;
                                 text-align: right;
                                 transition: border-color 0.2s ease;
-                            }
-                            
-                            /* Outlook fallback */
-                            .feature-card:hover {
-                                border-color: #ffcdd2;
                             }
                             
                             .feature-icon {
@@ -557,13 +551,14 @@ class BrevoService {
                                 text-decoration: none;
                                 vertical-align: middle;
                                 line-height: 44px;
-                                font-size: 20px;
+                                font-size: 12px;
+                                text-align: center;
                             }
                             
                             .social-link.facebook { color: #1877f2; border-color: #e3f2fd; background: #f3f9ff; }
                             .social-link.twitter { color: #1da1f2; border-color: #e1f5fe; background: #f0faff; }
                             .social-link.instagram { color: #e4405f; border-color: #fce4ec; background: #fff0f3; }
-                            .social-link.telegram { color:rgb(156, 0, 204); border-color: #e0f2f1; background: #f0fffe; }
+                            .social-link.telegram { color: rgb(156, 0, 204); border-color: #e0f2f1; background: #f0fffe; }
                             
                             /* Footer */
                             .footer {
@@ -611,7 +606,7 @@ class BrevoService {
                     </head>
                     <body>
                         <div class="email-wrapper">
-                            <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f8f9fa;">
+                            <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: rgb(111, 163, 219);">
                                 <tr>
                                     <td align="center" valign="top">
                                         <div class="email-container">
@@ -620,7 +615,6 @@ class BrevoService {
                                                 <div class="header-content">
                                                     <div class="logo">Pure Tactics Cartel</div>
                                                     <div class="tagline">فضاؤكم لكرة القدم العالمية</div>
-                                                    <div class="hero-badge">مجتمع النخبة التكتيكية</div>
                                                 </div>
                                             </div>
                                             
@@ -673,7 +667,7 @@ class BrevoService {
                                                     </div>
                                                     
                                                     <div class="feature-card">
-                                                        <span class="feature-icon"></span>
+                                                        <span class="feature-icon">⭐</span>
                                                         <span class="feature-text">متابعة دائمة لشؤون النجم الساحلي</span>
                                                     </div>
                                                     
@@ -685,17 +679,17 @@ class BrevoService {
                                                 
                                                 <!-- CTA Section -->
                                                 <div class="cta-section">
-                                                    <a href="${homeUrl}" class="cta-button">انضم إلى الكارتال</a>
+                                                    <a href="#" class="cta-button">انضم إلى الكارتال</a>
                                                 </div>
                                                 
                                                 <!-- Social Section -->
                                                 <div class="social-section">
                                                     <div class="social-title">تابعنا على منصاتنا:</div>
                                                     <div class="social-links">
-                                                        <a href="https://www.facebook.com/profile.php?id=61557120280089" class="social-link facebook" target="_blank" aria-label="Facebook">facebook</a>
-                                                        <a href="https://twitter.com/PureTacticsC" class="social-link twitter" target="_blank" aria-label="Twitter">twitter</a>
-                                                        <a href="#" class="social-link instagram" target="_blank" aria-label="Instagram">instagram</a>
-                                                        <a href="#" class="social-link telegram" target="_blank" aria-label="Telegram">TikTok</a>
+                                                        <a href="https://www.facebook.com/profile.php?id=61557120280089" class="social-link facebook" target="_blank" aria-label="Facebook">FB</a>
+                                                        <a href="#" class="social-link instagram" target="_blank" aria-label="Instagram">IG</a>
+                                                        <a href="https://twitter.com/PureTacticsC" class="social-link twitter" target="_blank" aria-label="Twitter">TW</a>
+                                                        <a href="#" class="social-link telegram" target="_blank" aria-label="TikTok">TT</a>
                                                     </div>
                                                 </div>
                                             </div>

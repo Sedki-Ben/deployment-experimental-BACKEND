@@ -413,7 +413,7 @@ class BrevoService {
                             
                             .welcome-message {
                                 background: linear-gradient(135deg, rgba(238, 231, 231, 0.8) 50%, #fff8f3 100%);
-                                border: 4px solid rgb(0, 0, 0);
+                                border-left: 5px solid rgb(0, 0, 0);
                                 padding: 24px;
                                 margin: 32px 0;
                                 border-radius: 12px;
@@ -629,8 +629,11 @@ class BrevoService {
                                                 <!-- Welcome Message -->
                                                 <div class="welcome-message">
                                                     <div class="welcome-text">
-                                                    مرحبا بكم في مجتمع الPTC، أين أحاول مشاركة نظرتي لكرة القدم معكم، سواء تعلق الأمر بالبطولات العالمية، العربية او بشكل أخص فريقي النجم الرياضي الساحلي.                                                    </div>
+                                                        مرحبا بكم في مجتمع الPTC، أين أحاول مشاركة نظرتي لكرة القدم معكم.
+                                                    </div>
                                                     <div class="welcome-text">   
+                                                        سواء تعلق الأمر بالبطولات العالمية، العربية او بشكل أخص فريقي النجم الرياضي الساحلي.
+                                                    </div>
                                                 </div>
                                                 
                                                 <!-- Stats Row -->

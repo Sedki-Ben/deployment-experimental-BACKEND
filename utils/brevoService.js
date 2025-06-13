@@ -339,14 +339,14 @@ class BrevoService {
                             /* Email Container - Table Based for Compatibility */
                             .email-wrapper {
                                 width: 100%;
-                                background-color:rgb(111, 163, 219);
+                                background-color:rgba(224, 224, 224, 0.93);
                                 padding: 20px 0;
                             }
                             
                             .email-container {
                                 max-width: 640px;
                                 margin: 0 auto;
-                                background:rgb(66, 39, 39);
+                                background:rgba(238, 224, 224, 0.63);
                                 border-radius: 16px;
                                 overflow: hidden;
                                 box-shadow: 0 8px 32px rgba(0,0,0,0.08);
@@ -390,7 +390,7 @@ class BrevoService {
                             
                             .hero-badge {
                                 display: inline-block;
-                                background: rgba(255,255,255,0.2);
+                                background: rgba(224, 224, 224, 0.93);
                                 padding: 8px 16px;
                                 border-radius: 20px;
                                 font-size: 14px;
@@ -417,13 +417,13 @@ class BrevoService {
                             
                             .greeting-subtitle {
                                 font-size: 18px;
-                                color: #546e7a;
+                                color: #c62828;
                                 font-weight: 400;
                             }
                             
                             .welcome-message {
-                                background: linear-gradient(135deg, #fff3e0 0%, #fff8f3 100%);
-                                border-right: 4px solid #ff6b35;
+                                background: linear-gradient(135deg,rgba(224, 224, 224, 0.93) 50%, #fff8f3 100%);
+                                border: 4px solid #ff6b35;
                                 padding: 24px;
                                 margin: 32px 0;
                                 border-radius: 12px;
@@ -433,7 +433,7 @@ class BrevoService {
                             .welcome-text {
                                 font-size: 16px;
                                 line-height: 1.8;
-                                color: #37474f;
+                                color: #c62828;
                                 margin-bottom: 16px;
                             }
                             
@@ -459,7 +459,7 @@ class BrevoService {
                             
                             .stat-label {
                                 font-size: 14px;
-                                color: #78909c;
+                                color: #c62828;
                                 margin-top: 4px;
                             }
                             
@@ -529,7 +529,7 @@ class BrevoService {
                                 border-radius: 50px;
                                 font-weight: 600;
                                 font-size: 16px;
-                                box-shadow: 0 4px 16px rgba(198, 40, 40, 0.3);
+                                box-shadow: 0 4px 16px rgba(236, 235, 235, 0.84);
                                 border: none;
                                 cursor: pointer;
                             }
@@ -653,16 +653,16 @@ class BrevoService {
                                                 <!-- Stats Row -->
                                                 <div class="stats-row">
                                                     <div class="stat-item">
-                                                        <span class="stat-number">15K+</span>
-                                                        <span class="stat-label">عضو نشط</span>
+                                                        <span class="stat-number">60K+</span>
+                                                        <span class="stat-label">متابع نشط</span>
                                                     </div>
                                                     <div class="stat-item">
-                                                        <span class="stat-number">200+</span>
-                                                        <span class="stat-label">تحليل أسبوعي</span>
+                                                        <span class="stat-number">10+</span>
+                                                        <span class="stat-label">مقالات أسبوعية</span>
                                                     </div>
                                                     <div class="stat-item">
-                                                        <span class="stat-number">50+</span>
-                                                        <span class="stat-label">دوري مُغطى</span>
+                                                        <span class="stat-number">5+</span>
+                                                        <span class="stat-label">دوريات مُغطات</span>
                                                     </div>
                                                 </div>
                                                 
@@ -681,7 +681,7 @@ class BrevoService {
                                                     </div>
                                                     
                                                     <div class="feature-card">
-                                                        <span class="feature-icon"></span>
+                                                        <span class="feature-icon">⭐</span>
                                                         <span class="feature-text">متابعة دائمة لشؤون النجم الساحلي</span>
                                                     </div>
                                                     
@@ -692,7 +692,6 @@ class BrevoService {
                                                 </div>
                                                 
                                                 <!-- CTA Section -->
-                                                <div class="cta-section">
                                                     <a href="${homeUrl}" class="cta-button">انضم إلى الكارتال</a>
                                                 </div>
                                                 

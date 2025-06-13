@@ -226,88 +226,134 @@ class BrevoService {
      */
     async sendArticleNotification(subscribers, article) {
         try {
-            if (!subscribers || subscribers.length === 0) {
-                console.log('📭 No subscribers to notify about new article');
-                return { sent: 0, failed: 0 };
-            }
-
-            console.log(`📰 Sending article notification to ${subscribers.length} subscribers...`);
+            this.checkConfiguration();
             
-            // Filter subscribers based on preferences if available
-            const interestedSubscribers = subscribers.filter(subscriber => {
-                if (!subscriber.preferences) return true;
-                
-                // Check if subscriber is interested in this category
-                switch (article.category) {
-                    case 'etoile-du-sahel':
-                        return subscriber.preferences.featureArticles !== false;
-                    case 'the-beautiful-game':
-                        return subscriber.preferences.featureArticles !== false;
-                    case 'all-sports-hub':
-                        return subscriber.preferences.breakingNews !== false;
-                    default:
-                        return true;
-                }
-            });
-
-            if (interestedSubscribers.length === 0) {
-                console.log('📭 No interested subscribers for this article category');
-                return { sent: 0, failed: 0 };
-            }
-
-            // Prepare recipients
-            const recipients = interestedSubscribers.map(subscriber => ({
-                email: subscriber.email,
-                name: subscriber.name || subscriber.email.split('@')[0]
-            }));
+            // Get the first 200 characters of the Arabic content for preview
+            const previewContent = article.content.ar ? 
+                article.content.ar.substring(0, 200) + '...' : 
+                'اقرأ المزيد عن هذا المقال المميز';
             
-            const subject = `New Article: ${article.title}`;
+            const articleUrl = `${process.env.FRONTEND_URL}/article/${article.slug}`;
             
-            // Use the article notification template
-            const { getArticleNotificationTemplate } = require('../templates/emailTemplates');
-            
-            const results = [];
-            
-            // Send in different languages if needed
-            const languages = ['en']; // Can be extended to ['en', 'fr', 'ar']
-            
-            for (const language of languages) {
-                const languageSubscribers = recipients; // Filter by language preference if available
-                
-                if (languageSubscribers.length === 0) continue;
-                
-                const template = getArticleNotificationTemplate(article, language);
-                
-                const result = await this.sendBulkEmail(
-                    languageSubscribers,
-                    template.subject,
-                    template.html,
-                    {
-                        tags: ['article-notification', article.category, language],
-                        params: {
-                            article_id: article._id,
-                            article_title: article.title,
-                            article_category: article.category,
-                            language: language
+            const htmlContent = `
+                <!DOCTYPE html>
+                <html dir="rtl" lang="ar">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>${article.title.ar} - Pure Tactics Cartel</title>
+                    <style>
+                        body {
+                            font-family: 'Arial', sans-serif;
+                            line-height: 1.6;
+                            color: #333;
+                            margin: 0;
+                            padding: 20px;
+                            background-color: #f4f4f4;
                         }
-                    }
-                );
-                
-                results.push(result);
-            }
+                        .container {
+                            max-width: 600px;
+                            margin: 0 auto;
+                            background: white;
+                            padding: 20px;
+                            border-radius: 10px;
+                            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                        }
+                        .header {
+                            text-align: center;
+                            padding: 20px 0;
+                            border-bottom: 2px solid #eee;
+                        }
+                        .content {
+                            padding: 20px 0;
+                        }
+                        .article-preview {
+                            background: #f9f9f9;
+                            padding: 20px;
+                            border-radius: 5px;
+                            margin: 20px 0;
+                        }
+                        .button {
+                            display: inline-block;
+                            padding: 12px 24px;
+                            background-color: #007bff;
+                            color: white;
+                            text-decoration: none;
+                            border-radius: 5px;
+                            margin: 20px 0;
+                        }
+                        .social-icons {
+                            text-align: center;
+                            margin: 20px 0;
+                        }
+                        .social-icons a {
+                            display: inline-block;
+                            margin: 0 10px;
+                            color: #333;
+                            font-size: 24px;
+                            text-decoration: none;
+                        }
+                        .footer {
+                            text-align: center;
+                            padding: 20px 0;
+                            border-top: 2px solid #eee;
+                            font-size: 12px;
+                            color: #666;
+                        }
+                        .article-image {
+                            width: 100%;
+                            max-height: 300px;
+                            object-fit: cover;
+                            border-radius: 5px;
+                            margin: 20px 0;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <h1>Pure Tactics Cartel</h1>
+                        </div>
+                        <div class="content">
+                            <h2>مقال جديد: ${article.title.ar}</h2>
+                            ${article.image ? `<img src="${article.image}" alt="${article.title.ar}" class="article-image">` : ''}
+                            <div class="article-preview">
+                                <p>${previewContent}</p>
+                            </div>
+                            <p>اقرأ المقال كاملاً على موقعنا:</p>
+                            <a href="${articleUrl}" class="button">اقرأ المزيد</a>
+                        </div>
+                        <div class="social-icons">
+                            <a href="https://www.facebook.com/profile.php?id=61557120280089" target="_blank">📘</a>
+                            <a href="https://twitter.com/PureTacticsC" target="_blank">📘</a>
+                            <a href="#" target="_blank">📸</a>
+                            <a href="#" target="_blank">📱</a>
+                        </div>
+                        <div class="footer">
+                            <p>© 2024 Pure Tactics Cartel. جميع الحقوق محفوظة.</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            const emailPromises = subscribers.map(subscriber => 
+                this.sendEmail({
+                    to: subscriber.email,
+                    subject: `مقال جديد: ${article.title.ar}`,
+                    html: htmlContent
+                })
+            );
+
+            const results = await Promise.allSettled(emailPromises);
             
-            console.log(`✅ Article notification sent to ${recipients.length} subscribers`);
+            const sent = results.filter(r => r.status === 'fulfilled').length;
+            const failed = results.filter(r => r.status === 'rejected').length;
             
-            return {
-                sent: recipients.length,
-                failed: 0,
-                results: results
-            };
-            
+            return { sent, failed };
         } catch (error) {
-            console.error('❌ Article notification sending failed:', error.message);
-            // Don't throw error for notifications as they're not critical
-            return { sent: 0, failed: subscribers.length, error: error.message };
+            console.error('Send article notification error:', error);
+            throw new Error(`Failed to send article notification: ${error.message}`);
         }
     }
 

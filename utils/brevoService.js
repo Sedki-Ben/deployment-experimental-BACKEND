@@ -302,178 +302,434 @@ class BrevoService {
                         <meta charset="UTF-8">
                         <meta name="viewport" content="width=device-width, initial-scale=1.0">
                         <title>مرحباً بك في Pure Tactics Cartel</title>
+                        <meta name="color-scheme" content="light dark">
+                        <meta name="supported-color-schemes" content="light dark">
+                        <!--[if mso]>
+                        <noscript>
+                            <xml>
+                                <o:OfficeDocumentSettings>
+                                    <o:PixelsPerInch>96</o:PixelsPerInch>
+                                </o:OfficeDocumentSettings>
+                            </xml>
+                        </noscript>
+                        <![endif]-->
                         <style>
+                            /* Reset & Base Styles */
+                            * { margin: 0; padding: 0; box-sizing: border-box; }
+                            
                             body {
-                                font-family: Arial, Helvetica, sans-serif;
+                                margin: 0 !important;
+                                padding: 0 !important;
+                                background-color: #f8f9fa;
+                                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans Arabic', sans-serif;
                                 line-height: 1.6;
-                                color: #333;
-                                margin: 0;
-                                padding: 0;
-                                background-color: #fff5f5;
+                                color: #2c3e50;
+                                -webkit-text-size-adjust: 100%;
+                                -ms-text-size-adjust: 100%;
                             }
-                            .container {
-                                max-width: 600px;
+                            
+                            /* Dark mode support */
+                            @media (prefers-color-scheme: dark) {
+                                body { background-color: #1a1a1a !important; }
+                                .email-container { background-color: #2d2d2d !important; }
+                                .content-text { color: #e0e0e0 !important; }
+                                .features-card { background-color: #3a3a3a !important; border-color: #555 !important; }
+                            }
+                            
+                            /* Email Container - Table Based for Compatibility */
+                            .email-wrapper {
+                                width: 100%;
+                                background-color: #f8f9fa;
+                                padding: 20px 0;
+                            }
+                            
+                            .email-container {
+                                max-width: 640px;
                                 margin: 0 auto;
-                                background: white;
-                                border-radius: 15px;
-                                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                                background: #ffffff;
+                                border-radius: 16px;
                                 overflow: hidden;
+                                box-shadow: 0 8px 32px rgba(0,0,0,0.08);
                             }
+                            
+                            /* Header Section */
                             .header {
-                                background: linear-gradient(135deg, #b00020 0%, #f44336 100%);
-                                padding: 40px 20px;
+                                background: linear-gradient(135deg, #c62828 0%, #e53935 50%, #d32f2f 100%);
+                                padding: 48px 24px;
                                 text-align: center;
-                                color: white;
+                                position: relative;
                             }
-                            .header h1 {
-                                margin: 0;
-                                font-size: 28px;
-                                font-weight: bold;
+                            
+                            .header::before {
+                                content: '';
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                right: 0;
+                                bottom: 0;
+                                background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23pattern)"/></svg>');
+                                opacity: 0.3;
                             }
-                            .subtitle {
-                                margin-top: 10px;
+                            
+                            .header-content { position: relative; z-index: 1; }
+                            
+                            .logo {
+                                font-size: 32px;
+                                font-weight: 800;
+                                color: #ffffff;
+                                margin-bottom: 8px;
+                                letter-spacing: -0.5px;
+                            }
+                            
+                            .tagline {
                                 font-size: 16px;
-                                opacity: 0.9;
+                                color: rgba(255,255,255,0.95);
+                                font-weight: 500;
+                                margin-bottom: 24px;
                             }
+                            
+                            .hero-badge {
+                                display: inline-block;
+                                background: rgba(255,255,255,0.2);
+                                padding: 8px 16px;
+                                border-radius: 20px;
+                                font-size: 14px;
+                                color: #ffffff;
+                                border: 1px solid rgba(255,255,255,0.3);
+                            }
+                            
+                            /* Content Sections */
                             .content {
-                                padding: 30px;
+                                padding: 40px 32px;
                             }
+                            
                             .greeting {
                                 text-align: center;
-                                font-size: 24px;
-                                color: #d62828;
-                                margin-bottom: 20px;
+                                margin-bottom: 32px;
                             }
-                            .welcome-text {
+                            
+                            .greeting-title {
+                                font-size: 28px;
+                                color: #c62828;
+                                font-weight: 700;
+                                margin-bottom: 12px;
+                            }
+                            
+                            .greeting-subtitle {
+                                font-size: 18px;
+                                color: #546e7a;
+                                font-weight: 400;
+                            }
+                            
+                            .welcome-message {
+                                background: linear-gradient(135deg, #fff3e0 0%, #fff8f3 100%);
+                                border-right: 4px solid #ff6b35;
+                                padding: 24px;
+                                margin: 32px 0;
+                                border-radius: 12px;
                                 text-align: right;
-                                margin-bottom: 30px;
-                                color: #333;
                             }
-                            .features-box {
-                                background: #fff5f5;
-                                border: 2px solid #f28482;
+                            
+                            .welcome-text {
+                                font-size: 16px;
+                                line-height: 1.8;
+                                color: #37474f;
+                                margin-bottom: 16px;
+                            }
+                            
+                            .stats-row {
+                                display: table;
+                                width: 100%;
+                                margin: 32px 0;
+                            }
+                            
+                            .stat-item {
+                                display: table-cell;
+                                text-align: center;
+                                padding: 16px;
+                                vertical-align: top;
+                            }
+                            
+                            .stat-number {
+                                font-size: 24px;
+                                font-weight: 700;
+                                color: #c62828;
+                                display: block;
+                            }
+                            
+                            .stat-label {
+                                font-size: 14px;
+                                color: #78909c;
+                                margin-top: 4px;
+                            }
+                            
+                            /* Features Grid */
+                            .features-grid {
+                                margin: 32px 0;
+                            }
+                            
+                            .features-title {
+                                font-size: 20px;
+                                font-weight: 700;
+                                color: #c62828;
+                                text-align: right;
+                                margin-bottom: 24px;
+                            }
+                            
+                            .feature-card {
+                                background: #ffffff;
+                                border: 2px solid #ffecec;
                                 border-radius: 12px;
                                 padding: 20px;
-                                margin: 20px 0;
-                            }
-                            .features-title {
-                                color: #d62828;
-                                font-weight: bold;
-                                margin-bottom: 15px;
+                                margin-bottom: 16px;
                                 text-align: right;
+                                transition: border-color 0.2s ease;
                             }
-                            .feature-item {
-                                margin: 10px 0;
-                                text-align: right;
+                            
+                            /* Outlook fallback */
+                            .feature-card:hover {
+                                border-color: #ffcdd2;
                             }
-                            .button {
-                                display: inline-block;
-                                padding: 15px 30px;
-                                background: linear-gradient(135deg, #d62828 0%, #e63946 100%);
-                                color: white;
-                                text-decoration: none;
-                                border-radius: 25px;
-                                margin: 20px 0;
+                            
+                            .feature-icon {
+                                font-size: 24px;
+                                margin-left: 12px;
+                                vertical-align: middle;
+                            }
+                            
+                            .feature-text {
+                                font-size: 16px;
+                                color: #455a64;
+                                font-weight: 500;
+                                vertical-align: middle;
+                            }
+                            
+                            /* CTA Section */
+                            .cta-section {
                                 text-align: center;
-                                box-shadow: 0 4px 6px rgba(214, 40, 40, 0.2);
-                                transition: transform 0.2s;
+                                margin: 40px 0;
+                                padding: 32px 24px;
+                                background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+                                border-radius: 16px;
                             }
-                            .button:hover {
-                                transform: translateY(-2px);
+                            
+                            .cta-title {
+                                font-size: 20px;
+                                color: #c62828;
+                                font-weight: 700;
+                                margin-bottom: 16px;
                             }
+                            
+                            .cta-button {
+                                display: inline-block;
+                                padding: 16px 32px;
+                                background: linear-gradient(135deg, #c62828 0%, #d32f2f 100%);
+                                color: #ffffff !important;
+                                text-decoration: none;
+                                border-radius: 50px;
+                                font-weight: 600;
+                                font-size: 16px;
+                                box-shadow: 0 4px 16px rgba(198, 40, 40, 0.3);
+                                border: none;
+                                cursor: pointer;
+                            }
+                            
+                            /* Social Section */
                             .social-section {
                                 text-align: center;
-                                margin: 30px 0;
+                                margin: 40px 0;
+                                padding: 24px;
+                                background: #fff;
+                                border-radius: 12px;
                             }
+                            
                             .social-title {
-                                color: #d62828;
-                                margin-bottom: 15px;
+                                font-size: 18px;
+                                color: #c62828;
+                                font-weight: 600;
+                                margin-bottom: 20px;
                             }
-                            .social-icons {
-                                display: flex;
-                                justify-content: center;
-                                gap: 20px;
-                            }
-                            .social-icon {
-                                width: 40px;
-                                height: 40px;
-                                background: #fff5f5;
-                                border-radius: 50%;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                color: #d62828;
-                                text-decoration: none;
-                                transition: transform 0.2s;
-                            }
-                            .social-icon:hover {
-                                transform: scale(1.1);
-                            }
-                            .footer {
+                            
+                            .social-links {
                                 text-align: center;
-                                padding: 20px;
-                                background: #fff5f5;
-                                color: #666;
-                                font-size: 12px;
                             }
-                            @media only screen and (max-width: 600px) {
-                                .container {
-                                    margin: 10px;
-                                }
-                                .content {
-                                    padding: 20px;
-                                }
-                                .button {
-                                    display: block;
-                                    text-align: center;
-                                }
-                                .social-icons {
-                                    flex-wrap: wrap;
-                                }
+                            
+                            .social-link {
+                                display: inline-block;
+                                width: 48px;
+                                height: 48px;
+                                background: #f8f9fa;
+                                border: 2px solid #e0e0e0;
+                                border-radius: 50%;
+                                margin: 0 8px;
+                                text-decoration: none;
+                                vertical-align: middle;
+                                line-height: 44px;
+                                font-size: 20px;
+                            }
+                            
+                            .social-link.facebook { color: #1877f2; border-color: #e3f2fd; background: #f3f9ff; }
+                            .social-link.twitter { color: #1da1f2; border-color: #e1f5fe; background: #f0faff; }
+                            .social-link.instagram { color: #e4405f; border-color: #fce4ec; background: #fff0f3; }
+                            .social-link.telegram { color: #0088cc; border-color: #e0f2f1; background: #f0fffe; }
+                            
+                            /* Footer */
+                            .footer {
+                                background: #f8f9fa;
+                                padding: 32px 24px;
+                                text-align: center;
+                                border-top: 1px solid #e0e0e0;
+                            }
+                            
+                            .footer-text {
+                                font-size: 14px;
+                                color: #78909c;
+                                line-height: 1.6;
+                                margin-bottom: 12px;
+                            }
+                            
+                            .unsubscribe-link {
+                                color: #c62828;
+                                text-decoration: none;
+                                font-weight: 500;
+                            }
+                            
+                            /* Mobile Responsiveness */
+                            @media only screen and (max-width: 640px) {
+                                .email-wrapper { padding: 10px 0; }
+                                .email-container { margin: 0 10px; border-radius: 12px; }
+                                .header { padding: 32px 20px; }
+                                .logo { font-size: 28px; }
+                                .content { padding: 24px 20px; }
+                                .greeting-title { font-size: 24px; }
+                                .welcome-message { padding: 20px; }
+                                .stats-row { display: block; }
+                                .stat-item { display: block; padding: 12px 0; }
+                                .cta-section { padding: 24px 16px; }
+                                .cta-button { display: block; margin: 0 auto; }
+                                .social-link { margin: 0 4px; }
+                            }
+                            
+                            /* High DPI Support */
+                            @media only screen and (-webkit-min-device-pixel-ratio: 2), 
+                                only screen and (min-resolution: 192dpi) {
+                                .cta-button { box-shadow: 0 2px 8px rgba(198, 40, 40, 0.4); }
                             }
                         </style>
                     </head>
                     <body>
-                        <div class="container">
-                            <div class="header">
-                                <h1>Pure Tactics Cartel</h1>
-                                <div class="subtitle">الذكاء التكتيكي • الرؤية الثقافية • كرة القدم العالمية</div>
-                            </div>
-                            <div class="content">
-                                <div class="greeting">مرحباً بك عزيزي المشترك!</div>
-                                <div class="welcome-text">
-                                    شكرًا لانضمامك إلى مجتمع Pure Tactics Cartel! نحن سعداء جدًا بانضمامك إلينا.
-                                    ستكون جزءًا من مجتمع يهتم بالتحليلات التكتيكية العميقة، والآراء الثقافية حول كرة القدم، والتحديثات العالمية.
-                                </div>
-                                <div class="features-box">
-                                    <div class="features-title">ما يمكنك فعله:</div>
-                                    <div class="feature-item">📖 قراءة تحليلات تكتيكية معمقة</div>
-                                    <div class="feature-item">💬 التفاعل مع مجتمعنا</div>
-                                    <div class="feature-item">⚽ البقاء على اطلاع بأحدث المستجدات</div>
-                                    <div class="feature-item">🌍 استكشاف كرة القدم من منظور عالمي</div>
-                                </div>
-                                <div style="text-align: center;">
-                                    <a href="${homeUrl}" class="button">مرحباً بك في الكارتل</a>
-                                </div>
-                                <div class="social-section">
-                                    <div class="social-title">تواصل معنا عبر:</div>
-                                    <div class="social-icons">
-                                        <a href="https://www.facebook.com/profile.php?id=61557120280089" class="social-icon" target="_blank">📘</a>
-                                        <a href="https://twitter.com/PureTacticsC" class="social-icon" target="_blank">📘</a>
-                                        <a href="#" class="social-icon" target="_blank">📸</a>
-                                        <a href="#" class="social-icon" target="_blank">📱</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="footer">
-                                <p>لقد استلمت هذا البريد الإلكتروني لأنك اشتركت في نشرتنا البريدية.</p>
-                                <p>© 2024 Pure Tactics Cartel. جميع الحقوق محفوظة.</p>
-                            </div>
+                        <div class="email-wrapper">
+                            <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f8f9fa;">
+                                <tr>
+                                    <td align="center" valign="top">
+                                        <div class="email-container">
+                                            <!-- Header -->
+                                            <div class="header">
+                                                <div class="header-content">
+                                                    <div class="logo">Pure Tactics Cartel</div>
+                                                    <div class="tagline">الذكاء التكتيكي • الرؤية الثقافية • كرة القدم العالمية</div>
+                                                    <div class="hero-badge">مجتمع النخبة التكتيكية</div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Content -->
+                                            <div class="content">
+                                                <!-- Greeting -->
+                                                <div class="greeting">
+                                                    <div class="greeting-title">أهلاً وسهلاً بك</div>
+                                                    <div class="greeting-subtitle">في عائلة Pure Tactics Cartel</div>
+                                                </div>
+                                                
+                                                <!-- Welcome Message -->
+                                                <div class="welcome-message">
+                                                    <div class="welcome-text">
+                                                        مرحباً بك في مجتمعنا المتميز! أنت الآن جزء من نخبة محللي كرة القدم والمهتمين بالتكتيكات المتقدمة.
+                                                    </div>
+                                                    <div class="welcome-text">
+                                                        نحن متحمسون لمشاركة أعمق التحليلات التكتيكية وأحدث الرؤى الثقافية معك.
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Stats Row -->
+                                                <div class="stats-row">
+                                                    <div class="stat-item">
+                                                        <span class="stat-number">15K+</span>
+                                                        <span class="stat-label">عضو نشط</span>
+                                                    </div>
+                                                    <div class="stat-item">
+                                                        <span class="stat-number">200+</span>
+                                                        <span class="stat-label">تحليل أسبوعي</span>
+                                                    </div>
+                                                    <div class="stat-item">
+                                                        <span class="stat-number">50+</span>
+                                                        <span class="stat-label">دوري مُغطى</span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Features -->
+                                                <div class="features-grid">
+                                                    <div class="features-title">ما الذي ينتظرك:</div>
+                                                    
+                                                    <div class="feature-card">
+                                                        <span class="feature-icon">🎯</span>
+                                                        <span class="feature-text">تحليلات تكتيكية متعمقة للمباريات الكبرى</span>
+                                                    </div>
+                                                    
+                                                    <div class="feature-card">
+                                                        <span class="feature-icon">🧠</span>
+                                                        <span class="feature-text">رؤى استراتيجية من خبراء معتمدين</span>
+                                                    </div>
+                                                    
+                                                    <div class="feature-card">
+                                                        <span class="feature-icon">🌍</span>
+                                                        <span class="feature-text">تغطية شاملة للدوريات العالمية</span>
+                                                    </div>
+                                                    
+                                                    <div class="feature-card">
+                                                        <span class="feature-icon">💬</span>
+                                                        <span class="feature-text">مناقشات حية مع مجتمع متخصص</span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- CTA Section -->
+                                                <div class="cta-section">
+                                                    <div class="cta-title">استكشف عالم التكتيكات</div>
+                                                    <a href="${homeUrl}" class="cta-button">ادخل إلى الكارتل</a>
+                                                </div>
+                                                
+                                                <!-- Social Section -->
+                                                <div class="social-section">
+                                                    <div class="social-title">تابعنا على منصاتنا:</div>
+                                                    <div class="social-links">
+                                                        <a href="https://www.facebook.com/profile.php?id=61557120280089" class="social-link facebook" target="_blank" aria-label="Facebook">f</a>
+                                                        <a href="https://twitter.com/PureTacticsC" class="social-link twitter" target="_blank" aria-label="Twitter">t</a>
+                                                        <a href="#" class="social-link instagram" target="_blank" aria-label="Instagram">i</a>
+                                                        <a href="#" class="social-link telegram" target="_blank" aria-label="Telegram">T</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Footer -->
+                                            <div class="footer">
+                                                <div class="footer-text">
+                                                    تلقيت هذا البريد لأنك اشتركت في نشرتنا الإخبارية.
+                                                </div>
+                                                <div class="footer-text">
+                                                    لا تريد استلام هذه الرسائل؟ <a href="#" class="unsubscribe-link">إلغاء الاشتراك</a>
+                                                </div>
+                                                <div class="footer-text">
+                                                    © 2024 Pure Tactics Cartel. جميع الحقوق محفوظة.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </body>
                     </html>
                 `,
-                tags: ['welcome', 'subscription']
+                tags: ['welcome', 'subscription', 'modern', 'responsive']
             });
             
             console.log(`✅ Welcome email sent to ${subscription.email}`);

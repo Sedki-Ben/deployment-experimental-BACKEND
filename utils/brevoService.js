@@ -320,7 +320,7 @@ class BrevoService {
                             body {
                                 margin: 0 !important;
                                 padding: 0 !important;
-                                background-color: rgb(194, 194, 201);
+                                background-color: rgb(139, 139, 139);
                                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans Arabic', sans-serif;
                                 line-height: 1.6;
                                 color: #2c3e50;
@@ -339,14 +339,14 @@ class BrevoService {
                             /* Email Container - Table Based for Compatibility */
                             .email-wrapper {
                                 width: 100%;
-                                background-color: rgb(172, 175, 179);
+                                background-color: rgb(139, 139, 139);
                                 padding: 20px 0;
                             }
                             
                             .email-container {
                                 max-width: 640px;
                                 margin: 0 auto;
-                                background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 40%, #ffffff 100%);
+                                background: rgb(139, 139, 139);
                                 border-radius: 16px;
                                 overflow: hidden;
                                 box-shadow: 0 8px 32px rgba(0,0,0,0.08);
@@ -413,7 +413,7 @@ class BrevoService {
                             
                             .welcome-message {
                                 background: linear-gradient(135deg, rgba(238, 231, 231, 0.8) 50%, #fff8f3 100%);
-                                border-left: 5px solid rgb(0, 0, 0);
+                                border: 5px solid rgb(0, 0, 0);
                                 padding: 24px;
                                 margin: 32px 0;
                                 border-radius: 12px;
@@ -423,7 +423,7 @@ class BrevoService {
                             .welcome-text {
                                 font-size: 20px;
                                 line-height: 1.8;
-                                color: rgb(77, 76, 76);
+                                color: rgb(100, 100, 100);
                                 margin-bottom: 12px;
                             }
                             
@@ -431,6 +431,7 @@ class BrevoService {
                                 display: table;
                                 width: 100%;
                                 margin: 32px 0;
+                                table-layout: fixed;
                             }
                             
                             .stat-item {
@@ -438,6 +439,8 @@ class BrevoService {
                                 text-align: center;
                                 padding: 16px;
                                 vertical-align: top;
+                                width: 33.33%; /* Explicitly set equal width */
+
                             }
                             
                             .stat-number {
@@ -485,7 +488,7 @@ class BrevoService {
                             
                             .feature-text {
                                 font-size: 16px;
-                                color:rgb(60, 63, 65);
+                                color:rgb(100, 100, 100);
                                 font-weight: 500;
                                 vertical-align: middle;
                             }
@@ -629,7 +632,7 @@ class BrevoService {
                                                 <!-- Welcome Message -->
                                                 <div class="welcome-message">
                                                     <div class="welcome-text">
-                                                        مرحبا بكم في مجتمع الPTC، أين أحاول مشاركة نظرتي لكرة القدم معكم.
+                                                        مرحبا بكم في مجتمع الPTC أين نحاول مشاركتكم نظرتنا لكرة القدم
                                                     </div>
                                                     <div class="welcome-text">   
                                                         سواء تعلق الأمر بالبطولات العالمية، العربية او بشكل أخص فريقي النجم الرياضي الساحلي.
@@ -639,12 +642,12 @@ class BrevoService {
                                                 <!-- Stats Row -->
                                                 <div class="stats-row">
                                                     <div class="stat-item">
-                                                        <span class="stat-number">60K+</span>
-                                                        <span class="stat-label">  عضو نشط</span>
+                                                        <span class="stat-number">60000+</span>
+                                                        <span class="stat-label">  عضو نشيط</span>
                                                     </div>
                                                     <div class="stat-item">
                                                         <span class="stat-number">10+</span>
-                                                        <span class="stat-label">مقالات أسبوعية</span>
+                                                        <span class="stat-label">مقالات شهرية</span>
                                                     </div>
                                                     <div class="stat-item">
                                                         <span class="stat-number">5+</span>

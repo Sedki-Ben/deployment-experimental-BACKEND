@@ -251,40 +251,6 @@ class BrevoService {
     }
 
     /**
-     * Send welcome/verification email
-     * @param {Object} user - User object
-     * @param {string} verificationToken - Verification token
-     */
-    async sendWelcomeEmail(user, verificationToken) {
-        try {
-            const { getWelcomeEmailTemplate } = require('../templates/emailTemplates');
-            
-            const verificationUrl = verificationToken 
-                ? `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`
-                : null;
-            
-            const template = getWelcomeEmailTemplate(
-                user.name || user.email.split('@')[0],
-                'en', // Can be determined from user preferences
-                verificationUrl
-            );
-            
-            await this.sendEmail({
-                to: user.email,
-                subject: template.subject,
-                html: template.html,
-                tags: ['welcome', 'verification']
-            });
-            
-            console.log(`✅ Welcome email sent to ${user.email}`);
-            
-        } catch (error) {
-            console.error('❌ Welcome email sending failed:', error.message);
-            // Don't throw error for welcome emails as they're not critical
-        }
-    }
-
-    /**
      * Send password reset email
      * @param {Object} user - User object
      * @param {string} resetToken - Reset token
@@ -324,164 +290,196 @@ class BrevoService {
     async sendVerificationEmail(subscription, verificationToken) {
         try {
             this.checkConfiguration();
-            const homeUrl = `${process.env.FRONTEND_URL}`;
-            const htmlContent = `
-                <!DOCTYPE html>
-                <html dir="rtl" lang="ar">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Welcome to Pure Tactics Cartel</title>
-                    <style>
-                        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
-                        
-                        * {
-                            margin: 0;
-                            padding: 0;
-                            box-sizing: border-box;
-                        }
-                        
-                        body {
-                            font-family: 'Inter', Arial, sans-serif;
-                            line-height: 1.6;
-                            color: #1f2937;
-                            background-color: #f9fafb;
-                            direction: rtl;
-                        }
-                        
-                        .container {
-                            max-width: 600px;
-                            margin: 0 auto;
-                            background-color: #ffffff;
-                            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                        }
-                        
-                        .header {
-                            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-                            padding: 40px 30px;
-                            text-align: center;
-                            color: white;
-                        }
-                        
-                        .logo {
-                            font-family: 'Playfair Display', serif;
-                            font-size: 28px;
-                            font-weight: 700;
-                            margin-bottom: 10px;
-                            text-decoration: none;
-                            color: white;
-                        }
-                        
-                        .content {
-                            padding: 40px 30px;
-                            text-align: center;
-                        }
-                        
-                        .welcome-text {
-                            font-size: 24px;
-                            color: #1f2937;
-                            margin-bottom: 20px;
-                        }
-                        
-                        .message {
-                            color: #4b5563;
-                            margin-bottom: 30px;
-                        }
-                        
-                        .button {
-                            display: inline-block;
-                            padding: 15px 30px;
-                            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-                            color: white;
-                            text-decoration: none;
-                            border-radius: 8px;
-                            font-weight: 600;
-                            transition: transform 0.2s;
-                        }
-                        
-                        .button:hover {
-                            transform: translateY(-2px);
-                        }
-                        
-                        .social-icons {
-                            margin: 40px 0;
-                            text-align: center;
-                        }
-                        
-                        .social-icon {
-                            display: inline-block;
-                            margin: 0 10px;
-                            width: 40px;
-                            height: 40px;
-                            border-radius: 50%;
-                            background: #f3f4f6;
-                            text-align: center;
-                            line-height: 40px;
-                            transition: transform 0.2s;
-                        }
-                        
-                        .social-icon:hover {
-                            transform: translateY(-2px);
-                        }
-                        
-                        .footer {
-                            background-color: #f3f4f6;
-                            padding: 30px;
-                            text-align: center;
-                            border-top: 1px solid #e5e7eb;
-                        }
-                        
-                        .copyright {
-                            font-size: 12px;
-                            color: #6b7280;
-                        }
-                        
-                        @media only screen and (max-width: 600px) {
-                            .container {
-                                width: 100% !important;
-                            }
-                            
-                            .header, .content, .footer {
-                                padding: 20px !important;
-                            }
-                            
-                            .logo {
-                                font-size: 24px !important;
-                            }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="container">
-                        <div class="header">
-                            <div class="logo">Pure Tactics Cartel</div>
-                        </div>
-                        <div class="content">
-                            <h2 class="welcome-text">مرحباً بك، عزيز المشترك!</h2>
-                            <p class="message">شكراً لانضمامك إلى مجتمع Pure Tactics Cartel. نحن سعداء بوجودك معنا!</p>
-                            <a href="${homeUrl}" class="button">Welcome to the Cartel</a>
-                        </div>
-                        <div class="social-icons">
-                            <a href="https://www.facebook.com/profile.php?id=61557120280089" class="social-icon" target="_blank">📘</a>
-                            <a href="https://twitter.com/PureTacticsC" class="social-icon" target="_blank">🐦</a>
-                            <a href="#" class="social-icon" target="_blank">📸</a>
-                            <a href="#" class="social-icon" target="_blank">📱</a>
-                        </div>
-                        <div class="footer">
-                            <p class="copyright">© 2024 Pure Tactics Cartel. جميع الحقوق محفوظة.</p>
-                        </div>
-                    </div>
-                </body>
-                </html>
-            `;
+            const homeUrl = process.env.FRONTEND_URL;
+            
             await this.sendEmail({
                 to: subscription.email,
-                subject: 'Welcome to Pure Tactics Cartel',
-                html: htmlContent
+                subject: 'مرحباً بك في Pure Tactics Cartel',
+                html: `
+                    <!DOCTYPE html>
+                    <html dir="rtl" lang="ar">
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>مرحباً بك في Pure Tactics Cartel</title>
+                        <style>
+                            body {
+                                font-family: Arial, Helvetica, sans-serif;
+                                line-height: 1.6;
+                                color: #333;
+                                margin: 0;
+                                padding: 0;
+                                background-color: #fff5f5;
+                            }
+                            .container {
+                                max-width: 600px;
+                                margin: 0 auto;
+                                background: white;
+                                border-radius: 15px;
+                                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                                overflow: hidden;
+                            }
+                            .header {
+                                background: linear-gradient(135deg, #b00020 0%, #f44336 100%);
+                                padding: 40px 20px;
+                                text-align: center;
+                                color: white;
+                            }
+                            .header h1 {
+                                margin: 0;
+                                font-size: 28px;
+                                font-weight: bold;
+                            }
+                            .subtitle {
+                                margin-top: 10px;
+                                font-size: 16px;
+                                opacity: 0.9;
+                            }
+                            .content {
+                                padding: 30px;
+                            }
+                            .greeting {
+                                text-align: center;
+                                font-size: 24px;
+                                color: #d62828;
+                                margin-bottom: 20px;
+                            }
+                            .welcome-text {
+                                text-align: right;
+                                margin-bottom: 30px;
+                                color: #333;
+                            }
+                            .features-box {
+                                background: #fff5f5;
+                                border: 2px solid #f28482;
+                                border-radius: 12px;
+                                padding: 20px;
+                                margin: 20px 0;
+                            }
+                            .features-title {
+                                color: #d62828;
+                                font-weight: bold;
+                                margin-bottom: 15px;
+                                text-align: right;
+                            }
+                            .feature-item {
+                                margin: 10px 0;
+                                text-align: right;
+                            }
+                            .button {
+                                display: inline-block;
+                                padding: 15px 30px;
+                                background: linear-gradient(135deg, #d62828 0%, #e63946 100%);
+                                color: white;
+                                text-decoration: none;
+                                border-radius: 25px;
+                                margin: 20px 0;
+                                text-align: center;
+                                box-shadow: 0 4px 6px rgba(214, 40, 40, 0.2);
+                                transition: transform 0.2s;
+                            }
+                            .button:hover {
+                                transform: translateY(-2px);
+                            }
+                            .social-section {
+                                text-align: center;
+                                margin: 30px 0;
+                            }
+                            .social-title {
+                                color: #d62828;
+                                margin-bottom: 15px;
+                            }
+                            .social-icons {
+                                display: flex;
+                                justify-content: center;
+                                gap: 20px;
+                            }
+                            .social-icon {
+                                width: 40px;
+                                height: 40px;
+                                background: #fff5f5;
+                                border-radius: 50%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                color: #d62828;
+                                text-decoration: none;
+                                transition: transform 0.2s;
+                            }
+                            .social-icon:hover {
+                                transform: scale(1.1);
+                            }
+                            .footer {
+                                text-align: center;
+                                padding: 20px;
+                                background: #fff5f5;
+                                color: #666;
+                                font-size: 12px;
+                            }
+                            @media only screen and (max-width: 600px) {
+                                .container {
+                                    margin: 10px;
+                                }
+                                .content {
+                                    padding: 20px;
+                                }
+                                .button {
+                                    display: block;
+                                    text-align: center;
+                                }
+                                .social-icons {
+                                    flex-wrap: wrap;
+                                }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="container">
+                            <div class="header">
+                                <h1>Pure Tactics Cartel</h1>
+                                <div class="subtitle">الذكاء التكتيكي • الرؤية الثقافية • كرة القدم العالمية</div>
+                            </div>
+                            <div class="content">
+                                <div class="greeting">مرحباً بك عزيزي المشترك!</div>
+                                <div class="welcome-text">
+                                    شكرًا لانضمامك إلى مجتمع Pure Tactics Cartel! نحن سعداء جدًا بانضمامك إلينا.
+                                    ستكون جزءًا من مجتمع يهتم بالتحليلات التكتيكية العميقة، والآراء الثقافية حول كرة القدم، والتحديثات العالمية.
+                                </div>
+                                <div class="features-box">
+                                    <div class="features-title">ما يمكنك فعله:</div>
+                                    <div class="feature-item">📖 قراءة تحليلات تكتيكية معمقة</div>
+                                    <div class="feature-item">💬 التفاعل مع مجتمعنا</div>
+                                    <div class="feature-item">⚽ البقاء على اطلاع بأحدث المستجدات</div>
+                                    <div class="feature-item">🌍 استكشاف كرة القدم من منظور عالمي</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <a href="${homeUrl}" class="button">مرحباً بك في الكارتل</a>
+                                </div>
+                                <div class="social-section">
+                                    <div class="social-title">تواصل معنا عبر:</div>
+                                    <div class="social-icons">
+                                        <a href="https://www.facebook.com/profile.php?id=61557120280089" class="social-icon" target="_blank">📘</a>
+                                        <a href="https://twitter.com/PureTacticsC" class="social-icon" target="_blank">📘</a>
+                                        <a href="#" class="social-icon" target="_blank">📸</a>
+                                        <a href="#" class="social-icon" target="_blank">📱</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="footer">
+                                <p>لقد استلمت هذا البريد الإلكتروني لأنك اشتركت في نشرتنا البريدية.</p>
+                                <p>© 2024 Pure Tactics Cartel. جميع الحقوق محفوظة.</p>
+                            </div>
+                        </div>
+                    </body>
+                    </html>
+                `,
+                tags: ['welcome', 'subscription']
             });
+            
             console.log(`✅ Welcome email sent to ${subscription.email}`);
         } catch (error) {
             console.error('❌ Welcome email sending failed:', error);
+            throw error;
         }
     }
 }

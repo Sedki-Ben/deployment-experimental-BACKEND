@@ -346,7 +346,7 @@ class BrevoService {
                             .email-container {
                                 max-width: 640px;
                                 margin: 0 auto;
-                                background:rgb(66, 39, 39);
+                                background:(135deg,rgba(224, 224, 224, 0.93) 50%;
                                 border-radius: 16px;
                                 overflow: hidden;
                                 box-shadow: 0 8px 32px rgba(0,0,0,0.08);
@@ -354,7 +354,7 @@ class BrevoService {
                             
                             /* Header Section */
                             .header {
-                                background: linear-gradient(135deg, #c62828 0%, #e53935 50%, #d32f2f 100%);
+                                background: linear-gradient(135deg, #c62828 30%, #e53935 30%, #d32f2f 30%);
                                 padding: 48px 24px;
                                 text-align: center;
                                 position: relative;
@@ -422,8 +422,8 @@ class BrevoService {
                             }
                             
                             .welcome-message {
-                                background: linear-gradient(135deg, #fff3e0 0%, #fff8f3 100%);
-                                border-right: 4px solid #ff6b35;
+                                background: linear-gradient(135deg,rgba(224, 224, 224, 0.93) 50%;
+                                border-right: 4px solid rgb(0, 0, 0);
                                 padding: 24px;
                                 margin: 32px 0;
                                 border-radius: 12px;

@@ -320,7 +320,7 @@ class BrevoService {
                             body {
                                 margin: 0 !important;
                                 padding: 0 !important;
-                                background-color: #f8f9fa;
+                                background-color:rgb(217, 217, 218);
                                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans Arabic', sans-serif;
                                 line-height: 1.6;
                                 color: #2c3e50;
@@ -571,7 +571,7 @@ class BrevoService {
                             .social-link.facebook { color: #1877f2; border-color: #e3f2fd; background: #f3f9ff; }
                             .social-link.twitter { color: #1da1f2; border-color: #e1f5fe; background: #f0faff; }
                             .social-link.instagram { color: #e4405f; border-color: #fce4ec; background: #fff0f3; }
-                            .social-link.telegram { color: #0088cc; border-color: #e0f2f1; background: #f0fffe; }
+                            .social-link.telegram { color:rgb(156, 0, 204); border-color: #e0f2f1; background: #f0fffe; }
                             
                             /* Footer */
                             .footer {
@@ -701,10 +701,10 @@ class BrevoService {
                                                 <div class="social-section">
                                                     <div class="social-title">تابعنا على منصاتنا:</div>
                                                     <div class="social-links">
-                                                        <a href="https://www.facebook.com/profile.php?id=61557120280089" class="social-link facebook" target="_blank" aria-label="Facebook">f</a>
-                                                        <a href="https://twitter.com/PureTacticsC" class="social-link twitter" target="_blank" aria-label="Twitter">t</a>
-                                                        <a href="#" class="social-link instagram" target="_blank" aria-label="Instagram">i</a>
-                                                        <a href="#" class="social-link telegram" target="_blank" aria-label="Telegram">T</a>
+                                                        <a href="https://www.facebook.com/profile.php?id=61557120280089" class="social-link facebook" target="_blank" aria-label="Facebook">facebook</a>
+                                                        <a href="https://twitter.com/PureTacticsC" class="social-link twitter" target="_blank" aria-label="Twitter">twitter</a>
+                                                        <a href="#" class="social-link instagram" target="_blank" aria-label="Instagram">instagram</a>
+                                                        <a href="#" class="social-link telegram" target="_blank" aria-label="Telegram">TikTok</a>
                                                     </div>
                                                 </div>
                                             </div>

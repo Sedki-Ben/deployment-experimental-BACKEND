@@ -320,7 +320,7 @@ class BrevoService {
                             body {
                                 margin: 0 !important;
                                 padding: 0 !important;
-                                background-color:rgb(255, 255, 255);
+                                background-color:rgb(194, 194, 201);
                                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans Arabic', sans-serif;
                                 line-height: 1.6;
                                 color: #2c3e50;
@@ -339,14 +339,14 @@ class BrevoService {
                             /* Email Container - Table Based for Compatibility */
                             .email-wrapper {
                                 width: 100%;
-                                background-color:rgba(255, 255, 255, 0.93);
+                                background-color:rgba(224, 224, 224, 0.93);
                                 padding: 20px 0;
                             }
                             
                             .email-container {
                                 max-width: 640px;
                                 margin: 0 auto;
-                                background:rgba(255, 255, 255);
+                                background:rgba(238, 224, 224, 0.63);
                                 border-radius: 16px;
                                 overflow: hidden;
                                 box-shadow: 0 8px 32px rgba(0,0,0,0.08);
@@ -374,7 +374,7 @@ class BrevoService {
                             .header-content { position: relative; z-index: 1; }
                             
                             .logo {
-                                font-size: 36px;
+                                font-size: 32px;
                                 font-weight: 800;
                                 color: #ffffff;
                                 margin-bottom: 8px;
@@ -383,7 +383,7 @@ class BrevoService {
                             
                             .tagline {
                                 font-size: 16px;
-                                color: rgba(255,255,255);
+                                color: rgba(255,255,255,0.95);
                                 font-weight: 500;
                                 margin-bottom: 24px;
                             }
@@ -480,7 +480,7 @@ class BrevoService {
                             
                             /* Outlook fallback */
                             .feature-card:hover {
-                                border-color: #(135deg,rgba(224, 224, 224, 0.93) 80%;
+                                border-color: #ffcdd2;
                             }
                             
                             .feature-icon {

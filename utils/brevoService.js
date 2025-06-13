@@ -320,163 +320,186 @@ class BrevoService {
                             body {
                                 margin: 0 !important;
                                 padding: 0 !important;
-                                background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+                                background-color:rgb(194, 194, 201);
                                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans Arabic', sans-serif;
                                 line-height: 1.6;
-                                color: #334155;
+                                color: #2c3e50;
                                 -webkit-text-size-adjust: 100%;
                                 -ms-text-size-adjust: 100%;
-                                min-height: 100vh;
-                                font-size: 18px;
                             }
                             
                             /* Dark mode support */
                             @media (prefers-color-scheme: dark) {
-                                body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important; }
-                                .email-container { background: linear-gradient(145deg, #1e293b 0%, #334155 100%) !important; }
-                                .content-text { color: #e2e8f0 !important; }
-                                .features-card { background: linear-gradient(145deg, #334155 0%, #475569 100%) !important; }
+                                body { background-color: #1a1a1a !important; }
+                                .email-container { background-color: #2d2d2d !important; }
+                                .content-text { color: #e0e0e0 !important; }
+                                .features-card { background-color: #3a3a3a !important; border-color: #555 !important; }
                             }
                             
                             /* Email Container - Table Based for Compatibility */
                             .email-wrapper {
                                 width: 100%;
-                                background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-                                padding: 30px 0;
+                                background-color:rgb(111, 163, 219);
+                                padding: 20px 0;
                             }
                             
                             .email-container {
                                 max-width: 640px;
                                 margin: 0 auto;
-                                background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-                                border-radius: 24px;
+                                background:rgb(66, 39, 39);
+                                border-radius: 16px;
                                 overflow: hidden;
-                                box-shadow: 
-                                    0 25px 50px rgba(0,0,0,0.08),
-                                    0 10px 20px rgba(51, 65, 85, 0.12),
-                                    inset 0 1px 0 rgba(255,255,255,0.8);
-                                border: 1px solid rgba(226, 232, 240, 0.6);
+                                box-shadow: 0 8px 32px rgba(0,0,0,0.08);
                             }
                             
                             /* Header Section */
                             .header {
-                                background: linear-gradient(135deg, #6b7280 0%, #4b5563 50%, #374151 100%);
-                                padding: 52px 28px;
+                                background: linear-gradient(135deg, #c62828 0%, #e53935 50%, #d32f2f 100%);
+                                padding: 48px 24px;
                                 text-align: center;
                                 position: relative;
-                                box-shadow: 
-                                    0 8px 32px rgba(55, 65, 81, 0.2),
-                                    inset 0 -1px 0 rgba(0,0,0,0.1);
+                            }
+                            
+                            .header::before {
+                                content: '';
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                right: 0;
+                                bottom: 0;
+                                background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23pattern)"/></svg>');
+                                opacity: 0.3;
                             }
                             
                             .header-content { position: relative; z-index: 1; }
                             
                             .logo {
-                                font-size: 42px;
+                                font-size: 32px;
                                 font-weight: 800;
                                 color: #ffffff;
-                                margin-bottom: 12px;
+                                margin-bottom: 8px;
                                 letter-spacing: -0.5px;
-                                text-shadow: 0 2px 4px rgba(0,0,0,0.2);
                             }
                             
                             .tagline {
-                                font-size: 22px;
-                                color: rgba(255,255,255,0.9);
+                                font-size: 16px;
+                                color: rgba(255,255,255,0.95);
                                 font-weight: 500;
-                                text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+                                margin-bottom: 24px;
+                            }
+                            
+                            .hero-badge {
+                                display: inline-block;
+                                background: rgba(255,255,255,0.2);
+                                padding: 8px 16px;
+                                border-radius: 20px;
+                                font-size: 14px;
+                                color: #ffffff;
+                                border: 1px solid rgba(255,255,255,0.3);
                             }
                             
                             /* Content Sections */
                             .content {
-                                padding: 44px 36px;
-                                background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+                                padding: 40px 32px;
                             }
                             
                             .greeting {
                                 text-align: center;
-                                margin-bottom: 36px;
+                                margin-bottom: 32px;
                             }
                             
                             .greeting-title {
-                                font-size: 36px;
-                                color: #475569;
+                                font-size: 28px;
+                                color: #c62828;
                                 font-weight: 700;
-                                margin-bottom: 16px;
-                                text-shadow: 0 1px 2px rgba(71, 85, 105, 0.1);
+                                margin-bottom: 12px;
                             }
                             
                             .greeting-subtitle {
-                                font-size: 24px;
-                                color: #64748b;
+                                font-size: 18px;
+                                color: #546e7a;
                                 font-weight: 400;
                             }
                             
                             .welcome-message {
-                                background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-                                border-right: 4px solid #64748b;
-                                padding: 28px;
-                                margin: 36px 0;
-                                border-radius: 16px;
+                                background: linear-gradient(135deg, #fff3e0 0%, #fff8f3 100%);
+                                border-right: 4px solid #ff6b35;
+                                padding: 24px;
+                                margin: 32px 0;
+                                border-radius: 12px;
                                 text-align: right;
-                                box-shadow: 
-                                    0 8px 16px rgba(51, 65, 85, 0.08),
-                                    inset 0 1px 0 rgba(255,255,255,0.8);
                             }
                             
                             .welcome-text {
-                                font-size: 20px;
-                                line-height: 1.9;
-                                color: #334155;
-                                margin-bottom: 0;
+                                font-size: 16px;
+                                line-height: 1.8;
+                                color: #37474f;
+                                margin-bottom: 16px;
+                            }
+                            
+                            .stats-row {
+                                display: table;
+                                width: 100%;
+                                margin: 32px 0;
+                            }
+                            
+                            .stat-item {
+                                display: table-cell;
+                                text-align: center;
+                                padding: 16px;
+                                vertical-align: top;
+                            }
+                            
+                            .stat-number {
+                                font-size: 24px;
+                                font-weight: 700;
+                                color: #c62828;
+                                display: block;
+                            }
+                            
+                            .stat-label {
+                                font-size: 14px;
+                                color: #78909c;
+                                margin-top: 4px;
                             }
                             
                             /* Features Grid */
                             .features-grid {
-                                margin: 36px 0;
+                                margin: 32px 0;
                             }
                             
                             .features-title {
-                                font-size: 26px;
+                                font-size: 20px;
                                 font-weight: 700;
-                                color: #475569;
+                                color: #c62828;
                                 text-align: right;
-                                margin-bottom: 28px;
-                                text-shadow: 0 1px 2px rgba(71, 85, 105, 0.1);
+                                margin-bottom: 24px;
                             }
                             
                             .feature-card {
-                                background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-                                border: 1px solid rgba(226, 232, 240, 0.8);
-                                border-radius: 16px;
-                                padding: 24px;
-                                margin-bottom: 20px;
+                                background: #ffffff;
+                                border: 2px solid #ffecec;
+                                border-radius: 12px;
+                                padding: 20px;
+                                margin-bottom: 16px;
                                 text-align: right;
-                                transition: all 0.3s ease;
-                                box-shadow: 
-                                    0 4px 8px rgba(51, 65, 85, 0.06),
-                                    inset 0 1px 0 rgba(255,255,255,0.9);
+                                transition: border-color 0.2s ease;
                             }
                             
+                            /* Outlook fallback */
                             .feature-card:hover {
-                                border-color: #cbd5e1;
-                                transform: translateY(-1px);
-                                box-shadow: 
-                                    0 8px 16px rgba(51, 65, 85, 0.12),
-                                    0 2px 4px rgba(100, 116, 139, 0.1),
-                                    inset 0 1px 0 rgba(255,255,255,0.95);
+                                border-color: #ffcdd2;
                             }
                             
                             .feature-icon {
                                 font-size: 24px;
-                                margin-left: 16px;
+                                margin-left: 12px;
                                 vertical-align: middle;
-                                opacity: 0.8;
                             }
                             
                             .feature-text {
-                                font-size: 20px;
-                                color: #334155;
+                                font-size: 16px;
+                                color: #455a64;
                                 font-weight: 500;
                                 vertical-align: middle;
                             }
@@ -484,67 +507,47 @@ class BrevoService {
                             /* CTA Section */
                             .cta-section {
                                 text-align: center;
-                                margin: 44px 0;
-                                padding: 36px 28px;
-                                background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-                                border-radius: 20px;
-                                box-shadow: 
-                                    0 8px 16px rgba(51, 65, 85, 0.08),
-                                    inset 0 1px 0 rgba(255,255,255,0.8);
+                                margin: 40px 0;
+                                padding: 32px 24px;
+                                background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+                                border-radius: 16px;
                             }
                             
                             .cta-title {
-                                font-size: 26px;
-                                color: #475569;
+                                font-size: 20px;
+                                color: #c62828;
                                 font-weight: 700;
-                                margin-bottom: 20px;
-                                text-shadow: 0 1px 2px rgba(71, 85, 105, 0.1);
+                                margin-bottom: 16px;
                             }
                             
                             .cta-button {
                                 display: inline-block;
-                                padding: 20px 40px;
-                                background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+                                padding: 16px 32px;
+                                background: linear-gradient(135deg, #c62828 0%, #d32f2f 100%);
                                 color: #ffffff !important;
                                 text-decoration: none;
                                 border-radius: 50px;
                                 font-weight: 600;
-                                font-size: 22px;
-                                box-shadow: 
-                                    0 6px 12px rgba(55, 65, 81, 0.2),
-                                    0 2px 4px rgba(0,0,0,0.1),
-                                    inset 0 1px 0 rgba(255,255,255,0.15);
+                                font-size: 16px;
+                                box-shadow: 0 4px 16px rgba(198, 40, 40, 0.3);
                                 border: none;
                                 cursor: pointer;
-                                transition: all 0.3s ease;
-                            }
-                            
-                            .cta-button:hover {
-                                transform: translateY(-1px);
-                                box-shadow: 
-                                    0 8px 16px rgba(55, 65, 81, 0.25),
-                                    0 4px 8px rgba(0,0,0,0.15),
-                                    inset 0 1px 0 rgba(255,255,255,0.2);
                             }
                             
                             /* Social Section */
                             .social-section {
                                 text-align: center;
-                                margin: 44px 0;
-                                padding: 28px;
-                                background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-                                border-radius: 16px;
-                                box-shadow: 
-                                    0 6px 12px rgba(51, 65, 85, 0.06),
-                                    inset 0 1px 0 rgba(255,255,255,0.9);
+                                margin: 40px 0;
+                                padding: 24px;
+                                background: #fff;
+                                border-radius: 12px;
                             }
                             
                             .social-title {
-                                font-size: 24px;
-                                color: #475569;
+                                font-size: 18px;
+                                color: #c62828;
                                 font-weight: 600;
-                                margin-bottom: 24px;
-                                text-shadow: 0 1px 2px rgba(71, 85, 105, 0.05);
+                                margin-bottom: 20px;
                             }
                             
                             .social-links {
@@ -553,80 +556,70 @@ class BrevoService {
                             
                             .social-link {
                                 display: inline-block;
-                                width: 52px;
-                                height: 52px;
-                                background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
-                                border: 1px solid rgba(203, 213, 225, 0.6);
+                                width: 48px;
+                                height: 48px;
+                                background: #f8f9fa;
+                                border: 2px solid #e0e0e0;
                                 border-radius: 50%;
                                 margin: 0 8px;
                                 text-decoration: none;
                                 vertical-align: middle;
-                                line-height: 50px;
+                                line-height: 44px;
                                 font-size: 20px;
-                                transition: all 0.3s ease;
-                                box-shadow: 
-                                    0 3px 6px rgba(51, 65, 85, 0.08),
-                                    inset 0 1px 0 rgba(255,255,255,0.8);
                             }
                             
-                            .social-link:hover {
-                                transform: translateY(-2px);
-                                border-color: #94a3b8;
-                                box-shadow: 
-                                    0 6px 12px rgba(51, 65, 85, 0.12),
-                                    0 2px 4px rgba(100, 116, 139, 0.08);
-                            }
-                            
-                            .social-link.facebook { color: #1877f2; }
-                            .social-link.twitter { color: #1da1f2; }
-                            .social-link.instagram { color: #e4405f; }
-                            .social-link.telegram { color: #64748b; }
+                            .social-link.facebook { color: #1877f2; border-color: #e3f2fd; background: #f3f9ff; }
+                            .social-link.twitter { color: #1da1f2; border-color: #e1f5fe; background: #f0faff; }
+                            .social-link.instagram { color: #e4405f; border-color: #fce4ec; background: #fff0f3; }
+                            .social-link.telegram { color:rgb(156, 0, 204); border-color: #e0f2f1; background: #f0fffe; }
                             
                             /* Footer */
                             .footer {
-                                background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
-                                padding: 36px 28px;
+                                background: #f8f9fa;
+                                padding: 32px 24px;
                                 text-align: center;
-                                border-top: 1px solid rgba(203, 213, 225, 0.6);
+                                border-top: 1px solid #e0e0e0;
                             }
                             
                             .footer-text {
-                                font-size: 18px;
-                                color: #64748b;
-                                line-height: 1.7;
-                                margin-bottom: 16px;
+                                font-size: 14px;
+                                color: #78909c;
+                                line-height: 1.6;
+                                margin-bottom: 12px;
                             }
                             
                             .unsubscribe-link {
-                                color: #475569;
+                                color: #c62828;
                                 text-decoration: none;
                                 font-weight: 500;
                             }
                             
                             /* Mobile Responsiveness */
                             @media only screen and (max-width: 640px) {
-                                .email-wrapper { padding: 15px 0; }
-                                .email-container { margin: 0 15px; border-radius: 16px; }
-                                .header { padding: 36px 24px; }
-                                .logo { font-size: 36px; }
-                                .content { padding: 28px 24px; }
-                                .greeting-title { font-size: 32px; }
-                                .welcome-message { padding: 24px; }
-                                .cta-section { padding: 28px 20px; }
+                                .email-wrapper { padding: 10px 0; }
+                                .email-container { margin: 0 10px; border-radius: 12px; }
+                                .header { padding: 32px 20px; }
+                                .logo { font-size: 28px; }
+                                .content { padding: 24px 20px; }
+                                .greeting-title { font-size: 24px; }
+                                .welcome-message { padding: 20px; }
+                                .stats-row { display: block; }
+                                .stat-item { display: block; padding: 12px 0; }
+                                .cta-section { padding: 24px 16px; }
                                 .cta-button { display: block; margin: 0 auto; }
-                                .social-link { margin: 0 6px; }
+                                .social-link { margin: 0 4px; }
                             }
                             
                             /* High DPI Support */
                             @media only screen and (-webkit-min-device-pixel-ratio: 2), 
                                 only screen and (min-resolution: 192dpi) {
-                                .cta-button { box-shadow: 0 4px 12px rgba(107, 114, 128, 0.5); }
+                                .cta-button { box-shadow: 0 2px 8px rgba(198, 40, 40, 0.4); }
                             }
                         </style>
                     </head>
                     <body>
                         <div class="email-wrapper">
-                            <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);">
+                            <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f8f9fa;">
                                 <tr>
                                     <td align="center" valign="top">
                                         <div class="email-container">
@@ -635,6 +628,7 @@ class BrevoService {
                                                 <div class="header-content">
                                                     <div class="logo">Pure Tactics Cartel</div>
                                                     <div class="tagline">فضاؤكم لكرة القدم العالمية</div>
+                                                    <div class="hero-badge">مجتمع النخبة التكتيكية</div>
                                                 </div>
                                             </div>
                                             
@@ -649,7 +643,26 @@ class BrevoService {
                                                 <!-- Welcome Message -->
                                                 <div class="welcome-message">
                                                     <div class="welcome-text">
-                                                        مرحبا بكم في مجتمع الPTC، أين أحاول مشاركة نظرتي لكرة القدم معكم، سواء تعلق الأمر بالبطولات العالمية، العربية او بشكل أخص فريقي النجم الرياضي الساحلي.
+                                                        مرحباً بك في مجتمعنا المتميز! أنت الآن جزء من نخبة محللي كرة القدم والمهتمين بالتكتيكات المتقدمة.
+                                                    </div>
+                                                    <div class="welcome-text">
+                                                        نحن متحمسون لمشاركة أعمق التحليلات التكتيكية وأحدث الرؤى الثقافية معك.
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Stats Row -->
+                                                <div class="stats-row">
+                                                    <div class="stat-item">
+                                                        <span class="stat-number">15K+</span>
+                                                        <span class="stat-label">عضو نشط</span>
+                                                    </div>
+                                                    <div class="stat-item">
+                                                        <span class="stat-number">200+</span>
+                                                        <span class="stat-label">تحليل أسبوعي</span>
+                                                    </div>
+                                                    <div class="stat-item">
+                                                        <span class="stat-number">50+</span>
+                                                        <span class="stat-label">دوري مُغطى</span>
                                                     </div>
                                                 </div>
                                                 
@@ -668,7 +681,7 @@ class BrevoService {
                                                     </div>
                                                     
                                                     <div class="feature-card">
-                                                        <span class="feature-icon">⭐</span>
+                                                        <span class="feature-icon"></span>
                                                         <span class="feature-text">متابعة دائمة لشؤون النجم الساحلي</span>
                                                     </div>
                                                     
@@ -687,10 +700,10 @@ class BrevoService {
                                                 <div class="social-section">
                                                     <div class="social-title">تابعنا على منصاتنا:</div>
                                                     <div class="social-links">
-                                                        <a href="https://www.facebook.com/profile.php?id=61557120280089" class="social-link facebook" target="_blank" aria-label="Facebook">📘</a>
-                                                        <a href="https://twitter.com/PureTacticsC" class="social-link twitter" target="_blank" aria-label="Twitter">🐦</a>
-                                                        <a href="#" class="social-link instagram" target="_blank" aria-label="Instagram">📷</a>
-                                                        <a href="#" class="social-link telegram" target="_blank" aria-label="TikTok">🎵</a>
+                                                        <a href="https://www.facebook.com/profile.php?id=61557120280089" class="social-link facebook" target="_blank" aria-label="Facebook">facebook</a>
+                                                        <a href="https://twitter.com/PureTacticsC" class="social-link twitter" target="_blank" aria-label="Twitter">twitter</a>
+                                                        <a href="#" class="social-link instagram" target="_blank" aria-label="Instagram">instagram</a>
+                                                        <a href="#" class="social-link telegram" target="_blank" aria-label="Telegram">TikTok</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -714,7 +727,7 @@ class BrevoService {
                         </div>
                     </body>
                     </html>
-                    `,
+                `,
                 tags: ['welcome', 'subscription', 'modern', 'responsive']
             });
             

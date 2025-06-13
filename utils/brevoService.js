@@ -339,7 +339,7 @@ class BrevoService {
                             /* Email Container - Table Based for Compatibility */
                             .email-wrapper {
                                 width: 100%;
-                                background-color: rgb(111, 163, 219);
+                                background-color: rgb(172, 175, 179);
                                 padding: 20px 0;
                             }
                             
@@ -400,20 +400,20 @@ class BrevoService {
                             
                             .greeting-title {
                                 font-size: 28px;
-                                color: #c62828;
+                                color:rgb(255, 0, 0);
                                 font-weight: 700;
                                 margin-bottom: 8px;
                             }
                             
                             .greeting-subtitle {
-                                font-size: 20px;
-                                color: rgb(196, 68, 68);
+                                font-size: 24px;
+                                color: rgb(255, 0, 0);
                                 font-weight: 600;
                             }
                             
                             .welcome-message {
                                 background: linear-gradient(135deg, rgba(238, 231, 231, 0.8) 50%, #fff8f3 100%);
-                                border: 2px solid rgb(0, 0, 0);
+                                border: 4px solid rgb(0, 0, 0);
                                 padding: 24px;
                                 margin: 32px 0;
                                 border-radius: 12px;
@@ -423,7 +423,7 @@ class BrevoService {
                             .welcome-text {
                                 font-size: 20px;
                                 line-height: 1.8;
-                                color: rgb(51, 51, 51);
+                                color: rgb(77, 76, 76);
                                 margin-bottom: 12px;
                             }
                             
@@ -448,9 +448,9 @@ class BrevoService {
                             }
                             
                             .stat-label {
-                                font-size: 12px;
+                                font-size: 20px;
                                 font-weight: 500;
-                                color: rgb(201, 39, 39);
+                                color: rgb(255, 0, 0);
                                 margin-top: 4px;
                             }
                             
@@ -485,7 +485,7 @@ class BrevoService {
                             
                             .feature-text {
                                 font-size: 16px;
-                                color: #455a64;
+                                color:rgb(60, 63, 65);
                                 font-weight: 500;
                                 vertical-align: middle;
                             }
@@ -501,7 +501,7 @@ class BrevoService {
                             
                             .cta-title {
                                 font-size: 20px;
-                                color: #c62828;
+                                color:rgb(255, 0, 0);
                                 font-weight: 700;
                                 margin-bottom: 16px;
                             }
@@ -530,8 +530,8 @@ class BrevoService {
                             }
                             
                             .social-title {
-                                font-size: 18px;
-                                color: #c62828;
+                                font-size: 20px;
+                                color:rgb(255, 0, 0);
                                 font-weight: 600;
                                 margin-bottom: 20px;
                             }
@@ -576,7 +576,7 @@ class BrevoService {
                             }
                             
                             .unsubscribe-link {
-                                color: #c62828;
+                                color:rgb(255, 0, 0);
                                 text-decoration: none;
                                 font-weight: 500;
                             }
@@ -606,7 +606,7 @@ class BrevoService {
                     </head>
                     <body>
                         <div class="email-wrapper">
-                            <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: rgb(111, 163, 219);">
+                            <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: rgb(255, 255, 255);">
                                 <tr>
                                     <td align="center" valign="top">
                                         <div class="email-container">
@@ -629,51 +629,48 @@ class BrevoService {
                                                 <!-- Welcome Message -->
                                                 <div class="welcome-message">
                                                     <div class="welcome-text">
-                                                        مرحباً بك في مجتمعنا المتميز! أنت الآن جزء من نخبة محللي كرة القدم والمهتمين بالتكتيكات المتقدمة.
-                                                    </div>
-                                                    <div class="welcome-text">
-                                                        نحن متحمسون لمشاركة أعمق التحليلات التكتيكية وأحدث الرؤى الثقافية معك.
-                                                    </div>
+                                                    مرحبا بكم في مجتمع الPTC، أين أحاول مشاركة نظرتي لكرة القدم معكم، سواء تعلق الأمر بالبطولات العالمية، العربية او بشكل أخص فريقي النجم الرياضي الساحلي.                                                    </div>
+                                                    <div class="welcome-text">   
                                                 </div>
                                                 
                                                 <!-- Stats Row -->
                                                 <div class="stats-row">
                                                     <div class="stat-item">
-                                                        <span class="stat-number">15K+</span>
-                                                        <span class="stat-label">عضو نشط</span>
+                                                        <span class="stat-number">60K+</span>
+                                                        <span class="stat-label">  عضو نشط</span>
                                                     </div>
                                                     <div class="stat-item">
-                                                        <span class="stat-number">200+</span>
-                                                        <span class="stat-label">تحليل أسبوعي</span>
+                                                        <span class="stat-number">10+</span>
+                                                        <span class="stat-label">مقالات أسبوعية</span>
                                                     </div>
                                                     <div class="stat-item">
-                                                        <span class="stat-number">50+</span>
-                                                        <span class="stat-label">دوري مُغطى</span>
+                                                        <span class="stat-number">5+</span>
+                                                        <span class="stat-label">دوريات مغطات</span>
                                                     </div>
                                                 </div>
                                                 
                                                 <!-- Features -->
                                                 <div class="features-grid">
-                                                    <div class="features-title">ما الذي ينتظرك:</div>
+                                                    <div class="features-title">:ما الذي ينتظرك</div>
                                                     
                                                     <div class="feature-card">
                                                         <span class="feature-icon">🌍</span>
-                                                        <span class="feature-text">تحليلات تكتيكية متعمقة للمباريات الكبرى</span>
+                                                        <span class="feature-text"> تحليلات تكتيكية معمقة للمباريات الكبرى</span>
                                                     </div>
                                                     
                                                     <div class="feature-card">
                                                         <span class="feature-icon">🧠</span>
-                                                        <span class="feature-text">رؤى استراتيجية حول إدارة كرة القدم</span>
+                                                        <span class="feature-text"> رؤى استراتيجية حول إدارة كرة القدم</span>
                                                     </div>
                                                     
                                                     <div class="feature-card">
                                                         <span class="feature-icon">⭐</span>
-                                                        <span class="feature-text">متابعة دائمة لشؤون النجم الساحلي</span>
+                                                        <span class="feature-text"> متابعة دائمة لشؤون النجم الساحلي</span>
                                                     </div>
                                                     
                                                     <div class="feature-card">
                                                         <span class="feature-icon">💬</span>
-                                                        <span class="feature-text">مناقشات حية وآراء متبادلة</span>
+                                                        <span class="feature-text"> مناقشات حية وآراء متبادلة</span>
                                                     </div>
                                                 </div>
                                                 
@@ -684,7 +681,7 @@ class BrevoService {
                                                 
                                                 <!-- Social Section -->
                                                 <div class="social-section">
-                                                    <div class="social-title">تابعنا على منصاتنا:</div>
+                                                    <div class="social-title">:تابعنا على منصاتنا</div>
                                                     <div class="social-links">
                                                         <a href="https://www.facebook.com/profile.php?id=61557120280089" class="social-link facebook" target="_blank" aria-label="Facebook">FB</a>
                                                         <a href="#" class="social-link instagram" target="_blank" aria-label="Instagram">IG</a>

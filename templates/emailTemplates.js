@@ -164,95 +164,106 @@ const getBaseTemplate = (content, language = 'en', unsubscribeUrl = '') => {
 </html>`;
 };
 
-const getWelcomeEmailTemplate = (userName, language = 'en', verificationUrl = '') => {
-  const translations = {
-    en: {
-      subject: 'Welcome to Pure Tactics Cartel!',
-      greeting: `Welcome ${userName}!`,
-      message: 'Thank you for joining our community of football enthusiasts. We\'re excited to have you on board!',
-      features: 'What you can do:',
-      feature1: '📖 Read in-depth tactical analyses',
-      feature2: '💬 Engage with our community',
-      feature3: '⚽ Stay updated with the latest insights',
-      feature4: '🌍 Explore football from a global perspective',
-      cta: 'Verify Your Email',
-      ctaText: 'Click the button below to verify your email and complete your subscription:',
-      explore: 'Start exploring our latest articles and join the conversation!',
-      thanks: 'Welcome to the cartel!'
-    },
-    fr: {
-      subject: 'Bienvenue chez Pure Tactics Cartel !',
-      greeting: `Bienvenue ${userName} !`,
-      message: 'Merci de rejoindre notre communauté de passionnés de football. Nous sommes ravis de vous accueillir !',
-      features: 'Ce que vous pouvez faire :',
-      feature1: '📖 Lire des analyses tactiques approfondies',
-      feature2: '💬 Interagir avec notre communauté',
-      feature3: '⚽ Rester informé des dernières analyses',
-      feature4: '🌍 Explorer le football d\'une perspective globale',
-      cta: 'Vérifiez votre email',
-      ctaText: 'Cliquez sur le bouton ci-dessous pour vérifier votre email et compléter votre abonnement :',
-      explore: 'Commencez à explorer nos derniers articles et rejoignez la conversation !',
-      thanks: 'Bienvenue dans le cartel !'
-    },
-    ar: {
-      subject: 'مرحباً بك في Pure Tactics Cartel!',
-      greeting: `مرحباً ${userName}!`,
-      message: 'شكراً لانضمامك إلى مجتمعنا من عشاق كرة القدم. نحن متحمسون لوجودك معنا!',
-      features: 'ما يمكنك فعله:',
-      feature1: '📖 قراءة التحليلات التكتيكية المتعمقة',
-      feature2: '💬 التفاعل مع مجتمعنا',
-      feature3: '⚽ البقاء على اطلاع بأحدث الرؤى',
-      feature4: '🌍 استكشاف كرة القدم من منظور عالمي',
-      cta: 'تحقق من بريدك الإلكتروني',
-      ctaText: 'انقر على الزر أدناه للتحقق من بريدك الإلكتروني وإكمال اشتراكك:',
-      explore: 'ابدأ في استكشاف أحدث مقالاتنا وانضم إلى المحادثة!',
-      thanks: 'مرحباً بك في الكارتل!'
-    }
-  };
-
-  const t = translations[language] || translations.en;
-
-  const content = `
-    <h1 style="font-family: 'Playfair Display', serif; font-size: 32px; color: #1e40af; margin-bottom: 20px; text-align: center;">
-      ${t.greeting}
-    </h1>
-    
-    <p style="font-size: 16px; margin-bottom: 25px; text-align: center; color: #4b5563;">
-      ${t.message}
-    </p>
-    
-    <div style="background-color: #f8fafc; padding: 25px; border-radius: 8px; margin: 30px 0;">
-      <h3 style="color: #1e40af; margin-bottom: 15px; font-size: 18px;">${t.features}</h3>
-      <ul style="list-style: none; padding: 0;">
-        <li style="margin-bottom: 10px; font-size: 14px;">${t.feature1}</li>
-        <li style="margin-bottom: 10px; font-size: 14px;">${t.feature2}</li>
-        <li style="margin-bottom: 10px; font-size: 14px;">${t.feature3}</li>
-        <li style="margin-bottom: 10px; font-size: 14px;">${t.feature4}</li>
-      </ul>
-    </div>
-    
-    ${verificationUrl ? `
-    <div style="text-align: center; margin: 30px 0;">
-      <p style="margin-bottom: 20px; color: #4b5563;">${t.ctaText}</p>
-      <a href="${verificationUrl}" style="display: inline-block; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">
-        ${t.cta}
-      </a>
-    </div>
-    ` : ''}
-    
-    <p style="font-size: 16px; margin-top: 30px; text-align: center; color: #4b5563;">
-      ${t.explore}
-    </p>
-    
-    <p style="font-size: 18px; font-weight: 600; text-align: center; color: #1e40af; margin-top: 25px;">
-      ${t.thanks}
-    </p>
-  `;
-
-  return {
-    subject: t.subject,
-    html: getBaseTemplate(content, language)
-  };
+const getWelcomeEmailTemplate = (userName, language = 'en', verificationUrl = '', homeUrl = '') => {
+    // Only Arabic version for now, as per user request
+    return `
+        <!DOCTYPE html>
+        <html dir="rtl" lang="ar">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>مرحباً بك في Pure Tactics Cartel</title>
+            <style>
+                body {
+                    font-family: 'Arial', sans-serif;
+                    line-height: 1.6;
+                    color: #333;
+                    margin: 0;
+                    padding: 20px;
+                    background-color: #f4f4f4;
+                }
+                .container {
+                    max-width: 600px;
+                    margin: 0 auto;
+                    background: white;
+                    padding: 20px;
+                    border-radius: 10px;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                }
+                .header {
+                    text-align: center;
+                    padding: 20px 0;
+                    border-bottom: 2px solid #eee;
+                }
+                .content {
+                    padding: 20px 0;
+                }
+                .button {
+                    display: inline-block;
+                    padding: 12px 24px;
+                    background-color: #007bff;
+                    color: white;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    margin: 20px 0;
+                }
+                .social-icons {
+                    text-align: center;
+                    margin: 20px 0;
+                }
+                .social-icons a {
+                    display: inline-block;
+                    margin: 0 10px;
+                    color: #333;
+                    font-size: 24px;
+                    text-decoration: none;
+                    transition: color 0.3s ease;
+                }
+                .social-icons a:hover {
+                    color: #007bff;
+                }
+                .footer {
+                    text-align: center;
+                    padding: 20px 0;
+                    border-top: 2px solid #eee;
+                    font-size: 12px;
+                    color: #666;
+                }
+                @media only screen and (max-width: 600px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    .button {
+                        display: block;
+                        text-align: center;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>Pure Tactics Cartel</h1>
+                </div>
+                <div class="content">
+                    <h2>مرحباً بك عزيزي المشترك!</h2>
+                    <p>يسعدنا انضمامك إلى مجتمعنا.</p>
+                    <p>مرحباً بك في الكارتل</p>
+                    <a href="${homeUrl || verificationUrl}" class="button">العودة إلى الصفحة الرئيسية</a>
+                </div>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/profile.php?id=61557120280089" target="_blank" title="Facebook">&#x1F426;</a>
+                    <a href="https://twitter.com/PureTacticsC" target="_blank" title="Twitter">&#x1F426;</a>
+                    <a href="#" target="_blank" title="Instagram">&#x1F33A;</a>
+                    <a href="#" target="_blank" title="TikTok">&#x1F3A4;</a>
+                </div>
+                <div class="footer">
+                    <p>© 2024 Pure Tactics Cartel. جميع الحقوق محفوظة.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+    `;
 };
 
 const getArticleNotificationTemplate = (article, language = 'en', unsubscribeUrl = '') => {

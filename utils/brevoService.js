@@ -333,77 +333,142 @@ class BrevoService {
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <title>Welcome to Pure Tactics Cartel</title>
                     <style>
-                        body {
-                            font-family: 'Arial', sans-serif;
-                            line-height: 1.6;
-                            color: #333;
+                        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+                        
+                        * {
                             margin: 0;
                             padding: 0;
-                            background-color: #f4f4f4;
+                            box-sizing: border-box;
                         }
+                        
+                        body {
+                            font-family: 'Inter', Arial, sans-serif;
+                            line-height: 1.6;
+                            color: #1f2937;
+                            background-color: #f9fafb;
+                            direction: rtl;
+                        }
+                        
                         .container {
                             max-width: 600px;
                             margin: 0 auto;
-                            background: white;
-                            padding: 20px;
-                            border-radius: 10px;
-                            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                            background-color: #ffffff;
+                            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
                         }
+                        
                         .header {
+                            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+                            padding: 40px 30px;
                             text-align: center;
-                            padding: 20px 0;
-                            border-bottom: 2px solid #eee;
+                            color: white;
                         }
+                        
+                        .logo {
+                            font-family: 'Playfair Display', serif;
+                            font-size: 28px;
+                            font-weight: 700;
+                            margin-bottom: 10px;
+                            text-decoration: none;
+                            color: white;
+                        }
+                        
                         .content {
-                            padding: 20px 0;
+                            padding: 40px 30px;
+                            text-align: center;
                         }
+                        
+                        .welcome-text {
+                            font-size: 24px;
+                            color: #1f2937;
+                            margin-bottom: 20px;
+                        }
+                        
+                        .message {
+                            color: #4b5563;
+                            margin-bottom: 30px;
+                        }
+                        
                         .button {
                             display: inline-block;
-                            padding: 12px 24px;
-                            background-color: #007bff;
+                            padding: 15px 30px;
+                            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
                             color: white;
                             text-decoration: none;
-                            border-radius: 5px;
-                            margin: 20px 0;
+                            border-radius: 8px;
+                            font-weight: 600;
+                            transition: transform 0.2s;
                         }
+                        
+                        .button:hover {
+                            transform: translateY(-2px);
+                        }
+                        
                         .social-icons {
+                            margin: 40px 0;
                             text-align: center;
-                            margin: 20px 0;
                         }
-                        .social-icons a {
+                        
+                        .social-icon {
                             display: inline-block;
                             margin: 0 10px;
-                            color: #333;
-                            font-size: 24px;
-                            text-decoration: none;
-                        }
-                        .footer {
+                            width: 40px;
+                            height: 40px;
+                            border-radius: 50%;
+                            background: #f3f4f6;
                             text-align: center;
-                            padding: 20px 0;
-                            border-top: 2px solid #eee;
+                            line-height: 40px;
+                            transition: transform 0.2s;
+                        }
+                        
+                        .social-icon:hover {
+                            transform: translateY(-2px);
+                        }
+                        
+                        .footer {
+                            background-color: #f3f4f6;
+                            padding: 30px;
+                            text-align: center;
+                            border-top: 1px solid #e5e7eb;
+                        }
+                        
+                        .copyright {
                             font-size: 12px;
-                            color: #666;
+                            color: #6b7280;
+                        }
+                        
+                        @media only screen and (max-width: 600px) {
+                            .container {
+                                width: 100% !important;
+                            }
+                            
+                            .header, .content, .footer {
+                                padding: 20px !important;
+                            }
+                            
+                            .logo {
+                                font-size: 24px !important;
+                            }
                         }
                     </style>
                 </head>
                 <body>
                     <div class="container">
                         <div class="header">
-                            <h1>Pure Tactics Cartel</h1>
+                            <div class="logo">Pure Tactics Cartel</div>
                         </div>
                         <div class="content">
-                            <h2>مرحباً بك، عزيز المشترك!</h2>
-                            <p>شكراً لانضمامك إلى مجتمع Pure Tactics Cartel. نحن سعداء بوجودك معنا!</p>
+                            <h2 class="welcome-text">مرحباً بك، عزيز المشترك!</h2>
+                            <p class="message">شكراً لانضمامك إلى مجتمع Pure Tactics Cartel. نحن سعداء بوجودك معنا!</p>
                             <a href="${homeUrl}" class="button">Welcome to the Cartel</a>
                         </div>
                         <div class="social-icons">
-                            <a href="https://www.facebook.com/profile.php?id=61557120280089" target="_blank">📘</a>
-                            <a href="https://twitter.com/PureTacticsC" target="_blank">📘</a>
-                            <a href="#" target="_blank">📸</a>
-                            <a href="#" target="_blank">📱</a>
+                            <a href="https://www.facebook.com/profile.php?id=61557120280089" class="social-icon" target="_blank">📘</a>
+                            <a href="https://twitter.com/PureTacticsC" class="social-icon" target="_blank">🐦</a>
+                            <a href="#" class="social-icon" target="_blank">📸</a>
+                            <a href="#" class="social-icon" target="_blank">📱</a>
                         </div>
                         <div class="footer">
-                            <p>© 2024 Pure Tactics Cartel. جميع الحقوق محفوظة.</p>
+                            <p class="copyright">© 2024 Pure Tactics Cartel. جميع الحقوق محفوظة.</p>
                         </div>
                     </div>
                 </body>
@@ -414,8 +479,9 @@ class BrevoService {
                 subject: 'Welcome to Pure Tactics Cartel',
                 html: htmlContent
             });
+            console.log(`✅ Welcome email sent to ${subscription.email}`);
         } catch (error) {
-            console.error('Send verification email error:', error);
+            console.error('❌ Welcome email sending failed:', error);
         }
     }
 }

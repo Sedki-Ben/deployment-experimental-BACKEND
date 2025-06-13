@@ -74,6 +74,10 @@ class EmailService {
                         color: #333;
                         font-size: 24px;
                         text-decoration: none;
+                        transition: color 0.3s ease;
+                    }
+                    .social-icons a:hover {
+                        color: #007bff;
                     }
                     .footer {
                         text-align: center;
@@ -81,6 +85,15 @@ class EmailService {
                         border-top: 2px solid #eee;
                         font-size: 12px;
                         color: #666;
+                    }
+                    @media only screen and (max-width: 600px) {
+                        .container {
+                            padding: 10px;
+                        }
+                        .button {
+                            display: block;
+                            text-align: center;
+                        }
                     }
                 </style>
             </head>
@@ -97,10 +110,10 @@ class EmailService {
                         <a href="${homeUrl}" class="button">مرحباً بك في الكارتل</a>
                     </div>
                     <div class="social-icons">
-                        <a href="https://www.facebook.com/profile.php?id=61557120280089" target="_blank">📘</a>
-                        <a href="https://twitter.com/PureTacticsC" target="_blank">📘</a>
-                        <a href="#" target="_blank">📸</a>
-                        <a href="#" target="_blank">📱</a>
+                        <a href="https://www.facebook.com/profile.php?id=61557120280089" target="_blank" style="color: #1877f2;">Facebook</a>
+                        <a href="https://twitter.com/PureTacticsC" target="_blank" style="color: #1da1f2;">Twitter</a>
+                        <a href="#" target="_blank" style="color: #e4405f;">Instagram</a>
+                        <a href="#" target="_blank" style="color: #000000;">TikTok</a>
                     </div>
                     <div class="footer">
                         <p>© 2024 Pure Tactics Cartel. جميع الحقوق محفوظة.</p>

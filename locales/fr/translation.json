@@ -25,57 +25,28 @@
             "news": "Actualités",
             "opinion": "Opinion",
             "interview": "Interview"
-        },
-        "mainImageRequired": "L'image principale de l'article est requise",
-        "saveFailed": "Échec de l'enregistrement de l'article",
-        "updateFailed": "Échec de la mise à jour de l'article",
-        "deleteFailed": "Échec de la suppression de l'article",
-        "notFound": "Article non trouvé"
-    },
-    "auth": {
-        "signIn": "Connectez-vous à votre compte",
-        "signInDescription": "Bienvenue ! Veuillez vous connecter pour continuer",
-        "email": "Email",
-        "emailPlaceholder": "Entrez votre email",
-        "password": "Mot de passe",
-        "passwordPlaceholder": "Entrez votre mot de passe",
-        "signingIn": "Connexion en cours...",
-        "noAccount": "Vous n'avez pas de compte ?",
-        "signUp": "S'inscrire",
-        "userExists": "L'utilisateur existe déjà",
-        "userNotFound": "Utilisateur non trouvé",
-        "unauthorized": "Accès non autorisé",
-        "loginFailed": "Échec de la connexion",
-        "registrationFailed": "Échec de l'inscription",
-        "invalidCredentials": "Email ou mot de passe invalide"
-    },
-    "email": {
-        "errors": {
-            "verificationFailed": "Échec de l'envoi de l'email de vérification",
-            "resetFailed": "Échec de l'envoi de l'email de réinitialisation",
-            "newsletterFailed": "Échec de l'envoi de la newsletter",
-            "notificationFailed": "Échec de l'envoi de la notification d'article"
         }
     },
+    "auth": {
+        "emailRequired": "L'email est requis",
+        "passwordRequired": "Le mot de passe est requis",
+        "invalidCredentials": "Email ou mot de passe invalide",
+        "registrationSuccess": "Inscription réussie",
+        "loginSuccess": "Connexion réussie",
+        "logoutSuccess": "Déconnexion réussie"
+    },
     "newsletter": {
-        "title": "Restez informé",
-        "description": "Abonnez-vous à notre newsletter pour recevoir les dernières mises à jour et du contenu exclusif",
-        "emailPlaceholder": "Entrez votre email",
-        "subscribe": "S'abonner",
-        "subscribing": "Abonnement en cours...",
-        "subscribeSuccess": "Bienvenue dans notre communauté !",
+        "subscribe": "S'abonner à la Newsletter",
+        "subscribeSuccess": "Abonnement à la newsletter réussi",
         "subscribeSuccessWithEmail": "Veuillez vérifier votre email pour confirmer votre abonnement",
         "subscribeSuccessNoEmail": "Abonnement créé avec succès. L'email de vérification n'a pas pu être envoyé pour le moment.",
         "subscribeWarning": "Veuillez contacter le support si vous devez vérifier votre abonnement.",
-        "subscribeError": "Échec de l'abonnement. Veuillez réessayer.",
         "unsubscribe": "Se désabonner",
         "unsubscribeSuccess": "Désabonnement réussi",
+        "emailPlaceholder": "Entrez votre email",
         "verificationSuccess": "Abonnement vérifié avec succès",
         "invalidToken": "Token de vérification invalide ou expiré",
-        "alreadySubscribed": "Email déjà abonné",
-        "invalidUnsubscribeToken": "Token de désabonnement invalide",
-        "noVerifiedSubscribers": "Aucun abonné vérifié trouvé",
-        "sendSuccess": "Newsletter envoyée avec succès"
+        "alreadySubscribed": "Email déjà abonné"
     },
     "errors": {
         "general": "Une erreur est survenue",

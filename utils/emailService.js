@@ -6,7 +6,7 @@ class EmailService {
             await brevoService.sendVerificationEmail(user, verificationToken);
         } catch (error) {
             console.error('Send verification email error:', error);
-            throw new Error('email.errors.verificationFailed');
+            throw new Error('Error sending verification email');
         }
     }
 
@@ -15,7 +15,7 @@ class EmailService {
             await brevoService.sendPasswordResetEmail(user, resetToken);
         } catch (error) {
             console.error('Send password reset email error:', error);
-            throw new Error('email.errors.resetFailed');
+            throw new Error('Error sending password reset email');
         }
     }
 
@@ -25,7 +25,7 @@ class EmailService {
             return result;
         } catch (error) {
             console.error('Send newsletter error:', error);
-            throw new Error('email.errors.newsletterFailed');
+            throw new Error('Error sending newsletter');
         }
     }
 
@@ -35,7 +35,7 @@ class EmailService {
             return result;
         } catch (error) {
             console.error('Send article notification error:', error);
-            return { sent: 0, failed: subscribers.length, error: 'email.errors.notificationFailed' };
+            return { sent: 0, failed: subscribers.length, error: error.message };
         }
     }
 }

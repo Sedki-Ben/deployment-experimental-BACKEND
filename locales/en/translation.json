@@ -25,12 +25,7 @@
             "news": "Breaking News",
             "opinion": "Expert Opinion",
             "interview": "Exclusive Interviews"
-        },
-        "mainImageRequired": "Main article image is required",
-        "saveFailed": "Failed to save article",
-        "updateFailed": "Failed to update article",
-        "deleteFailed": "Failed to delete article",
-        "notFound": "Article not found"
+        }
     },
     "auth": {
         "emailRequired": "Email is required",
@@ -44,49 +39,20 @@
         "logout": "Sign Out",
         "profile": "My Profile",
         "settings": "Settings",
-        "about": "About Us",
-        "userExists": "User already exists",
-        "userNotFound": "User not found",
-        "unauthorized": "Unauthorized access",
-        "loginFailed": "Login failed",
-        "registrationFailed": "Registration failed",
-        "signIn": "Sign in to your account",
-        "signInDescription": "Welcome back! Please sign in to continue",
-        "email": "Email",
-        "emailPlaceholder": "Enter your email",
-        "password": "Password",
-        "passwordPlaceholder": "Enter your password",
-        "signingIn": "Signing in...",
-        "noAccount": "Don't have an account?",
-        "signUp": "Sign Up"
-    },
-    "email": {
-        "errors": {
-            "verificationFailed": "Failed to send verification email",
-            "resetFailed": "Failed to send password reset email",
-            "newsletterFailed": "Failed to send newsletter",
-            "notificationFailed": "Failed to send article notification"
-        }
+        "about": "About Us"
     },
     "newsletter": {
-        "title": "Stay Updated",
-        "description": "Subscribe to our newsletter to receive the latest updates and exclusive content",
-        "emailPlaceholder": "Enter your email",
-        "subscribe": "Subscribe",
-        "subscribing": "Subscribing...",
+        "subscribe": "Get Weekly Updates",
         "subscribeSuccess": "Welcome to our community!",
         "subscribeSuccessWithEmail": "Please check your email to verify your subscription",
         "subscribeSuccessNoEmail": "Subscription created successfully. Verification email could not be sent at this time.",
         "subscribeWarning": "Please contact support if you need to verify your subscription.",
-        "subscribeError": "Failed to subscribe. Please try again.",
         "unsubscribe": "Unsubscribe",
         "unsubscribeSuccess": "You've been unsubscribed",
+        "emailPlaceholder": "Your email address",
         "verificationSuccess": "Subscription verified successfully",
         "invalidToken": "Invalid or expired verification token",
-        "alreadySubscribed": "Email already subscribed",
-        "invalidUnsubscribeToken": "Invalid unsubscribe token",
-        "noVerifiedSubscribers": "No verified subscribers found",
-        "sendSuccess": "Newsletter sent successfully"
+        "alreadySubscribed": "Email already subscribed"
     },
     "errors": {
         "general": "Oops! Something went wrong",

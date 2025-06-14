@@ -25,57 +25,28 @@
             "news": "أخبار",
             "opinion": "رأي",
             "interview": "مقابلة"
-        },
-        "mainImageRequired": "صورة المقال الرئيسية مطلوبة",
-        "saveFailed": "فشل حفظ المقال",
-        "updateFailed": "فشل تحديث المقال",
-        "deleteFailed": "فشل حذف المقال",
-        "notFound": "المقال غير موجود"
-    },
-    "auth": {
-        "signIn": "تسجيل الدخول إلى حسابك",
-        "signInDescription": "مرحباً بعودتك! يرجى تسجيل الدخول للمتابعة",
-        "email": "البريد الإلكتروني",
-        "emailPlaceholder": "أدخل بريدك الإلكتروني",
-        "password": "كلمة المرور",
-        "passwordPlaceholder": "أدخل كلمة المرور",
-        "signingIn": "جاري تسجيل الدخول...",
-        "noAccount": "ليس لديك حساب؟",
-        "signUp": "إنشاء حساب",
-        "userExists": "المستخدم موجود بالفعل",
-        "userNotFound": "المستخدم غير موجود",
-        "unauthorized": "غير مصرح بالوصول",
-        "loginFailed": "فشل تسجيل الدخول",
-        "registrationFailed": "فشل التسجيل",
-        "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة"
-    },
-    "email": {
-        "errors": {
-            "verificationFailed": "فشل إرسال بريد التحقق",
-            "resetFailed": "فشل إرسال بريد إعادة تعيين كلمة المرور",
-            "newsletterFailed": "فشل إرسال النشرة الإخبارية",
-            "notificationFailed": "فشل إرسال إشعار المقال"
         }
     },
+    "auth": {
+        "emailRequired": "البريد الإلكتروني مطلوب",
+        "passwordRequired": "كلمة المرور مطلوبة",
+        "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+        "registrationSuccess": "تم التسجيل بنجاح",
+        "loginSuccess": "تم تسجيل الدخول بنجاح",
+        "logoutSuccess": "تم تسجيل الخروج بنجاح"
+    },
     "newsletter": {
-        "title": "ابق على اطلاع",
-        "description": "اشترك في نشرتنا الإخبارية لتلقي آخر التحديثات والمحتوى الحصري",
-        "emailPlaceholder": "أدخل بريدك الإلكتروني",
-        "subscribe": "اشترك",
-        "subscribing": "جاري الاشتراك...",
-        "subscribeSuccess": "مرحباً بك في مجتمعنا!",
+        "subscribe": "اشترك في النشرة الإخبارية",
+        "subscribeSuccess": "تم الاشتراك في النشرة الإخبارية بنجاح",
         "subscribeSuccessWithEmail": "يرجى التحقق من بريدك الإلكتروني لتأكيد اشتراكك",
         "subscribeSuccessNoEmail": "تم إنشاء الاشتراك بنجاح. لم يتم إرسال بريد التحقق في الوقت الحالي.",
         "subscribeWarning": "يرجى الاتصال بالدعم إذا كنت بحاجة لتأكيد اشتراكك.",
-        "subscribeError": "فشل الاشتراك. يرجى المحاولة مرة أخرى.",
         "unsubscribe": "إلغاء الاشتراك",
         "unsubscribeSuccess": "تم إلغاء الاشتراك بنجاح",
+        "emailPlaceholder": "أدخل بريدك الإلكتروني",
         "verificationSuccess": "تم تأكيد الاشتراك بنجاح",
         "invalidToken": "رمز التحقق غير صالح أو منتهي الصلاحية",
-        "alreadySubscribed": "البريد الإلكتروني مشترك بالفعل",
-        "invalidUnsubscribeToken": "رمز إلغاء الاشتراك غير صالح",
-        "noVerifiedSubscribers": "لم يتم العثور على مشتركين موثقين",
-        "sendSuccess": "تم إرسال النشرة الإخبارية بنجاح"
+        "alreadySubscribed": "البريد الإلكتروني مشترك بالفعل"
     },
     "errors": {
         "general": "حدث خطأ ما",

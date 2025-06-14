@@ -61,7 +61,7 @@ exports.register = async (req, res) => {
         // Check if user already exists
         let user = await User.findOne({ email });
         if (user) {
-            return res.status(400).json({ message: 'User already exists' });
+            return res.status(400).json({ message: req.t('auth.userExists') });
         }
 
         // Create new user
@@ -85,7 +85,7 @@ exports.register = async (req, res) => {
         });
     } catch (error) {
         console.error('Register error:', error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: req.t('errors.general') });
     }
 };
 

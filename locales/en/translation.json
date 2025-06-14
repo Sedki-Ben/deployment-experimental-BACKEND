@@ -25,7 +25,12 @@
             "news": "Breaking News",
             "opinion": "Expert Opinion",
             "interview": "Exclusive Interviews"
-        }
+        },
+        "mainImageRequired": "Main article image is required",
+        "saveFailed": "Failed to save article",
+        "updateFailed": "Failed to update article",
+        "deleteFailed": "Failed to delete article",
+        "notFound": "Article not found"
     },
     "auth": {
         "emailRequired": "Email is required",
@@ -39,7 +44,20 @@
         "logout": "Sign Out",
         "profile": "My Profile",
         "settings": "Settings",
-        "about": "About Us"
+        "about": "About Us",
+        "userExists": "User already exists",
+        "userNotFound": "User not found",
+        "unauthorized": "Unauthorized access",
+        "loginFailed": "Login failed",
+        "registrationFailed": "Registration failed"
+    },
+    "email": {
+        "errors": {
+            "verificationFailed": "Failed to send verification email",
+            "resetFailed": "Failed to send password reset email",
+            "newsletterFailed": "Failed to send newsletter",
+            "notificationFailed": "Failed to send article notification"
+        }
     },
     "newsletter": {
         "subscribe": "Get Weekly Updates",
@@ -52,7 +70,10 @@
         "emailPlaceholder": "Your email address",
         "verificationSuccess": "Subscription verified successfully",
         "invalidToken": "Invalid or expired verification token",
-        "alreadySubscribed": "Email already subscribed"
+        "alreadySubscribed": "Email already subscribed",
+        "invalidUnsubscribeToken": "Invalid unsubscribe token",
+        "noVerifiedSubscribers": "No verified subscribers found",
+        "sendSuccess": "Newsletter sent successfully"
     },
     "errors": {
         "general": "Oops! Something went wrong",

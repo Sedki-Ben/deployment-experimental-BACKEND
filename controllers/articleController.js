@@ -80,7 +80,7 @@ exports.createArticle = async (req, res) => {
         console.log('Files:', req.files);
 
         if (!req.user || !req.user.id) {
-            return res.status(401).json({ message: 'User ID not found in request' });
+            return res.status(401).json({ message: req.t('auth.unauthorized') });
         }
 
         // Parse the JSON strings from form data
@@ -90,7 +90,7 @@ exports.createArticle = async (req, res) => {
         // Get user information for author fields
         const user = await User.findById(req.user.id);
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ message: req.t('auth.userNotFound') });
         }
 
         // Default status to published instead of draft
@@ -103,7 +103,7 @@ exports.createArticle = async (req, res) => {
         // Validate required fields
         if (!mainImage) {
             return res.status(400).json({ 
-                message: 'Main article image is required',
+                message: req.t('articles.mainImageRequired'),
                 field: 'image'
             });
         }

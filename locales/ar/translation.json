@@ -25,7 +25,12 @@
             "news": "أخبار",
             "opinion": "رأي",
             "interview": "مقابلة"
-        }
+        },
+        "mainImageRequired": "صورة المقال الرئيسية مطلوبة",
+        "saveFailed": "فشل حفظ المقال",
+        "updateFailed": "فشل تحديث المقال",
+        "deleteFailed": "فشل حذف المقال",
+        "notFound": "المقال غير موجود"
     },
     "auth": {
         "emailRequired": "البريد الإلكتروني مطلوب",
@@ -33,7 +38,20 @@
         "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
         "registrationSuccess": "تم التسجيل بنجاح",
         "loginSuccess": "تم تسجيل الدخول بنجاح",
-        "logoutSuccess": "تم تسجيل الخروج بنجاح"
+        "logoutSuccess": "تم تسجيل الخروج بنجاح",
+        "userExists": "المستخدم موجود بالفعل",
+        "userNotFound": "المستخدم غير موجود",
+        "unauthorized": "غير مصرح بالوصول",
+        "loginFailed": "فشل تسجيل الدخول",
+        "registrationFailed": "فشل التسجيل"
+    },
+    "email": {
+        "errors": {
+            "verificationFailed": "فشل إرسال بريد التحقق",
+            "resetFailed": "فشل إرسال بريد إعادة تعيين كلمة المرور",
+            "newsletterFailed": "فشل إرسال النشرة الإخبارية",
+            "notificationFailed": "فشل إرسال إشعار المقال"
+        }
     },
     "newsletter": {
         "subscribe": "اشترك في النشرة الإخبارية",
@@ -46,7 +64,10 @@
         "emailPlaceholder": "أدخل بريدك الإلكتروني",
         "verificationSuccess": "تم تأكيد الاشتراك بنجاح",
         "invalidToken": "رمز التحقق غير صالح أو منتهي الصلاحية",
-        "alreadySubscribed": "البريد الإلكتروني مشترك بالفعل"
+        "alreadySubscribed": "البريد الإلكتروني مشترك بالفعل",
+        "invalidUnsubscribeToken": "رمز إلغاء الاشتراك غير صالح",
+        "noVerifiedSubscribers": "لم يتم العثور على مشتركين موثقين",
+        "sendSuccess": "تم إرسال النشرة الإخبارية بنجاح"
     },
     "errors": {
         "general": "حدث خطأ ما",

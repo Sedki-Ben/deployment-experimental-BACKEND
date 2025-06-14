@@ -11,7 +11,7 @@ const { uploadToCloudinary, deleteFromCloudinary, isCloudinaryConfigured } = req
 // Helper function to save uploaded file
 const saveUploadedFile = async (file, folder = 'articles') => {
     try {
-        // Always try Cloudinary first
+        // Try Cloudinary first
         const cloudinaryUrl = await uploadToCloudinary(file, file.originalname, folder);
         
         if (cloudinaryUrl) {
@@ -19,42 +19,37 @@ const saveUploadedFile = async (file, folder = 'articles') => {
             return cloudinaryUrl;
         }
         
-        // Only fall back to local storage in development
-        if (process.env.NODE_ENV === 'development') {
-            console.log('Falling back to local storage for file:', file.originalname);
-            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-            const filename = uniqueSuffix + '-' + file.originalname;
-            
-            // Create uploads directory if it doesn't exist
-            const uploadDir = path.join(__dirname, '..', 'uploads');
-            if (!fs.existsSync(uploadDir)) {
-                fs.mkdirSync(uploadDir, { recursive: true });
-            }
-            
-            const filepath = path.join(uploadDir, filename);
-            
-            // Write buffer to file
-            await fs.promises.writeFile(filepath, file.buffer);
-            
-            // Log file creation
-            console.log(`File saved to: ${filepath}`);
-            console.log(`File size: ${file.buffer.length} bytes`);
-            
-            // Immediate verification that file was saved
-            if (fs.existsSync(filepath)) {
-                console.log(`File verification successful: ${filename}`);
-            } else {
-                console.error(`File verification failed: ${filename}`);
-            }
-            
-            return `/uploads/${filename}`;
-        } else {
-            // In production, throw an error if Cloudinary upload fails
-            throw new Error('Failed to upload to Cloudinary and local storage is not available in production');
+        // Fallback to local storage
+        console.log('Falling back to local storage for file:', file.originalname);
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const filename = uniqueSuffix + '-' + file.originalname;
+        
+        // Create uploads directory if it doesn't exist
+        const uploadDir = path.join(__dirname, '..', 'uploads');
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
         }
+        
+        const filepath = path.join(uploadDir, filename);
+        
+        // Write buffer to file
+        await fs.promises.writeFile(filepath, file.buffer);
+        
+        // Log file creation
+        console.log(`File saved to: ${filepath}`);
+        console.log(`File size: ${file.buffer.length} bytes`);
+        
+        // Immediate verification that file was saved
+        if (fs.existsSync(filepath)) {
+            console.log(`File verification successful: ${filename}`);
+        } else {
+            console.error(`File verification failed: ${filename}`);
+        }
+        
+        return `/uploads/${filename}`;
     } catch (error) {
         console.error('Error saving file:', error);
-        throw error;
+        throw new Error('Failed to save uploaded file: ' + error.message);
     }
 };
 

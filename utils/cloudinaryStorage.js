@@ -11,17 +11,36 @@ cloudinary.config({
 
 // Check if Cloudinary is properly configured
 const isCloudinaryConfigured = () => {
-    return !!(process.env.CLOUDINARY_CLOUD_NAME && 
-              process.env.CLOUDINARY_API_KEY && 
-              process.env.CLOUDINARY_API_SECRET);
+    const hasCloudName = !!process.env.CLOUDINARY_CLOUD_NAME;
+    const hasApiKey = !!process.env.CLOUDINARY_API_KEY;
+    const hasApiSecret = !!process.env.CLOUDINARY_API_SECRET;
+    
+    console.log('Cloudinary Configuration Check:', {
+        hasCloudName,
+        hasApiKey,
+        hasApiSecret,
+        cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+        apiKey: process.env.CLOUDINARY_API_KEY ? '***' : undefined,
+        apiSecret: process.env.CLOUDINARY_API_SECRET ? '***' : undefined,
+        nodeEnv: process.env.NODE_ENV
+    });
+    
+    return hasCloudName && hasApiKey && hasApiSecret;
 };
 
 // Upload file to Cloudinary
 const uploadToCloudinary = async (buffer, originalname, folder = 'articles') => {
     try {
         if (!isCloudinaryConfigured()) {
-            throw new Error('Cloudinary is not configured');
+            console.log('Cloudinary not configured, falling back to local storage');
+            return null;
         }
+
+        console.log('Attempting to upload to Cloudinary:', {
+            filename: originalname,
+            folder: folder,
+            bufferSize: buffer.length
+        });
 
         // Create a unique filename
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -37,13 +56,22 @@ const uploadToCloudinary = async (buffer, originalname, folder = 'articles') => 
                     overwrite: true
                 },
                 (error, result) => {
-                    if (error) reject(error);
-                    else resolve(result);
+                    if (error) {
+                        console.error('Cloudinary upload error:', error);
+                        reject(error);
+                    } else {
+                        console.log('Cloudinary upload successful:', {
+                            url: result.secure_url,
+                            publicId: result.public_id,
+                            format: result.format,
+                            size: result.bytes
+                        });
+                        resolve(result);
+                    }
                 }
             ).end(buffer);
         });
 
-        console.log('Cloudinary upload successful:', result.secure_url);
         return result.secure_url;
     } catch (error) {
         console.error('Cloudinary upload error:', error);

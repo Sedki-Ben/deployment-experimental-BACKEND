@@ -11,45 +11,45 @@ const { uploadToCloudinary, deleteFromCloudinary, isCloudinaryConfigured } = req
 // Helper function to save uploaded file
 const saveUploadedFile = async (file, folder = 'articles') => {
     try {
-        // Check if we should use cloud storage
-        const useCloudStorage = isCloudinaryConfigured() && (process.env.NODE_ENV === 'production' || process.env.USE_CLOUDINARY === 'true');
+        // Try Cloudinary first
+        const cloudinaryUrl = await uploadToCloudinary(file.buffer, file.originalname, folder);
         
-        if (useCloudStorage) {
-            // Upload to Cloudinary
-            const cloudinaryUrl = await uploadToCloudinary(file.buffer, file.originalname, folder);
+        if (cloudinaryUrl) {
+            console.log('Successfully uploaded to Cloudinary:', cloudinaryUrl);
             return cloudinaryUrl;
-        } else {
-            // Fallback to local storage
-            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-            const filename = uniqueSuffix + '-' + file.originalname;
-            
-            // Create uploads directory if it doesn't exist
-            const uploadDir = path.join(__dirname, '..', 'uploads');
-            if (!fs.existsSync(uploadDir)) {
-                fs.mkdirSync(uploadDir, { recursive: true });
-            }
-            
-            const filepath = path.join(uploadDir, filename);
-            
-            // Write buffer to file
-            await fs.promises.writeFile(filepath, file.buffer);
-            
-            // Log file creation
-            console.log(`File saved to: ${filepath}`);
-            console.log(`File size: ${file.buffer.length} bytes`);
-            
-            // Immediate verification that file was saved
-            if (fs.existsSync(filepath)) {
-                console.log(`File verification successful: ${filename}`);
-            } else {
-                console.error(`File verification failed: ${filename}`);
-            }
-            
-            return `/uploads/${filename}`;
         }
+        
+        // Fallback to local storage
+        console.log('Falling back to local storage for file:', file.originalname);
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const filename = uniqueSuffix + '-' + file.originalname;
+        
+        // Create uploads directory if it doesn't exist
+        const uploadDir = path.join(__dirname, '..', 'uploads');
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        
+        const filepath = path.join(uploadDir, filename);
+        
+        // Write buffer to file
+        await fs.promises.writeFile(filepath, file.buffer);
+        
+        // Log file creation
+        console.log(`File saved to: ${filepath}`);
+        console.log(`File size: ${file.buffer.length} bytes`);
+        
+        // Immediate verification that file was saved
+        if (fs.existsSync(filepath)) {
+            console.log(`File verification successful: ${filename}`);
+        } else {
+            console.error(`File verification failed: ${filename}`);
+        }
+        
+        return `/uploads/${filename}`;
     } catch (error) {
         console.error('Error saving file:', error);
-        throw new Error('Failed to save uploaded file');
+        throw new Error('Failed to save uploaded file: ' + error.message);
     }
 };
 

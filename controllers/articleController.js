@@ -176,39 +176,61 @@ exports.createArticle = async (req, res) => {
     }
 };
 
-// Get all articles with filters
+// Get all articles with pagination and filtering
 exports.getArticles = async (req, res) => {
     try {
-        const { category, language, status, page = 1, limit = 10 } = req.query;
+        const { 
+            category, 
+            language, 
+            status = 'published',
+            page = 1,
+            limit = 100 // Increased default limit
+        } = req.query;
+
+        // Build query
         const query = {};
-
-        if (category) query.category = category;
-        if (status) query.status = status;
-
-        // Only show published articles to non-authenticated users
-        if (!req.user || !['admin', 'writer'].includes(req.user.role)) {
+        
+        // Add category filter if provided
+        if (category) {
+            query.category = category;
+        }
+        
+        // Add language filter if provided
+        if (language) {
+            query.language = language;
+        }
+        
+        // Add status filter
+        // If user is not admin, only show published articles
+        if (req.user?.role !== 'admin') {
             query.status = 'published';
+        } else if (status) {
+            query.status = status;
         }
 
+        // Calculate pagination
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+        
+        // Get total count for pagination
+        const total = await Article.countDocuments(query);
+        
+        // Get articles with pagination
         const articles = await Article.find(query)
-            .populate('author', 'name email')
-            .populate('commentCount')
-            .sort({ publishedAt: -1, createdAt: -1 })
-            .limit(limit * 1)
-            .skip((page - 1) * limit)
-            .exec();
-
-        const count = await Article.countDocuments(query);
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(parseInt(limit))
+            .populate('author', 'username')
+            .lean();
 
         res.json({
             articles,
-            totalPages: Math.ceil(count / limit),
             currentPage: parseInt(page),
-            total: count
+            totalPages: Math.ceil(total / parseInt(limit)),
+            totalArticles: total
         });
     } catch (error) {
-        console.error('Get articles error:', error);
-        res.status(500).json({ message: 'Server error' });
+        console.error('Error in getArticles:', error);
+        res.status(500).json({ message: 'Error fetching articles', error: error.message });
     }
 };
 

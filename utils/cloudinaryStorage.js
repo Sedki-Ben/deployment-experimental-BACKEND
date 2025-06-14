@@ -32,8 +32,8 @@ const isCloudinaryConfigured = () => {
 const uploadToCloudinary = async (file, originalname, folder = 'articles') => {
     try {
         if (!isCloudinaryConfigured()) {
-            console.log('Cloudinary not configured, falling back to local storage');
-            return null;
+            console.error('Cloudinary not configured. Please check your environment variables.');
+            throw new Error('Cloudinary configuration is missing');
         }
 
         console.log('Attempting to upload to Cloudinary:', {
@@ -41,7 +41,8 @@ const uploadToCloudinary = async (file, originalname, folder = 'articles') => {
             folder: folder,
             fileType: typeof file,
             hasPath: !!file?.path,
-            hasBuffer: !!file?.buffer
+            hasBuffer: !!file?.buffer,
+            cloudName: process.env.CLOUDINARY_CLOUD_NAME
         });
 
         // If the file is already uploaded to Cloudinary (has path), return the path
@@ -55,48 +56,41 @@ const uploadToCloudinary = async (file, originalname, folder = 'articles') => {
         const filename = `${folder}/${uniqueSuffix}-${originalname}`;
 
         let result;
-        if (file?.buffer) {
-            // Upload buffer to Cloudinary
-            result = await new Promise((resolve, reject) => {
-                cloudinary.uploader.upload_stream(
-                    {
-                        folder: folder,
-                        resource_type: 'auto',
-                        public_id: filename,
-                        overwrite: true
-                    },
-                    (error, result) => {
-                        if (error) {
-                            console.error('Cloudinary upload error:', error);
-                            reject(error);
-                        } else {
-                            console.log('Cloudinary upload successful:', {
-                                url: result.secure_url,
-                                publicId: result.public_id,
-                                format: result.format,
-                                size: result.bytes
-                            });
-                            resolve(result);
-                        }
-                    }
-                ).end(file.buffer);
-            });
-        } else if (file?.path) {
-            // Upload file from path
+        if (file.buffer) {
+            // Upload from buffer
+            result = await cloudinary.uploader.upload_stream({
+                folder: folder,
+                resource_type: 'auto',
+                public_id: filename,
+                overwrite: true,
+                transformation: [
+                    { width: 1000, height: 1000, crop: 'limit' }
+                ]
+            }).end(file.buffer);
+        } else if (file.path) {
+            // Upload from file path
             result = await cloudinary.uploader.upload(file.path, {
                 folder: folder,
                 resource_type: 'auto',
                 public_id: filename,
-                overwrite: true
+                overwrite: true,
+                transformation: [
+                    { width: 1000, height: 1000, crop: 'limit' }
+                ]
             });
         } else {
-            throw new Error('Invalid file object: neither buffer nor path provided');
+            throw new Error('Invalid file format: must provide either buffer or path');
         }
 
+        if (!result || !result.secure_url) {
+            throw new Error('Failed to get secure URL from Cloudinary upload');
+        }
+
+        console.log('Successfully uploaded to Cloudinary:', result.secure_url);
         return result.secure_url;
     } catch (error) {
-        console.error('Cloudinary upload error:', error);
-        throw new Error('Failed to upload to Cloudinary: ' + error.message);
+        console.error('Error uploading to Cloudinary:', error);
+        throw error;
     }
 };
 

@@ -49,7 +49,16 @@
         "userNotFound": "User not found",
         "unauthorized": "Unauthorized access",
         "loginFailed": "Login failed",
-        "registrationFailed": "Registration failed"
+        "registrationFailed": "Registration failed",
+        "signIn": "Sign in to your account",
+        "signInDescription": "Welcome back! Please sign in to continue",
+        "email": "Email",
+        "emailPlaceholder": "Enter your email",
+        "password": "Password",
+        "passwordPlaceholder": "Enter your password",
+        "signingIn": "Signing in...",
+        "noAccount": "Don't have an account?",
+        "signUp": "Sign Up"
     },
     "email": {
         "errors": {
@@ -60,14 +69,18 @@
         }
     },
     "newsletter": {
-        "subscribe": "Get Weekly Updates",
+        "title": "Stay Updated",
+        "description": "Subscribe to our newsletter to receive the latest updates and exclusive content",
+        "emailPlaceholder": "Enter your email",
+        "subscribe": "Subscribe",
+        "subscribing": "Subscribing...",
         "subscribeSuccess": "Welcome to our community!",
         "subscribeSuccessWithEmail": "Please check your email to verify your subscription",
         "subscribeSuccessNoEmail": "Subscription created successfully. Verification email could not be sent at this time.",
         "subscribeWarning": "Please contact support if you need to verify your subscription.",
+        "subscribeError": "Failed to subscribe. Please try again.",
         "unsubscribe": "Unsubscribe",
         "unsubscribeSuccess": "You've been unsubscribed",
-        "emailPlaceholder": "Your email address",
         "verificationSuccess": "Subscription verified successfully",
         "invalidToken": "Invalid or expired verification token",
         "alreadySubscribed": "Email already subscribed",

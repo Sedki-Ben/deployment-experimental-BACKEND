@@ -33,17 +33,21 @@
         "notFound": "Article non trouvé"
     },
     "auth": {
-        "emailRequired": "L'email est requis",
-        "passwordRequired": "Le mot de passe est requis",
-        "invalidCredentials": "Email ou mot de passe invalide",
-        "registrationSuccess": "Inscription réussie",
-        "loginSuccess": "Connexion réussie",
-        "logoutSuccess": "Déconnexion réussie",
+        "signIn": "Connectez-vous à votre compte",
+        "signInDescription": "Bienvenue ! Veuillez vous connecter pour continuer",
+        "email": "Email",
+        "emailPlaceholder": "Entrez votre email",
+        "password": "Mot de passe",
+        "passwordPlaceholder": "Entrez votre mot de passe",
+        "signingIn": "Connexion en cours...",
+        "noAccount": "Vous n'avez pas de compte ?",
+        "signUp": "S'inscrire",
         "userExists": "L'utilisateur existe déjà",
         "userNotFound": "Utilisateur non trouvé",
         "unauthorized": "Accès non autorisé",
         "loginFailed": "Échec de la connexion",
-        "registrationFailed": "Échec de l'inscription"
+        "registrationFailed": "Échec de l'inscription",
+        "invalidCredentials": "Email ou mot de passe invalide"
     },
     "email": {
         "errors": {
@@ -54,14 +58,18 @@
         }
     },
     "newsletter": {
-        "subscribe": "S'abonner à la Newsletter",
-        "subscribeSuccess": "Abonnement à la newsletter réussi",
+        "title": "Restez informé",
+        "description": "Abonnez-vous à notre newsletter pour recevoir les dernières mises à jour et du contenu exclusif",
+        "emailPlaceholder": "Entrez votre email",
+        "subscribe": "S'abonner",
+        "subscribing": "Abonnement en cours...",
+        "subscribeSuccess": "Bienvenue dans notre communauté !",
         "subscribeSuccessWithEmail": "Veuillez vérifier votre email pour confirmer votre abonnement",
         "subscribeSuccessNoEmail": "Abonnement créé avec succès. L'email de vérification n'a pas pu être envoyé pour le moment.",
         "subscribeWarning": "Veuillez contacter le support si vous devez vérifier votre abonnement.",
+        "subscribeError": "Échec de l'abonnement. Veuillez réessayer.",
         "unsubscribe": "Se désabonner",
         "unsubscribeSuccess": "Désabonnement réussi",
-        "emailPlaceholder": "Entrez votre email",
         "verificationSuccess": "Abonnement vérifié avec succès",
         "invalidToken": "Token de vérification invalide ou expiré",
         "alreadySubscribed": "Email déjà abonné",

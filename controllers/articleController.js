@@ -6,36 +6,47 @@ const User = require('../models/User');
 const mongoose = require('mongoose');
 const path = require('path');
 const fs = require('fs');
+const { uploadToCloudinary, deleteFromCloudinary, isCloudinaryConfigured } = require('../utils/cloudinaryStorage');
 
-// Helper function to save uploaded file from memory to disk
-const saveUploadedFile = async (file) => {
+// Helper function to save uploaded file
+const saveUploadedFile = async (file, folder = 'articles') => {
     try {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const filename = uniqueSuffix + '-' + file.originalname;
+        // Check if we should use cloud storage
+        const useCloudStorage = isCloudinaryConfigured() && (process.env.NODE_ENV === 'production' || process.env.USE_CLOUDINARY === 'true');
         
-        // Create uploads directory if it doesn't exist
-        const uploadDir = path.join(__dirname, '..', 'uploads');
-        if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir, { recursive: true });
-        }
-        
-        const filepath = path.join(uploadDir, filename);
-        
-        // Write buffer to file
-        await fs.promises.writeFile(filepath, file.buffer);
-        
-        // Log file creation
-        console.log(`File saved to: ${filepath}`);
-        console.log(`File size: ${file.buffer.length} bytes`);
-        
-        // Immediate verification that file was saved
-        if (fs.existsSync(filepath)) {
-            console.log(`File verification successful: ${filename}`);
+        if (useCloudStorage) {
+            // Upload to Cloudinary
+            const cloudinaryUrl = await uploadToCloudinary(file.buffer, file.originalname, folder);
+            return cloudinaryUrl;
         } else {
-            console.error(`File verification failed: ${filename}`);
+            // Fallback to local storage
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+            const filename = uniqueSuffix + '-' + file.originalname;
+            
+            // Create uploads directory if it doesn't exist
+            const uploadDir = path.join(__dirname, '..', 'uploads');
+            if (!fs.existsSync(uploadDir)) {
+                fs.mkdirSync(uploadDir, { recursive: true });
+            }
+            
+            const filepath = path.join(uploadDir, filename);
+            
+            // Write buffer to file
+            await fs.promises.writeFile(filepath, file.buffer);
+            
+            // Log file creation
+            console.log(`File saved to: ${filepath}`);
+            console.log(`File size: ${file.buffer.length} bytes`);
+            
+            // Immediate verification that file was saved
+            if (fs.existsSync(filepath)) {
+                console.log(`File verification successful: ${filename}`);
+            } else {
+                console.error(`File verification failed: ${filename}`);
+            }
+            
+            return `/uploads/${filename}`;
         }
-        
-        return filename;
     } catch (error) {
         console.error('Error saving file:', error);
         throw new Error('Failed to save uploaded file');
@@ -97,14 +108,14 @@ exports.createArticle = async (req, res) => {
             });
         }
 
-        // Save main image to disk and get filename
-        const mainImageFilename = await saveUploadedFile(mainImage);
+        // Save main image
+        const mainImageUrl = await saveUploadedFile(mainImage, 'articles');
 
-        // Save content images to disk and create mapping
+        // Save content images and create mapping
         const savedContentImages = [];
         for (const file of contentImages) {
-            const filename = await saveUploadedFile(file);
-            savedContentImages.push({ filename, originalname: file.originalname });
+            const imageUrl = await saveUploadedFile(file, 'articles');
+            savedContentImages.push({ url: imageUrl, originalname: file.originalname });
         }
 
         // Process content blocks to replace blob URLs with server URLs for ALL languages
@@ -120,7 +131,7 @@ exports.createArticle = async (req, res) => {
                             if (img.url && img.url.startsWith('blob:') && globalImageIndex < savedContentImages.length) {
                                 return {
                                     ...img,
-                                    url: `/uploads/${savedContentImages[globalImageIndex++].filename}`
+                                    url: savedContentImages[globalImageIndex++].url
                                 };
                             }
                             return img;
@@ -140,7 +151,7 @@ exports.createArticle = async (req, res) => {
             author: req.user.id,
             // Use user's profile image if available, otherwise use default
             authorImage: user.profileImage || '/uploads/profile/bild3.jpg',
-            image: `/uploads/${mainImageFilename}`,
+            image: mainImageUrl,
             // Initialize counters to 0 for dynamic functionality
             likes: { count: 0, users: [] },
             views: 0,
@@ -156,40 +167,9 @@ exports.createArticle = async (req, res) => {
         console.log('Article data before save:', articleData);
 
         const article = new Article(articleData);
-        
-        try {
-            await article.save();
-        } catch (saveError) {
-            // Check if it's a duplicate title error
-            if (saveError.message.includes('title already exists')) {
-                return res.status(400).json({ 
-                    message: saveError.message,
-                    field: 'title'
-                });
-            }
-            throw saveError; // Re-throw other errors
-        }
+        await article.save();
 
-        // Populate author info before sending response
-        await article.populate('author', 'name email');
-
-        // Notify newsletter subscribers if article is published
-        if (article.status === 'published') {
-            try {
-                const subscribers = await Subscription.find({ isVerified: true });
-                if (subscribers.length > 0) {
-                    await EmailService.sendArticleNotification(subscribers, {
-                        title: article.translations.en.title,
-                        summary: article.translations.en.excerpt || '',
-                        _id: article._id
-                    });
-                }
-            } catch (notifyErr) {
-                console.error('Error sending article notification:', notifyErr);
-            }
-        }
-
-        res.status(201).json(article);
+        res.json(article);
     } catch (error) {
         console.error('Create article error:', error);
         res.status(500).json({ message: 'Server error', details: error.message });
@@ -303,11 +283,11 @@ exports.updateArticle = async (req, res) => {
             // Process content images for translations if new content images were uploaded
             const contentImages = req.files?.contentImages || [];
             if (contentImages.length > 0 && updateData.translations) {
-                // Save content images to disk
+                // Save content images
                 const savedContentImages = [];
                 for (const file of contentImages) {
-                    const filename = await saveUploadedFile(file);
-                    savedContentImages.push({ filename, originalname: file.originalname });
+                    const imageUrl = await saveUploadedFile(file, 'articles');
+                    savedContentImages.push({ url: imageUrl, originalname: file.originalname });
                 }
 
                 let globalImageIndex = 0;
@@ -322,7 +302,7 @@ exports.updateArticle = async (req, res) => {
                                     if (img.url && img.url.startsWith('blob:') && globalImageIndex < savedContentImages.length) {
                                         return {
                                             ...img,
-                                            url: `/uploads/${savedContentImages[globalImageIndex++].filename}`
+                                            url: savedContentImages[globalImageIndex++].url
                                         };
                                     }
                                     return img;
@@ -359,8 +339,13 @@ exports.updateArticle = async (req, res) => {
         // Handle main image upload
         const mainImage = req.files?.image?.[0];
         if (mainImage) {
-            const mainImageFilename = await saveUploadedFile(mainImage);
-            updateData.image = `/uploads/${mainImageFilename}`;
+            // Delete old image from Cloudinary if it exists
+            if (article.image && article.image.startsWith('https://res.cloudinary.com/')) {
+                await deleteFromCloudinary(article.image);
+            }
+            
+            const mainImageUrl = await saveUploadedFile(mainImage, 'articles');
+            updateData.image = mainImageUrl;
         } else if (req.body.existingImage) {
             // Keep existing image if no new file uploaded
             updateData.image = req.body.existingImage;

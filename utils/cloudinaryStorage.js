@@ -1,4 +1,6 @@
-const cloudinary = require("cloudinary").v2;
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const multer = require('multer');
 
 // Configure Cloudinary
 cloudinary.config({
@@ -7,87 +9,91 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-/**
- * Upload file buffer to Cloudinary
- * @param {Buffer} fileBuffer - File buffer to upload
- * @param {string} originalname - Original filename
- * @param {string} folder - Storage folder (e.g., 'articles', 'profiles')
- * @returns {Promise<string>} - Public URL of uploaded file
- */
-const uploadToCloudinary = async (fileBuffer, originalname, folder = 'articles') => {
+// Check if Cloudinary is properly configured
+const isCloudinaryConfigured = () => {
+    return !!(process.env.CLOUDINARY_CLOUD_NAME && 
+              process.env.CLOUDINARY_API_KEY && 
+              process.env.CLOUDINARY_API_SECRET);
+};
+
+// Upload file to Cloudinary
+const uploadToCloudinary = async (buffer, originalname, folder = 'articles') => {
     try {
-        return new Promise((resolve, reject) => {
-            // Create a unique filename
-            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-            const filename = `${uniqueSuffix}-${originalname.replace(/\s+/g, '_')}`;
-            
+        if (!isCloudinaryConfigured()) {
+            throw new Error('Cloudinary is not configured');
+        }
+
+        // Create a unique filename
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const filename = `${folder}/${uniqueSuffix}-${originalname}`;
+
+        // Upload buffer to Cloudinary
+        const result = await new Promise((resolve, reject) => {
             cloudinary.uploader.upload_stream(
                 {
-                    resource_type: 'image',
-                    folder: `football-journal/${folder}`, // Organize in folders
+                    folder: folder,
+                    resource_type: 'auto',
                     public_id: filename,
-                    overwrite: false,
-                    quality: 'auto', // Automatic quality optimization
-                    fetch_format: 'auto' // Automatic format optimization
+                    overwrite: true
                 },
                 (error, result) => {
-                    if (error) {
-                        console.error('Error uploading to Cloudinary:', error);
-                        reject(new Error('Failed to upload image to cloud storage'));
-                    } else {
-                        console.log(`File uploaded successfully to Cloudinary: ${result.secure_url}`);
-                        resolve(result.secure_url);
-                    }
+                    if (error) reject(error);
+                    else resolve(result);
                 }
-            ).end(fileBuffer);
+            ).end(buffer);
         });
+
+        console.log('Cloudinary upload successful:', result.secure_url);
+        return result.secure_url;
     } catch (error) {
-        console.error('Error uploading to Cloudinary:', error);
-        throw new Error('Failed to upload image to cloud storage');
+        console.error('Cloudinary upload error:', error);
+        throw new Error('Failed to upload to Cloudinary: ' + error.message);
     }
 };
 
-/**
- * Delete file from Cloudinary
- * @param {string} fileUrl - Public URL of file to delete
- * @returns {Promise<void>}
- */
-const deleteFromCloudinary = async (fileUrl) => {
+// Delete file from Cloudinary
+const deleteFromCloudinary = async (url) => {
     try {
-        // Extract public_id from Cloudinary URL
-        // URL format: https://res.cloudinary.com/cloud_name/image/upload/v1234567890/folder/filename.jpg
-        const urlParts = fileUrl.split('/');
-        const versionIndex = urlParts.findIndex(part => part.startsWith('v'));
-        
-        if (versionIndex !== -1 && versionIndex < urlParts.length - 1) {
-            // Extract folder and filename (everything after version)
-            const pathParts = urlParts.slice(versionIndex + 1);
-            const fullPath = pathParts.join('/');
-            // Remove file extension
-            const publicId = fullPath.replace(/\.[^/.]+$/, '');
-            
-            await cloudinary.uploader.destroy(publicId);
-            console.log(`File deleted successfully from Cloudinary: ${publicId}`);
+        if (!isCloudinaryConfigured()) {
+            throw new Error('Cloudinary is not configured');
         }
+
+        // Extract public_id from URL
+        const publicId = url.split('/').slice(-1)[0].split('.')[0];
+        
+        // Delete from Cloudinary
+        const result = await cloudinary.uploader.destroy(publicId);
+        console.log('Cloudinary delete result:', result);
+        return result;
     } catch (error) {
-        console.error('Error deleting from Cloudinary:', error);
-        // Don't throw error for deletion failures to avoid breaking the main flow
+        console.error('Cloudinary delete error:', error);
+        throw new Error('Failed to delete from Cloudinary: ' + error.message);
     }
 };
 
-/**
- * Check if Cloudinary is properly configured
- * @returns {boolean}
- */
-const isCloudinaryConfigured = () => {
-    return !!(
-        process.env.CLOUDINARY_CLOUD_NAME &&
-        process.env.CLOUDINARY_API_KEY &&
-        process.env.CLOUDINARY_API_SECRET
-    );
-};
+// Configure Cloudinary storage for multer
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'articles',
+        allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+        resource_type: 'auto',
+        transformation: [{ width: 1000, height: 1000, crop: 'limit' }]
+    }
+});
+
+// Create multer upload instance
+const upload = multer({ 
+    storage: storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024 // 5MB limit
+    }
+});
 
 module.exports = {
+    cloudinary,
+    storage,
+    upload,
     uploadToCloudinary,
     deleteFromCloudinary,
     isCloudinaryConfigured

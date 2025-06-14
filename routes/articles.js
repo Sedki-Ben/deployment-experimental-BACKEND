@@ -8,6 +8,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const Article = require('../models/Article');
+const { upload } = require('../utils/cloudinaryStorage');
 
 const router = express.Router();
 
@@ -22,7 +23,7 @@ const fileFilter = (req, file, cb) => {
     cb(null, true);
 };
 
-const upload = multer({
+const uploadMulter = multer({
     storage: storage,
     fileFilter: fileFilter,
     limits: {

@@ -6,7 +6,7 @@ const User = require('../models/User');
 const mongoose = require('mongoose');
 const path = require('path');
 const fs = require('fs');
-const { uploadToCloudinary, deleteFromCloudinary, isCloudinaryConfigured, getImageUrl } = require('../utils/cloudinaryStorage');
+const { uploadToCloudinary, deleteFromCloudinary, isCloudinaryConfigured } = require('../utils/cloudinaryStorage');
 
 // Helper function to save uploaded file
 const saveUploadedFile = async (file, folder = 'articles') => {
@@ -222,15 +222,8 @@ exports.getArticles = async (req, res) => {
             .populate('author', 'username')
             .lean();
 
-        // Transform article data to include proper image URLs
-        const transformedArticles = articles.map(article => ({
-            ...article,
-            image: getImageUrl(article.image),
-            authorImage: getImageUrl(article.authorImage, 'profile')
-        }));
-
         res.json({
-            articles: transformedArticles,
+            articles,
             currentPage: parseInt(page),
             totalPages: Math.ceil(total / parseInt(limit)),
             totalArticles: total
@@ -271,14 +264,7 @@ exports.getArticle = async (req, res) => {
             articleData.isLikedByCurrentUser = false;
         }
 
-        // Transform article data to include proper image URLs
-        const transformedArticle = {
-            ...articleData,
-            image: getImageUrl(articleData.image),
-            authorImage: getImageUrl(articleData.authorImage, 'profile')
-        };
-
-        res.json(transformedArticle);
+        res.json(articleData);
     } catch (error) {
         console.error('Get article error:', error);
         res.status(500).json({ message: 'Server error' });
@@ -399,14 +385,7 @@ exports.updateArticle = async (req, res) => {
             return res.status(404).json({ message: 'Article not found after update' });
         }
 
-        // Transform article data to include proper image URLs
-        const transformedArticle = {
-            ...updatedArticle.toObject(),
-            image: getImageUrl(updatedArticle.image),
-            authorImage: getImageUrl(updatedArticle.authorImage, 'profile')
-        };
-
-        res.json(transformedArticle);
+        res.json(updatedArticle);
     } catch (error) {
         console.error('Update article error:', error);
         if (error.message.includes('title already exists')) {
@@ -431,11 +410,6 @@ exports.deleteArticle = async (req, res) => {
         // Check ownership or admin role
         if (article.author.toString() !== req.user.id && !['admin'].includes(req.user.role)) {
             return res.status(403).json({ message: 'Not authorized' });
-        }
-
-        // Delete image from Cloudinary if it exists
-        if (article.image && article.image.startsWith('https://res.cloudinary.com/')) {
-            await deleteFromCloudinary(article.image);
         }
 
         await Article.findByIdAndDelete(req.params.id);
@@ -681,14 +655,7 @@ exports.getArticleBySlug = async (req, res) => {
             articleData.isLikedByCurrentUser = false;
         }
 
-        // Transform article data to include proper image URLs
-        const transformedArticle = {
-            ...articleData,
-            image: getImageUrl(articleData.image),
-            authorImage: getImageUrl(articleData.authorImage, 'profile')
-        };
-
-        res.json(transformedArticle);
+        res.json(articleData);
     } catch (error) {
         console.error('Get article by slug error:', error);
         res.status(500).json({ message: 'Server error' });

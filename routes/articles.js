@@ -8,7 +8,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const Article = require('../models/Article');
-const { uploadArticleImage } = require('../utils/cloudinaryStorage');
+const { upload } = require('../utils/cloudinaryStorage');
 
 const router = express.Router();
 
@@ -152,7 +152,10 @@ router.get('/:id', optionalAuth, articlesController.getArticle);
 router.post('/',
     auth,
     isWriter,
-    uploadArticleImage.single('image'),
+    upload.fields([
+        { name: 'image', maxCount: 1 }, // Main article image
+        { name: 'contentImages', maxCount: 10 } // Images for content blocks
+    ]),
     [
         check('translations')
             .custom((value, { req }) => {
@@ -179,7 +182,10 @@ router.post('/',
 router.put('/:id',
     auth,
     isWriter,
-    uploadArticleImage.single('image'),
+    upload.fields([
+        { name: 'image', maxCount: 1 }, // Main article image
+        { name: 'contentImages', maxCount: 10 } // Images for content blocks
+    ]),
     [
         check('translations')
             .optional()

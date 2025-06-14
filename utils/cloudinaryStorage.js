@@ -28,129 +28,122 @@ const isCloudinaryConfigured = () => {
     return hasCloudName && hasApiKey && hasApiSecret;
 };
 
-// Configure Cloudinary storage for articles
-const articleStorage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: 'articles',
-        allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'gif'],
-        transformation: [
-            { width: 800, height: 600, crop: 'limit', quality: 'auto' },
-            { format: 'auto' }
-        ]
-    }
-});
-
-// Configure Cloudinary storage for profiles
-const profileStorage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: 'profiles',
-        allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
-        transformation: [
-            { width: 300, height: 300, crop: 'fill', gravity: 'face', quality: 'auto' },
-            { format: 'auto' }
-        ]
-    }
-});
-
-// Multer instances
-const uploadArticleImage = multer({ 
-    storage: articleStorage,
-    limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
-});
-
-const uploadProfileImage = multer({ 
-    storage: profileStorage,
-    limits: { fileSize: 2 * 1024 * 1024 } // 2MB limit
-});
-
-// Helper function to upload a file to Cloudinary
-const uploadToCloudinary = async (file, folder = 'articles') => {
+// Upload file to Cloudinary
+const uploadToCloudinary = async (file, originalname, folder = 'articles') => {
     try {
-        if (!file) return null;
-
-        // If file is already a Cloudinary URL, return it
-        if (typeof file === 'string' && file.startsWith('http')) {
-            return file;
+        if (!isCloudinaryConfigured()) {
+            console.log('Cloudinary not configured, falling back to local storage');
+            return null;
         }
 
-        // If file is a buffer (from multer)
-        if (file.buffer) {
-            const result = await new Promise((resolve, reject) => {
+        console.log('Attempting to upload to Cloudinary:', {
+            filename: originalname,
+            folder: folder,
+            fileType: typeof file,
+            hasPath: !!file?.path,
+            hasBuffer: !!file?.buffer
+        });
+
+        // If the file is already uploaded to Cloudinary (has path), return the path
+        if (file?.path && file.path.startsWith('https://res.cloudinary.com/')) {
+            console.log('File already uploaded to Cloudinary:', file.path);
+            return file.path;
+        }
+
+        // Create a unique filename
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const filename = `${folder}/${uniqueSuffix}-${originalname}`;
+
+        let result;
+        if (file?.buffer) {
+            // Upload buffer to Cloudinary
+            result = await new Promise((resolve, reject) => {
                 cloudinary.uploader.upload_stream(
                     {
-                        folder,
+                        folder: folder,
                         resource_type: 'auto',
-                        transformation: [
-                            { width: 800, height: 600, crop: 'limit', quality: 'auto' },
-                            { format: 'auto' }
-                        ]
+                        public_id: filename,
+                        overwrite: true
                     },
                     (error, result) => {
-                        if (error) reject(error);
-                        else resolve(result);
+                        if (error) {
+                            console.error('Cloudinary upload error:', error);
+                            reject(error);
+                        } else {
+                            console.log('Cloudinary upload successful:', {
+                                url: result.secure_url,
+                                publicId: result.public_id,
+                                format: result.format,
+                                size: result.bytes
+                            });
+                            resolve(result);
+                        }
                     }
                 ).end(file.buffer);
             });
-            return result.secure_url;
-        }
-
-        // If file is a path
-        if (typeof file === 'string') {
-            const result = await cloudinary.uploader.upload(file, {
-                folder,
+        } else if (file?.path) {
+            // Upload file from path
+            result = await cloudinary.uploader.upload(file.path, {
+                folder: folder,
                 resource_type: 'auto',
-                transformation: [
-                    { width: 800, height: 600, crop: 'limit', quality: 'auto' },
-                    { format: 'auto' }
-                ]
+                public_id: filename,
+                overwrite: true
             });
-            return result.secure_url;
+        } else {
+            throw new Error('Invalid file object: neither buffer nor path provided');
         }
 
-        return null;
+        return result.secure_url;
     } catch (error) {
-        console.error('Error uploading to Cloudinary:', error);
-        return null;
+        console.error('Cloudinary upload error:', error);
+        throw new Error('Failed to upload to Cloudinary: ' + error.message);
     }
 };
 
-// Helper function to delete a file from Cloudinary
+// Delete file from Cloudinary
 const deleteFromCloudinary = async (url) => {
     try {
-        if (!url || !url.startsWith('http')) return;
+        if (!isCloudinaryConfigured()) {
+            throw new Error('Cloudinary is not configured');
+        }
 
+        // Extract public_id from URL
         const publicId = url.split('/').slice(-1)[0].split('.')[0];
-        await cloudinary.uploader.destroy(publicId);
+        
+        // Delete from Cloudinary
+        const result = await cloudinary.uploader.destroy(publicId);
+        console.log('Cloudinary delete result:', result);
+        return result;
     } catch (error) {
-        console.error('Error deleting from Cloudinary:', error);
+        console.error('Cloudinary delete error:', error);
+        throw new Error('Failed to delete from Cloudinary: ' + error.message);
     }
 };
 
-// Helper function to get image URL with fallback
-const getImageUrl = (imagePath, type = 'article') => {
-    if (!imagePath) {
-        return type === 'profile' ? '/images/default-author.jpg' : '/images/default-article.jpg';
+// Configure Cloudinary storage for multer
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'articles',
+        allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+        resource_type: 'auto',
+        transformation: [{ width: 1000, height: 1000, crop: 'limit' }]
     }
-    
-    // If it's already a full URL (Cloudinary), return as is
-    if (imagePath.startsWith('http')) return imagePath;
-    
-    // If it's a local path, convert to full URL
-    if (imagePath.startsWith('/uploads')) {
-        return `${process.env.BACKEND_URL}${imagePath}`;
+});
+
+// Create multer upload instance
+const upload = multer({ 
+    storage: storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024 // 5MB limit
     }
-    
-    return imagePath;
-};
+});
 
 module.exports = {
     cloudinary,
-    uploadArticleImage,
-    uploadProfileImage,
+    storage,
+    upload,
     uploadToCloudinary,
     deleteFromCloudinary,
-    getImageUrl,
     isCloudinaryConfigured
 }; 

@@ -196,7 +196,7 @@ async function seedArticles() {
         ...articleData,
         author: author._id,
         authorImage: '/uploads/profile/bild3.jpg',
-        image: '/uploads/default-article.jpg',
+        image: '/uploads/default-article.webp',
         publishedAt: publishDate,
         createdAt: publishDate,
         updatedAt: publishDate,

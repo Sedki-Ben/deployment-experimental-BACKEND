@@ -12,7 +12,7 @@ const { uploadToCloudinary, deleteFromCloudinary, isCloudinaryConfigured } = req
 const saveUploadedFile = async (file, folder = 'articles') => {
     try {
         // Try Cloudinary first
-        const cloudinaryUrl = await uploadToCloudinary(file.buffer, file.originalname, folder);
+        const cloudinaryUrl = await uploadToCloudinary(file, file.originalname, folder);
         
         if (cloudinaryUrl) {
             console.log('Successfully uploaded to Cloudinary:', cloudinaryUrl);

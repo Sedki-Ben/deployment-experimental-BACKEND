@@ -45,7 +45,14 @@
         "currentPasswordIncorrect": "Current password is incorrect",
         "passwordChangedSuccess": "Password changed successfully",
         "passwordResetEmailSent": "Password reset email sent",
-        "passwordResetSuccess": "Password reset successfully"
+        "passwordResetSuccess": "Password reset successfully",
+        "nameRequired": "Name is required",
+        "registrationFailed": "Registration failed",
+        "loginFailed": "Login failed", 
+        "networkError": "Network connection error",
+        "serverError": "Server error occurred",
+        "accountLocked": "Account is temporarily locked",
+        "invalidEmailFormat": "Please enter a valid email address"
     },
     "newsletter": {
         "subscribe": "Get Weekly Updates",

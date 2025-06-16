@@ -45,7 +45,14 @@
         "currentPasswordIncorrect": "كلمة المرور الحالية غير صحيحة",
         "passwordChangedSuccess": "تم تغيير كلمة المرور بنجاح",
         "passwordResetEmailSent": "تم إرسال بريد إعادة تعيين كلمة المرور",
-        "passwordResetSuccess": "تم إعادة تعيين كلمة المرور بنجاح"
+        "passwordResetSuccess": "تم إعادة تعيين كلمة المرور بنجاح",
+        "nameRequired": "الاسم مطلوب",
+        "registrationFailed": "فشل التسجيل", 
+        "loginFailed": "فشل تسجيل الدخول",
+        "networkError": "خطأ في الاتصال بالشبكة",
+        "serverError": "حدث خطأ في الخادم",
+        "accountLocked": "الحساب مقفل مؤقتاً", 
+        "invalidEmailFormat": "يرجى إدخال عنوان بريد إلكتروني صحيح"
     },
     "newsletter": {
         "subscribe": "اشترك في النشرة الإخبارية",

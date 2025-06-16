@@ -113,26 +113,56 @@ exports.createArticle = async (req, res) => {
 
         // Save content images and create mapping
         const savedContentImages = [];
+        const blobToCloudinaryMap = new Map();
+        const uniqueBlobUrls = new Set();
+
+        // Save content images first
         for (const file of contentImages) {
             const imageUrl = await saveUploadedFile(file, 'articles');
             savedContentImages.push({ url: imageUrl, originalname: file.originalname });
         }
 
-        // Process content blocks to replace blob URLs with server URLs for ALL languages
-        let globalImageIndex = 0;
+        // First pass: collect all unique blob URLs
         const languages = ['en', 'fr', 'ar'];
-        
+        languages.forEach(lang => {
+            if (translations[lang] && translations[lang].content) {
+                translations[lang].content.forEach(block => {
+                    if (block.type === 'image-group' && block.metadata?.images) {
+                        block.metadata.images.forEach(img => {
+                            if (img.url && img.url.startsWith('blob:')) {
+                                uniqueBlobUrls.add(img.url);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        // Second pass: create mapping for unique blob URLs only
+        let globalImageIndex = 0;
+        Array.from(uniqueBlobUrls).forEach(blobUrl => {
+            if (globalImageIndex < savedContentImages.length) {
+                blobToCloudinaryMap.set(blobUrl, savedContentImages[globalImageIndex].url);
+                globalImageIndex++;
+            }
+        });
+
+        // Third pass: replace blob URLs with Cloudinary URLs across all languages
         languages.forEach(lang => {
             if (translations[lang] && translations[lang].content) {
                 translations[lang].content = translations[lang].content.map(block => {
                     if (block.type === 'image-group' && block.metadata?.images) {
                         block.metadata.images = block.metadata.images.map(img => {
-                            // Replace blob URL with server URL
-                            if (img.url && img.url.startsWith('blob:') && globalImageIndex < savedContentImages.length) {
+                            // If we have a mapping for this blob URL, use it
+                            if (img.url && blobToCloudinaryMap.has(img.url)) {
                                 return {
                                     ...img,
-                                    url: savedContentImages[globalImageIndex++].url
+                                    url: blobToCloudinaryMap.get(img.url)
                                 };
+                            }
+                            // If it's already a Cloudinary URL, keep it
+                            if (img.url && img.url.startsWith('https://res.cloudinary.com/')) {
+                                return img;
                             }
                             return img;
                         });
@@ -141,6 +171,9 @@ exports.createArticle = async (req, res) => {
                 });
             }
         });
+
+        console.log('Unique blob URLs found:', uniqueBlobUrls.size);
+        console.log('Blob to Cloudinary URL mapping:', Object.fromEntries(blobToCloudinaryMap));
 
         // Create article data
         const articleData = {
@@ -307,25 +340,56 @@ exports.updateArticle = async (req, res) => {
             if (contentImages.length > 0 && updateData.translations) {
                 // Save content images
                 const savedContentImages = [];
+                const blobToCloudinaryMap = new Map();
+                const uniqueBlobUrls = new Set();
+
+                // Save content images first
                 for (const file of contentImages) {
                     const imageUrl = await saveUploadedFile(file, 'articles');
                     savedContentImages.push({ url: imageUrl, originalname: file.originalname });
                 }
 
-                let globalImageIndex = 0;
+                // First pass: collect all unique blob URLs
                 const languages = ['en', 'fr', 'ar'];
-                
+                languages.forEach(lang => {
+                    if (updateData.translations[lang] && updateData.translations[lang].content) {
+                        updateData.translations[lang].content.forEach(block => {
+                            if (block.type === 'image-group' && block.metadata?.images) {
+                                block.metadata.images.forEach(img => {
+                                    if (img.url && img.url.startsWith('blob:')) {
+                                        uniqueBlobUrls.add(img.url);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+
+                // Second pass: create mapping for unique blob URLs only
+                let globalImageIndex = 0;
+                Array.from(uniqueBlobUrls).forEach(blobUrl => {
+                    if (globalImageIndex < savedContentImages.length) {
+                        blobToCloudinaryMap.set(blobUrl, savedContentImages[globalImageIndex].url);
+                        globalImageIndex++;
+                    }
+                });
+
+                // Third pass: replace blob URLs with Cloudinary URLs across all languages
                 languages.forEach(lang => {
                     if (updateData.translations[lang] && updateData.translations[lang].content) {
                         updateData.translations[lang].content = updateData.translations[lang].content.map(block => {
                             if (block.type === 'image-group' && block.metadata?.images) {
                                 block.metadata.images = block.metadata.images.map(img => {
-                                    // Replace blob URL with server URL for new uploads
-                                    if (img.url && img.url.startsWith('blob:') && globalImageIndex < savedContentImages.length) {
+                                    // If we have a mapping for this blob URL, use it
+                                    if (img.url && blobToCloudinaryMap.has(img.url)) {
                                         return {
                                             ...img,
-                                            url: savedContentImages[globalImageIndex++].url
+                                            url: blobToCloudinaryMap.get(img.url)
                                         };
+                                    }
+                                    // If it's already a Cloudinary URL, keep it
+                                    if (img.url && img.url.startsWith('https://res.cloudinary.com/')) {
+                                        return img;
                                     }
                                     return img;
                                 });
@@ -334,6 +398,9 @@ exports.updateArticle = async (req, res) => {
                         });
                     }
                 });
+
+                console.log('Unique blob URLs found:', uniqueBlobUrls.size);
+                console.log('Blob to Cloudinary URL mapping:', Object.fromEntries(blobToCloudinaryMap));
             }
         }
 

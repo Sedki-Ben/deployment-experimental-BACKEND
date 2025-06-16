@@ -39,7 +39,13 @@
         "logout": "Sign Out",
         "profile": "My Profile",
         "settings": "Settings",
-        "about": "About Us"
+        "about": "About Us",
+        "emailAlreadyExists": "An account with this email already exists",
+        "userNotFound": "User not found",
+        "currentPasswordIncorrect": "Current password is incorrect",
+        "passwordChangedSuccess": "Password changed successfully",
+        "passwordResetEmailSent": "Password reset email sent",
+        "passwordResetSuccess": "Password reset successfully"
     },
     "newsletter": {
         "subscribe": "Get Weekly Updates",

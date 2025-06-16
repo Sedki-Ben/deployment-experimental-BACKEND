@@ -33,7 +33,19 @@
         "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
         "registrationSuccess": "تم التسجيل بنجاح",
         "loginSuccess": "تم تسجيل الدخول بنجاح",
-        "logoutSuccess": "تم تسجيل الخروج بنجاح"
+        "logoutSuccess": "تم تسجيل الخروج بنجاح",
+        "login": "تسجيل الدخول",
+        "register": "إنشاء حساب",
+        "logout": "تسجيل الخروج",
+        "profile": "ملفي الشخصي",
+        "settings": "الإعدادات",
+        "about": "معلومات عنا",
+        "emailAlreadyExists": "يوجد حساب بهذا البريد الإلكتروني بالفعل",
+        "userNotFound": "المستخدم غير موجود",
+        "currentPasswordIncorrect": "كلمة المرور الحالية غير صحيحة",
+        "passwordChangedSuccess": "تم تغيير كلمة المرور بنجاح",
+        "passwordResetEmailSent": "تم إرسال بريد إعادة تعيين كلمة المرور",
+        "passwordResetSuccess": "تم إعادة تعيين كلمة المرور بنجاح"
     },
     "newsletter": {
         "subscribe": "اشترك في النشرة الإخبارية",

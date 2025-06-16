@@ -33,7 +33,19 @@
         "invalidCredentials": "Email ou mot de passe invalide",
         "registrationSuccess": "Inscription réussie",
         "loginSuccess": "Connexion réussie",
-        "logoutSuccess": "Déconnexion réussie"
+        "logoutSuccess": "Déconnexion réussie",
+        "login": "Se connecter",
+        "register": "Créer un compte",
+        "logout": "Se déconnecter",
+        "profile": "Mon profil",
+        "settings": "Paramètres",
+        "about": "À propos",
+        "emailAlreadyExists": "Un compte avec cet email existe déjà",
+        "userNotFound": "Utilisateur introuvable",
+        "currentPasswordIncorrect": "Le mot de passe actuel est incorrect",
+        "passwordChangedSuccess": "Mot de passe modifié avec succès",
+        "passwordResetEmailSent": "Email de réinitialisation envoyé",
+        "passwordResetSuccess": "Mot de passe réinitialisé avec succès"
     },
     "newsletter": {
         "subscribe": "S'abonner à la Newsletter",

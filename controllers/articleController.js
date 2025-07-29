@@ -200,7 +200,7 @@ exports.createArticle = async (req, res) => {
         console.log('Article data before save:', articleData);
 
         const article = new Article(articleData);
-        await article.save();
+            await article.save();
 
         res.json(article);
     } catch (error) {
@@ -222,7 +222,7 @@ exports.getArticles = async (req, res) => {
 
         // Build query
         const query = {};
-        
+
         // Add category filter if provided
         if (category) {
             query.category = category;

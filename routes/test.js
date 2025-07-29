@@ -6,7 +6,7 @@ const { isCloudinaryConfigured, uploadToCloudinary } = require('../utils/cloudin
 // Configure multer for memory storage
 const upload = multer({ 
     storage: multer.memoryStorage(),
-    limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
+    limits: { fileSize: 50 * 1024 * 1024 } // 50MB limit
 });
 
 // Test endpoint to check Cloudinary configuration

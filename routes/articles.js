@@ -27,7 +27,7 @@ const uploadMulter = multer({
     storage: storage,
     fileFilter: fileFilter,
     limits: {
-        fileSize: 5 * 1024 * 1024, // 5MB limit
+        fileSize: 50 * 1024 * 1024, // 50MB limit
         files: 10 // Maximum 10 files per request
     }
 });
@@ -152,7 +152,7 @@ router.get('/:id', optionalAuth, articlesController.getArticle);
 router.post('/',
     auth,
     isWriter,
-    upload.fields([
+    uploadMulter.fields([
         { name: 'image', maxCount: 1 }, // Main article image
         { name: 'contentImages', maxCount: 10 } // Images for content blocks
     ]),
@@ -182,7 +182,7 @@ router.post('/',
 router.put('/:id',
     auth,
     isWriter,
-    upload.fields([
+    uploadMulter.fields([
         { name: 'image', maxCount: 1 }, // Main article image
         { name: 'contentImages', maxCount: 10 } // Images for content blocks
     ]),
